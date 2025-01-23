@@ -8,6 +8,7 @@ import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
 
 export default function Simulations() {
   const simulations = useSelector(selectSimulations);
+  console.log(simulations);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {

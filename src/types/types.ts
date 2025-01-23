@@ -5,24 +5,24 @@ export type SidebarComponentType = React.ComponentType<any>;
 export type BaseActivity = {
   id?: string;
   date: string;
-  date_is_variable: boolean;
-  date_variable: string | null;
+  dateIsVariable: boolean;
+  dateVariable: string | null;
   name: string;
   category: string;
   amount: number | string;
   flag: boolean;
-  amount_is_variable: boolean;
-  amount_variable: string | null;
-  is_transfer: boolean;
+  amountIsVariable: boolean;
+  amountVariable: string | null;
+  isTransfer: boolean;
   fro: string | null;
   to: string | null;
 };
 
 export type Activity = BaseActivity & {
-  bill_id: string | null;
-  first_bill: boolean;
-  interest_id: string | null;
-  first_interest: boolean;
+  billId: string | null;
+  firstBill: boolean;
+  interestId: string | null;
+  firstInterest: boolean;
   balance: number;
 };
 
@@ -36,33 +36,33 @@ export type Bill = {
   category: string;
   amount: number | string;
   flag: boolean;
-  amount_is_variable: boolean;
-  amount_variable: string | null;
-  is_transfer: boolean;
+  amountIsVariable: boolean;
+  amountVariable: string | null;
+  isTransfer: boolean;
   fro: string | null;
   to: string | null;
-  start_date: string;
-  start_date_is_variable: boolean;
-  start_date_variable: string | null;
-  end_date: string | null;
-  end_date_is_variable: boolean;
-  end_date_variable: string | null;
-  every_n: number;
+  startDate: string;
+  startDateIsVariable: boolean;
+  startDateVariable: string | null;
+  endDate: string | null;
+  endDateIsVariable: boolean;
+  endDateVariable: string | null;
+  everyN: number;
   periods: string;
-  is_automatic: boolean;
-  annual_start_date: string | null;
-  annual_end_date: string | null;
+  isAutomatic: boolean;
+  annualStartDate: string | null;
+  annualEndDate: string | null;
 };
 
 export type Interest = {
   id: string;
   apr: number | string;
-  apr_is_variable: boolean;
-  apr_variable: string | null;
+  aprIsVariable: boolean;
+  aprVariable: string | null;
   compounded: "day" | "week" | "month" | "year";
-  applicable_date: string;
-  applicable_date_is_variable: boolean;
-  applicable_date_variable: string | null;
+  applicableDate: string;
+  applicableDateIsVariable: boolean;
+  applicableDateVariable: string | null;
 };
 
 export type Account = {

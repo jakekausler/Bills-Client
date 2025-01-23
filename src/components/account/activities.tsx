@@ -93,8 +93,8 @@ export default function Activities({ style }: ActivitiesProps) {
     dispatch(
       loadAndSelectBill(
         accountId,
-        activity.bill_id as string,
-        activity.is_transfer,
+        activity.billId as string,
+        activity.isTransfer,
       ),
     );
     resetEditor();
@@ -111,8 +111,8 @@ export default function Activities({ style }: ActivitiesProps) {
     dispatch(
       loadBillActivity(
         account,
-        activity.bill_id as string,
-        activity.is_transfer,
+        activity.billId as string,
+        activity.isTransfer,
         startDate,
         endDate,
       ),
@@ -125,7 +125,7 @@ export default function Activities({ style }: ActivitiesProps) {
     dispatch(
       loadInterestActivity(
         accountId,
-        activity.interest_id as string,
+        activity.interestId as string,
         startDate,
         endDate,
       ),
@@ -138,8 +138,8 @@ export default function Activities({ style }: ActivitiesProps) {
     dispatch(
       skipBillAction(
         account as Account,
-        activity.bill_id as string,
-        activity.is_transfer,
+        activity.billId as string,
+        activity.isTransfer,
         startDate,
         endDate,
         graphEndDate,
@@ -163,17 +163,17 @@ export default function Activities({ style }: ActivitiesProps) {
 
   const selectActivity = (activity: Activity) => {
     if (!activity) return;
-    if (!!activity.bill_id && !!accountId) {
-      if (activity.first_bill) {
+    if (!!activity.billId && !!accountId) {
+      if (activity.firstBill) {
         setEditorChoice("bill");
         setEditorActivity(activity);
       } else {
         dispatch(
-          loadAndSelectBill(accountId, activity.bill_id, activity.is_transfer),
+          loadAndSelectBill(accountId, activity.billId, activity.isTransfer),
         );
       }
-    } else if (!!activity.interest_id && !!accountId) {
-      if (activity.first_interest) {
+    } else if (!!activity.interestId && !!accountId) {
+      if (activity.firstInterest) {
         setEditorChoice("interest");
         setEditorActivity(activity);
       } else {
@@ -221,12 +221,12 @@ export default function Activities({ style }: ActivitiesProps) {
                       : undefined,
                 }}
                 c={
-                  activity.bill_id ? "blue" : activity.interest_id ? "blue" : ""
+                  activity.billId ? "blue" : activity.interestId ? "blue" : ""
                 }
                 fw={
-                  activity.first_bill
+                  activity.firstBill
                     ? "bold"
-                    : activity.first_interest
+                    : activity.firstInterest
                       ? "bold"
                       : ""
                 }
@@ -236,9 +236,9 @@ export default function Activities({ style }: ActivitiesProps) {
                     title: "Edit",
                     icon: <IconEdit size={16} />,
                     onClick: () => {
-                      if ((activity.bill_id && activity.first_bill) || (activity.interest_id && activity.first_interest)) {
-                        activity.bill_id ? dispatch(
-                          loadAndSelectBill(account?.id as string, activity.bill_id, activity.is_transfer),
+                      if ((activity.billId && activity.firstBill) || (activity.interestId && activity.firstInterest)) {
+                        activity.billId ? dispatch(
+                          loadAndSelectBill(account?.id as string, activity.billId, activity.isTransfer),
                         ) : dispatch(
                           loadInterests(account?.id as string),
                         );
@@ -252,18 +252,18 @@ export default function Activities({ style }: ActivitiesProps) {
                     title: "Delete",
                     icon: <IconTrash size={16} />,
                     onClick: () => {
-                      if (activity.bill_id) {
+                      if (activity.billId) {
                         dispatch(
                           removeBill(
                             account as Account,
-                            activity.bill_id as string,
-                            activity.is_transfer,
+                            activity.billId as string,
+                            activity.isTransfer,
                             startDate,
                             endDate,
                             graphEndDate,
                           ),
                         );
-                      } else if (activity.interest_id) {
+                      } else if (activity.interestId) {
                         dispatch(
                           saveInterests(account as Account, [], startDate, endDate, graphEndDate),
                         );
@@ -272,7 +272,7 @@ export default function Activities({ style }: ActivitiesProps) {
                           removeActivity(
                             account as Account,
                             activity.id as string,
-                            activity.is_transfer,
+                            activity.isTransfer,
                             startDate,
                             endDate,
                             graphEndDate,
@@ -281,19 +281,19 @@ export default function Activities({ style }: ActivitiesProps) {
                       }
                     }
                   },
-                  ...((activity.bill_id && activity.first_bill) || (activity.interest_id && activity.first_interest) ? [{
+                  ...((activity.billId && activity.firstBill) || (activity.interestId && activity.firstInterest) ? [{
                     key: "enter",
                     title: "Enter",
                     icon: <IconCurrencyDollar size={16} />,
                     onClick: () => {
-                      activity.bill_id ? billAsActivityEditor(activity) : interestAsActivityEditor(activity);
+                      activity.billId ? billAsActivityEditor(activity) : interestAsActivityEditor(activity);
                     }
                   }, {
                     key: "skip",
                     title: "Skip",
                     icon: <IconPlayerSkipForward size={16} />,
                     onClick: () => {
-                      activity.bill_id ? skipBill(activity) : skipInterest();
+                      activity.billId ? skipBill(activity) : skipInterest();
                     }
                   }] : [])
                 ])}

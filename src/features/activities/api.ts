@@ -6,7 +6,7 @@ export const fetchActivities = async (
   endDate: Date,
 ) => {
   const response = await fetch(
-    `/api/accounts/${account.id}/consolidated_activity?start_date=${startDate.toISOString().split("T")[0]}&end_date=${endDate.toISOString().split("T")[0]}`,
+    `/api/accounts/${account.id}/consolidated_activity?startDate=${startDate.toISOString().split("T")[0]}&endDate=${endDate.toISOString().split("T")[0]}`,
   );
   return response.json();
 };
@@ -17,7 +17,7 @@ export const fetchBill = async (
   isTransfer: boolean,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/bills/${billId}?is_transfer=${isTransfer}`,
+    `/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}`,
   );
   return response.json();
 };
@@ -30,6 +30,7 @@ export const fetchAddActivity = async (
     method: "PUT",
     body: JSON.stringify(activity),
   });
+  return response.json();
 };
 
 export const fetchSaveActivity = async (
@@ -37,12 +38,13 @@ export const fetchSaveActivity = async (
   activity: Activity,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/activity/${activity.id}?is_transfer=${activity.is_transfer}`,
+    `/api/accounts/${accountId}/activity/${activity.id}?isTransfer=${activity.isTransfer}`,
     {
       method: "POST",
       body: JSON.stringify(activity),
     },
   );
+  return response.json();
 };
 
 export const fetchRemoveActivity = async (
@@ -51,11 +53,12 @@ export const fetchRemoveActivity = async (
   isTransfer: boolean,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/activity/${activityId}?is_transfer=${isTransfer}`,
+    `/api/accounts/${accountId}/activity/${activityId}?isTransfer=${isTransfer}`,
     {
       method: "DELETE",
     },
   );
+  return response.json();
 };
 
 export const fetchBillActivity = async (
@@ -66,7 +69,7 @@ export const fetchBillActivity = async (
   endDate: Date,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/bills/${billId}?is_transfer=${isTransfer}&as_activity=true&start_date=${startDate.toISOString().split("T")[0]}&end_date=${endDate.toISOString().split("T")[0]}`,
+    `/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&asActivity=true&startDate=${startDate.toISOString().split("T")[0]}&endDate=${endDate.toISOString().split("T")[0]}`,
   );
   return response.json();
 };
@@ -77,22 +80,24 @@ export const fetchAddBillActivity = async (
   billId: string,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/bills/${billId}?as_activity=true&is_transfer=${activity.is_transfer}`,
+    `/api/accounts/${accountId}/bills/${billId}?asActivity=true&isTransfer=${activity.isTransfer}`,
     {
       method: "POST",
       body: JSON.stringify(activity),
     },
   );
+  return response.json();
 };
 
 export const fetchAddBill = async (accountId: string, bill: Bill) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/bills?is_transfer=${bill.is_transfer}`,
+    `/api/accounts/${accountId}/bills?isTransfer=${bill.isTransfer}`,
     {
       method: "PUT",
       body: JSON.stringify(bill),
     },
   );
+  return response.json();
 };
 
 export const fetchRemoveBill = async (
@@ -101,21 +106,23 @@ export const fetchRemoveBill = async (
   isTransfer: boolean,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/bills/${billId}?is_transfer=${isTransfer}`,
+    `/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}`,
     {
       method: "DELETE",
     },
   );
+  return response.json();
 };
 
 export const fetchSaveBill = async (accountId: string, bill: Bill) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/bills/${bill.id}?is_transfer=${bill.is_transfer}`,
+    `/api/accounts/${accountId}/bills/${bill.id}?isTransfer=${bill.isTransfer}`,
     {
       method: "POST",
       body: JSON.stringify(bill),
     },
   );
+  return response.json();
 };
 
 export const fetchInterests = async (accountId: string) => {
@@ -131,6 +138,7 @@ export const fetchSaveInterests = async (
     method: "POST",
     body: JSON.stringify(interests),
   });
+  return response.json();
 };
 
 export const fetchInterestActivity = async (
@@ -140,7 +148,7 @@ export const fetchInterestActivity = async (
   endDate: Date,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/interests/${interestId}?start_date=${startDate.toISOString().split("T")[0]}&end_date=${endDate.toISOString().split("T")[0]}&as_activity=true`,
+    `/api/accounts/${accountId}/interests/${interestId}?startDate=${startDate.toISOString().split("T")[0]}&endDate=${endDate.toISOString().split("T")[0]}&asActivity=true`,
   );
   return response.json();
 };
@@ -151,12 +159,13 @@ export const fetchAddInterestActivity = async (
   interestId: string,
 ) => {
   const response = await fetch(
-    `/api/accounts/${accountId}/interests/${interestId}?as_activity=true`,
+    `/api/accounts/${accountId}/interests/${interestId}?asActivity=true`,
     {
       method: "POST",
       body: JSON.stringify(activity),
     },
   );
+  return response.json();
 };
 
 export const fetchNames = async () => {
@@ -165,7 +174,7 @@ export const fetchNames = async () => {
 };
 
 export const fetchSkipBill = async (accountId: string, billId: string, isTransfer: boolean) => {
-  const response = await fetch(`/api/accounts/${accountId}/bills/${billId}?is_transfer=${isTransfer}&skip=true`, {
+  const response = await fetch(`/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&skip=true`, {
     method: "POST",
   });
   return response.json();

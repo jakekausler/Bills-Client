@@ -1,3 +1,5 @@
+import { Flow } from "../../types/types";
+
 export const fetchFlow = (
   selectedAccounts: string[],
   startDate: string,
@@ -5,9 +7,9 @@ export const fetchFlow = (
 ): Promise<Flow> => {
   let selectedAccountString = "";
   if (selectedAccounts.length > 0) {
-    selectedAccountString = `selected_accounts=${selectedAccounts.join(",")}&`;
+    selectedAccountString = `selectedAccounts=${selectedAccounts.join(",")}&`;
   }
   return fetch(
-    `/api/flow?${selectedAccountString}start_date=${startDate}&end_date=${endDate}`,
+    `/api/flow?${selectedAccountString}startDate=${startDate}&endDate=${endDate}`,
   ).then((response) => response.json());
 };
