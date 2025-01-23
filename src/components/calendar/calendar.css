@@ -1,0 +1,14 @@
+.rbc-event-content {
+  text-overflow: unset !important;
+  white-space: unset !important;
+  overflow: unset !important;
+}
+
+.rbc-off-range, .rbc-off-range-bg {
+  background-color: #00000000 !important;
+  color: #00000000 !important;
+}
+
+.rbc-now, .rbc-today {
+  background-color: #ffffff22 !important;
+}
