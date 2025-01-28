@@ -16,7 +16,6 @@ import {
   FocusTrap,
   Group,
   LoadingOverlay,
-  NumberInput,
   Select,
   Stack,
   Text,
@@ -42,6 +41,7 @@ import {
 import CreatableSelect from "../helpers/creatableSelect";
 import { useEffect, useState } from "react";
 import { EditableDateInput } from "../helpers/editableDateInput";
+import { CalculatorEditor } from "../helpers/calculatorEditor";
 
 export const ActivityEditor = ({
   resetSelected,
@@ -59,10 +59,27 @@ export const ActivityEditor = ({
       })),
     }),
   );
-  const accounts = useSelector(selectAllAccounts).map((account) => ({
-    value: account.name,
-    label: account.name,
-  }));
+  const accounts = useSelector(selectAllAccounts);
+
+  const [accountList, setAccountList] = useState<{ group: string, items: { value: string, label: string }[] }[]>([]);
+
+  useEffect(() => {
+    const accList: { [key: string]: { value: string, label: string }[] } = {};
+    for (const account of accounts) {
+      if (!(account.type in accList)) {
+        accList[account.type] = [];
+      }
+      accList[account.type].push({
+        value: account.name,
+        label: account.name,
+      });
+    }
+    setAccountList(Object.entries(accList).map(([group, items]) => ({
+      group,
+      items,
+    })));
+  }, [accounts]);
+
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
   const endDate = new Date(useSelector(selectEndDate));
@@ -114,29 +131,29 @@ export const ActivityEditor = ({
     return <Text>No activity selected</Text>;
   }
 
-  const validate = (name: string, value: any) => {
+  const validate = (name: string, value: string | number | boolean | null) => {
     if (name === "date_variable") {
       if (selectedActivity.date_is_variable) {
-        if (!dateVariables.includes(value)) {
+        if (!dateVariables.includes(value as string)) {
           return "Invalid date";
         }
       }
     }
     if (name === "date") {
-      const date = new Date(value);
+      const date = new Date(value as string);
       if (date.toString() === "Invalid Date") {
         return "Invalid date";
       }
     }
     if (name === "amount_variable") {
       if (selectedActivity.amount_is_variable) {
-        if (!amountVariables.includes(value)) {
+        if (!amountVariables.includes(value as string)) {
           return "Invalid amount";
         }
       }
     }
     if (name === "amount") {
-      if (isNaN(value) || typeof value === "boolean") {
+      if (isNaN(value as number) || typeof value === "boolean") {
         return "Invalid amount";
       }
     }
@@ -154,7 +171,7 @@ export const ActivityEditor = ({
       if (selectedActivity && !selectedActivity.is_transfer) {
         return null;
       }
-      if (!accounts.find((a) => a.value === value)) {
+      if (!accountList.find((a) => a.items.find((i) => i.value === value))) {
         return "Invalid account";
       }
     }
@@ -171,31 +188,50 @@ export const ActivityEditor = ({
     return null;
   };
 
-  const allValid = () => {
-    return Object.entries(selectedActivity).every(([key, value]) => {
+  const allValid = (activity?: Activity) => {
+    return Object.entries(activity || selectedActivity).every(([key, value]) => {
       return validate(key, value) === null;
     });
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (!allValid()) {
-        return;
-      }
-      dispatch(
-        saveActivity(
-          account,
-          selectedActivity as Activity,
-          startDate,
-          endDate,
-          graphEndDate,
-          selectedBillId,
-          selectedInterestId,
-        ),
-      );
-      resetSelected();
+  const getAmount = (activity: Activity) => {
+    if (activity.is_transfer) {
+      return Math.abs(Number(activity.amount));
     }
+    return Number(activity.amount);
+  };
+
+  const save = (activity?: Activity) => {
+    const activityToSave = {
+      ...(activity || selectedActivity as Activity),
+      amount: getAmount(activity || selectedActivity as Activity),
+    }
+    dispatch(
+      saveActivity(
+        account,
+        activityToSave,
+        startDate,
+        endDate,
+        graphEndDate,
+        selectedBillId,
+        selectedInterestId,
+      ),
+    );
+    resetSelected();
+  };
+
+  const handleEnter = (amount?: number) => {
+    if (isNaN(amount as number)) {
+      return;
+    }
+    const activity: Activity = {
+      ...selectedActivity,
+      amount: amount || selectedActivity.amount,
+    } as Activity;
+    if (!allValid(activity)) {
+      return;
+    }
+    save(activity);
   };
 
   return (
@@ -316,7 +352,7 @@ export const ActivityEditor = ({
               <Select
                 label="From Account"
                 value={selectedActivity.from}
-                data={accounts}
+                data={accountList}
                 searchable
                 placeholder="Select an account"
                 onChange={(v) => {
@@ -327,7 +363,7 @@ export const ActivityEditor = ({
               <Select
                 label="To Account"
                 value={selectedActivity.to}
-                data={accounts}
+                data={accountList}
                 searchable
                 placeholder="Select an account"
                 onChange={(v) => {
@@ -340,23 +376,20 @@ export const ActivityEditor = ({
           <Group w="100%">
             {(!selectedActivity.amount_is_variable || selectedActivity.amount_variable === "{HALF}" || selectedActivity.amount_variable === "{FULL}") && (
               <Group w="100%" style={{ flex: 1 }}>
-                <NumberInput
+                <CalculatorEditor
                   style={{ flex: 1 }}
                   label="Amount"
-                  value={selectedActivity.amount}
-                  onChange={(v) => {
+                  value={selectedActivity.is_transfer ? Math.abs(Number(selectedActivity.amount)) : Number(selectedActivity.amount)}
+                  onChange={(v: number) => {
                     dispatch(
                       updateActivity({
                         ...selectedActivity,
-                        amount: typeof v === "number" ? v : parseFloat(v),
+                        amount: v,
                       }),
                     );
                   }}
-                  decimalScale={2}
-                  decimalSeparator="."
-                  error={validate("amount", selectedActivity.amount)}
-                  onKeyDown={handleKeyDown}
-                  allowNegative
+                  error={validate("amount", selectedActivity.amount) || undefined}
+                  handleEnter={handleEnter}
                 />
               </Group>
             ) || (
@@ -413,18 +446,7 @@ export const ActivityEditor = ({
             <Button
               disabled={!allValid()}
               onClick={() => {
-                dispatch(
-                  saveActivity(
-                    account,
-                    selectedActivity as Activity,
-                    startDate,
-                    endDate,
-                    graphEndDate,
-                    selectedBillId,
-                    selectedInterestId,
-                  ),
-                );
-                resetSelected();
+                save();
               }}
             >
               Save

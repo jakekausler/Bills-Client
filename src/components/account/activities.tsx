@@ -163,6 +163,10 @@ export default function Activities({ style }: ActivitiesProps) {
 
   const selectActivity = (activity: Activity) => {
     if (!activity) return;
+
+    // Reset any existing selections first
+    resetSelected();
+
     if (!!activity.bill_id && !!accountId) {
       if (activity.first_bill) {
         setEditorChoice("bill");
@@ -208,118 +212,123 @@ export default function Activities({ style }: ActivitiesProps) {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {activities.map((activity, idx) => (
-              <Table.Tr
-                key={activity.id}
-                bg={idx % 2 === 0 ? "gray.9" : ""}
-                onClick={() => selectActivity(activity)}
-                style={{
-                  cursor: "pointer",
-                  borderBottom:
-                    activity.id === lastActivityBeforeToday?.id
-                      ? "4px solid var(--mantine-color-gray-6)"
-                      : undefined,
-                }}
-                c={
-                  activity.bill_id ? "blue" : activity.interest_id ? "blue" : ""
-                }
-                fw={
-                  activity.first_bill
-                    ? "bold"
-                    : activity.first_interest
+            {activities.map((activity, idx) => {
+              return (
+                <Table.Tr
+                  key={`${activity.id}-${idx}`}
+                  bg={idx % 2 === 0 ? "gray.9" : ""}
+                  onClick={() => selectActivity(activity)}
+                  style={{
+                    cursor: "pointer",
+                    borderBottom:
+                      activity.id === lastActivityBeforeToday?.id
+                        ? "4px solid var(--mantine-color-gray-6)"
+                        : undefined,
+                  }}
+                  c={
+                    activity.bill_id ? "blue" : activity.interest_id ? "blue" : ""
+                  }
+                  fw={
+                    activity.first_bill
                       ? "bold"
-                      : ""
-                }
-                onContextMenu={showContextMenu([
-                  {
-                    key: "edit",
-                    title: "Edit",
-                    icon: <IconEdit size={16} />,
-                    onClick: () => {
-                      if ((activity.bill_id && activity.first_bill) || (activity.interest_id && activity.first_interest)) {
-                        activity.bill_id ? dispatch(
-                          loadAndSelectBill(account?.id as string, activity.bill_id, activity.is_transfer),
-                        ) : dispatch(
-                          loadInterests(account?.id as string),
-                        );
-                      } else {
-                        selectActivity(activity);
+                      : activity.first_interest
+                        ? "bold"
+                        : ""
+                  }
+                  onContextMenu={showContextMenu([
+                    {
+                      key: "edit",
+                      title: "Edit",
+                      icon: <IconEdit size={16} />,
+                      onClick: () => {
+                        if ((activity.bill_id && activity.first_bill) || (activity.interest_id && activity.first_interest)) {
+                          activity.bill_id ? dispatch(
+                            loadAndSelectBill(account?.id as string, activity.bill_id, activity.is_transfer),
+                          ) : dispatch(
+                            loadInterests(account?.id as string),
+                          );
+                        } else {
+                          selectActivity(activity);
+                        }
                       }
-                    }
-                  },
-                  {
-                    key: "delete",
-                    title: "Delete",
-                    icon: <IconTrash size={16} />,
-                    onClick: () => {
-                      if (activity.bill_id) {
-                        dispatch(
-                          removeBill(
-                            account as Account,
-                            activity.bill_id as string,
-                            activity.is_transfer,
-                            startDate,
-                            endDate,
-                            graphEndDate,
-                          ),
-                        );
-                      } else if (activity.interest_id) {
-                        dispatch(
-                          saveInterests(account as Account, [], startDate, endDate, graphEndDate),
-                        );
-                      } else {
-                        dispatch(
-                          removeActivity(
-                            account as Account,
-                            activity.id as string,
-                            activity.is_transfer,
-                            startDate,
-                            endDate,
-                            graphEndDate,
-                          ),
-                        );
+                    },
+                    {
+                      key: "delete",
+                      title: "Delete",
+                      icon: <IconTrash size={16} />,
+                      onClick: () => {
+                        if (activity.bill_id) {
+                          dispatch(
+                            removeBill(
+                              account as Account,
+                              activity.bill_id as string,
+                              activity.is_transfer,
+                              startDate,
+                              endDate,
+                              graphEndDate,
+                            ),
+                          );
+                        } else if (activity.interest_id) {
+                          dispatch(
+                            saveInterests(account as Account, [], startDate, endDate, graphEndDate),
+                          );
+                        } else {
+                          dispatch(
+                            removeActivity(
+                              account as Account,
+                              activity.id as string,
+                              activity.is_transfer,
+                              startDate,
+                              endDate,
+                              graphEndDate,
+                            ),
+                          );
+                        }
                       }
-                    }
-                  },
-                  ...((activity.bill_id && activity.first_bill) || (activity.interest_id && activity.first_interest) ? [{
-                    key: "enter",
-                    title: "Enter",
-                    icon: <IconCurrencyDollar size={16} />,
-                    onClick: () => {
-                      activity.bill_id ? billAsActivityEditor(activity) : interestAsActivityEditor(activity);
-                    }
-                  }, {
-                    key: "skip",
-                    title: "Skip",
-                    icon: <IconPlayerSkipForward size={16} />,
-                    onClick: () => {
-                      activity.bill_id ? skipBill(activity) : skipInterest();
-                    }
-                  }] : [])
-                ])}
-              >
-                <Table.Td fz="xs">{activity.flag ? "🚩" : ""}</Table.Td>
-                <Table.Td style={{ whiteSpace: "nowrap" }} fz="xs">
-                  {new Date(`${activity.date}T00:00:00`).toLocaleDateString()}
-                </Table.Td>
-                <Table.Td fz="xs">{activity.name}</Table.Td>
-                <Table.Td fz="xs">{activity.category.split(".")[1]}</Table.Td>
-                <Table.Td
-                  fz="xs"
-                  style={{ whiteSpace: "nowrap" }}
-                  c={activity.amount as number < 0 ? "red" : "green"}
+                    },
+                    ...((activity.bill_id && activity.first_bill) || (activity.interest_id && activity.first_interest) ? [{
+                      key: "enter",
+                      title: "Enter",
+                      icon: <IconCurrencyDollar size={16} />,
+                      onClick: () => {
+                        activity.bill_id ? billAsActivityEditor(activity) : interestAsActivityEditor(activity);
+                      }
+                    }, {
+                      key: "skip",
+                      title: "Skip",
+                      icon: <IconPlayerSkipForward size={16} />,
+                      onClick: () => {
+                        activity.bill_id ? skipBill(activity) : skipInterest();
+                      }
+                    }] : [])
+                  ].sort((a, b) => {
+                    const order = { enter: 0, edit: 1, skip: 2, delete: 3 };
+                    return order[a.key as keyof typeof order] - order[b.key as keyof typeof order];
+                  }))}
                 >
-                  {"$ " + (activity.amount as number).toFixed(2)}
-                </Table.Td>
-                <Table.Td
-                  fz="xs"
-                  style={{ whiteSpace: "nowrap" }}
-                  c={activity.balance < 0 ? "red" : "green"}
-                >
-                  {"$ " + activity.balance.toFixed(2)}
-                </Table.Td>
-              </Table.Tr>
-            ))}
+                  <Table.Td fz="xs">{activity.flag ? "🚩" : ""}</Table.Td>
+                  <Table.Td style={{ whiteSpace: "nowrap" }} fz="xs">
+                    {new Date(`${activity.date}T00:00:00`).toLocaleDateString()}
+                  </Table.Td>
+                  <Table.Td fz="xs">{activity.name}</Table.Td>
+                  <Table.Td fz="xs">{activity.category.split(".")[1]}</Table.Td>
+                  <Table.Td
+                    fz="xs"
+                    style={{ whiteSpace: "nowrap" }}
+                    c={activity.amount as number < 0 ? "red" : "green"}
+                  >
+                    {"$ " + (activity.amount as number).toFixed(2)}
+                  </Table.Td>
+                  <Table.Td
+                    fz="xs"
+                    style={{ whiteSpace: "nowrap" }}
+                    c={activity.balance < 0 ? "red" : "green"}
+                  >
+                    {"$ " + activity.balance.toFixed(2)}
+                  </Table.Td>
+                </Table.Tr>
+              );
+            })}
           </Table.Tbody>
         </Table >
       </Stack >

@@ -268,6 +268,7 @@ export const EditableDateInput = ({
       placeholder={placeholder}
       minDate={minDate}
       size={size}
+      highlightToday={true}
     />
   )
 }

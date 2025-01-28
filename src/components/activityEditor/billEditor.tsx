@@ -28,16 +28,15 @@ import {
 } from "../../features/accounts/select";
 import { selectGraphEndDate } from "../../features/graph/select";
 import { AppDispatch } from "../../store";
-import { DateInput } from "@mantine/dates";
 import { updateBill } from "../../features/activities/slice";
 import { Account, Bill } from "../../types/types";
 import { removeBill, saveBill } from "../../features/activities/actions";
 import { IconVariable, IconVariableOff } from "@tabler/icons-react";
 import { selectSelectedSimulationVariables } from "../../features/simulations/select";
-import { toDateString } from "../../utils/date";
 import CreatableSelect from "../helpers/creatableSelect";
 import { useEffect, useState } from "react";
 import { EditableDateInput } from "../helpers/editableDateInput";
+import { CalculatorEditor } from "../helpers/calculatorEditor";
 
 export const BillEditor = ({
   resetSelected,
@@ -55,10 +54,7 @@ export const BillEditor = ({
       })),
     }),
   );
-  const accounts = useSelector(selectAllAccounts).map((account) => ({
-    value: account.name,
-    label: account.name,
-  }));
+  const accounts = useSelector(selectAllAccounts);
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
   const endDate = new Date(useSelector(selectEndDate));
@@ -86,6 +82,25 @@ export const BillEditor = ({
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
+
+  const [accountList, setAccountList] = useState<{ group: string, items: { value: string, label: string }[] }[]>([]);
+
+  useEffect(() => {
+    const accList: { [key: string]: { value: string, label: string }[] } = {};
+    for (const account of accounts) {
+      if (!(account.type in accList)) {
+        accList[account.type] = [];
+      }
+      accList[account.type].push({
+        value: account.name,
+        label: account.name,
+      });
+    }
+    setAccountList(Object.entries(accList).map(([group, items]) => ({
+      group,
+      items,
+    })));
+  }, [accounts]);
 
   useEffect(() => {
     const isLoading = !billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
@@ -154,7 +169,7 @@ export const BillEditor = ({
       if (selectedBill && !selectedBill.is_transfer) {
         return null;
       }
-      if (!accounts.find((a) => a.value === value)) {
+      if (!accountList.find((a) => a.items.find((i) => i.value === value))) {
         return "Invalid account";
       }
     }
@@ -210,32 +225,37 @@ export const BillEditor = ({
     return null;
   };
 
-  const allValid = () => {
-    if (!selectedBill) {
+  const allValid = (bill?: Bill | null) => {
+    if (!selectedBill && !bill) {
       return true;
     }
-    return Object.entries(selectedBill).every(([key, value]) => {
+    return (bill || selectedBill) ? Object.entries(bill || selectedBill as Bill).every(([key, value]) => {
       return validate(key, value) === null;
-    });
+    }) : false;
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (!allValid()) {
-        return;
-      }
-      dispatch(
-        saveBill(
-          account as Account,
-          selectedBill as Bill,
-          startDate,
-          endDate,
-          graphEndDate,
-        ),
-      );
-      resetSelected();
+  const handleEnter = (amount?: number) => {
+    if (amount !== undefined && isNaN(amount as number)) {
+      return;
     }
+    const bill = selectedBill ? {
+      ...selectedBill,
+      amount: amount || selectedBill.amount,
+    } : null;
+    if (!allValid(bill)) {
+      console.log(bill, "not valid");
+      return;
+    }
+    dispatch(
+      saveBill(
+        account as Account,
+        selectedBill as Bill,
+        startDate,
+        endDate,
+        graphEndDate,
+      ),
+    );
+    resetSelected();
   };
 
   return (
@@ -410,7 +430,7 @@ export const BillEditor = ({
               <Select
                 label="From Account"
                 value={selectedBill.from}
-                data={accounts}
+                data={accountList}
                 searchable
                 placeholder="Select an account"
                 onChange={(v) => {
@@ -421,7 +441,7 @@ export const BillEditor = ({
               <Select
                 label="To Account"
                 value={selectedBill.to}
-                data={accounts}
+                data={accountList}
                 searchable
                 placeholder="Select an account"
                 onChange={(v) => {
@@ -433,13 +453,13 @@ export const BillEditor = ({
           )}
           <Group w="100%">
             {!selectedBill.amount_is_variable && (
-              <NumberInput
+              <CalculatorEditor
                 style={{ flex: 1 }}
                 label="Amount"
                 value={
                   selectedBill.is_transfer
-                    ? Math.abs(selectedBill.amount as number)
-                    : selectedBill.amount
+                    ? Math.abs(Number(selectedBill.amount))
+                    : Number(selectedBill.amount)
                 }
                 onChange={(v) => {
                   dispatch(
@@ -449,11 +469,8 @@ export const BillEditor = ({
                     }),
                   );
                 }}
-                prefix="$ "
-                decimalScale={2}
-                decimalSeparator="."
-                error={validate("amount", selectedBill.amount)}
-                onKeyDown={handleKeyDown}
+                error={validate("amount", selectedBill.amount) || undefined}
+                handleEnter={handleEnter}
               />
             )}
             {selectedBill.amount_is_variable && (
@@ -507,7 +524,11 @@ export const BillEditor = ({
               }}
               min={1}
               error={validate("every_n", selectedBill.every_n)}
-              onKeyDown={handleKeyDown}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleEnter();
+                }
+              }}
             />
             <Select
               label="Periods"

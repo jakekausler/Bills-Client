@@ -113,7 +113,7 @@ export const activitiesSlice = createSlice({
         amount_is_variable: false,
         amount_variable: null,
         is_transfer: false,
-        fro: null,
+        from: null,
         to: null,
       };
       state.selectedActivityLoaded = true;
@@ -136,8 +136,10 @@ export const activitiesSlice = createSlice({
         amount_is_variable: false,
         amount_variable: null,
         is_transfer: false,
-        fro: null,
+        from: null,
         to: null,
+        annual_start_date: null,
+        annual_end_date: null,
       };
       state.selectedBillLoaded = true;
     },
