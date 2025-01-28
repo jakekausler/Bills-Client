@@ -14,7 +14,7 @@ export type BaseActivity = {
   amountIsVariable: boolean;
   amountVariable: string | null;
   isTransfer: boolean;
-  fro: string | null;
+  from: string | null;
   to: string | null;
 };
 
@@ -39,7 +39,7 @@ export type Bill = {
   amountIsVariable: boolean;
   amountVariable: string | null;
   isTransfer: boolean;
-  fro: string | null;
+  from: string | null;
   to: string | null;
   startDate: string;
   startDateIsVariable: boolean;

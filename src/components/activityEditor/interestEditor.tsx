@@ -25,7 +25,6 @@ import {
 } from "@tabler/icons-react";
 import { AppDispatch } from "../../store";
 import { updateInterests } from "../../features/activities/slice";
-import { DateInput } from "@mantine/dates";
 import { saveInterests } from "../../features/activities/actions";
 import { selectAccountsLoaded, selectSelectedAccount } from "../../features/accounts/select";
 import { selectGraphEndDate } from "../../features/graph/select";
@@ -36,6 +35,8 @@ import { selectCategoriesLoaded } from "../../features/categories/select";
 import { useEffect } from "react";
 import { useState } from "react";
 import { EditableDateInput } from "../helpers/editableDateInput";
+import { CalculatorEditor } from "../helpers/calculatorEditor";
+import { Interest } from "../../types/types";
 
 export const InterestEditor = ({
   resetSelected,
@@ -119,31 +120,40 @@ export const InterestEditor = ({
     return null;
   };
 
-  const allValid = () => {
-    return interests.every((interest, index) => {
+  const allValid = (ints?: Interest[]) => {
+    return (ints || interests).every((interest, index) => {
       return Object.entries(interest).every(([key, value]) => {
         return validate(index, key, value) === null;
       });
     });
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (!allValid()) {
-        return;
-      }
-      dispatch(
-        saveInterests(
-          account,
-          interests,
-          startDate,
-          endDate,
-          graphEndDate,
-        ),
-      );
-      resetSelected();
+  const handleEnter = (index: number, apr?: number) => {
+    if (isNaN(apr as number)) {
+      return;
     }
+    const ints: Interest[] = interests.map((interest, i) => {
+      if (i === index) {
+        return {
+          ...interest,
+          apr: apr || interest.apr,
+        };
+      }
+      return interest;
+    });
+    if (!allValid(ints)) {
+      return;
+    }
+    dispatch(
+      saveInterests(
+        account,
+        ints,
+        startDate,
+        endDate,
+        graphEndDate,
+      ),
+    );
+    resetSelected();
   };
 
   return (
@@ -189,10 +199,10 @@ export const InterestEditor = ({
                 />
               </Table.Td>
               <Table.Td>
-                <NumberInput
+                <CalculatorEditor
                   size="xs"
-                  value={interest.apr}
-                  onChange={(apr) => {
+                  value={Number(interest.apr)}
+                  onChange={(apr: number) => {
                     dispatch(
                       updateInterests(
                         interests.map((i) =>
@@ -209,8 +219,8 @@ export const InterestEditor = ({
                       ),
                     );
                   }}
-                  error={validate(index, "apr", interest.apr)}
-                  onKeyDown={handleKeyDown}
+                  error={validate(index, "apr", interest.apr) || undefined}
+                  handleEnter={(apr) => handleEnter(index, apr)}
                 />
               </Table.Td>
               <Table.Td>
