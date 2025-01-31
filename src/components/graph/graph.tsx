@@ -1,3 +1,4 @@
+import React from 'react';
 import { Stack, LoadingOverlay } from "@mantine/core";
 import { GraphProps } from "./types";
 import { Line } from "react-chartjs-2";

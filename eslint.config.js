@@ -1,34 +1,86 @@
-import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
+import js from '@eslint/js';
+import globals from 'globals';
+import prettier from 'eslint-config-prettier';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
 
-export default tseslint.config(
-  { ignores: ["dist"] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["**/*.{ts,tsx}"],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
-    },
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "argsIgnorePattern": "^_"
-      }
-    ] 
-  },
-);
+const tsFiles = ['src/**/*.ts', 'test/**/*.ts'];
+
+export default [
+	{
+		ignores: ['**/dist/*', '**/node_modules/*'],
+	},
+	{
+		files: tsFiles,
+		languageOptions: {
+			parser: tsparser,
+			parserOptions: {
+				ecmaVersion: 2022,
+				sourceType: 'module',
+				project: './tsconfig.json',
+			},
+			globals: {
+				...globals.node,
+			},
+		},
+		plugins: {
+			'@typescript-eslint': tseslint,
+		},
+		rules: {
+			...js.configs.recommended.rules,
+			...tseslint.configs.recommended.rules,
+			...prettier.rules,
+			'@typescript-eslint/no-explicit-any': 'warn',
+			'require-await': 'warn',
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					args: 'all',
+					argsIgnorePattern: '^_',
+					caughtErrors: 'all',
+					caughtErrorsIgnorePattern: '^_',
+					destructuredArrayIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					ignoreRestSiblings: true,
+				},
+			],
+			'no-constant-condition': ['error', { checkLoops: false }],
+			'camelcase': 'off',
+			'@typescript-eslint/naming-convention': [
+				'error',
+				{
+					selector: 'default',
+					format: ['camelCase'],
+					leadingUnderscore: 'allow',
+				},
+				{
+					selector: 'variable',
+					format: ['camelCase', 'UPPER_CASE'],
+					leadingUnderscore: 'allow',
+				},
+				{
+					selector: 'typeLike',
+					format: ['PascalCase'],
+				},
+				{
+					selector: 'enumMember',
+					format: ['UPPER_CASE', 'PascalCase'],
+				},
+				{
+					selector: 'import',
+					format: ['camelCase', 'PascalCase'],
+				},
+				{
+					selector: 'objectLiteralProperty',
+					format: null,
+					filter: {
+						regex: '^Content-Type$',
+						match: true
+					}
+				}
+			],
+		},
+	},
+];
+

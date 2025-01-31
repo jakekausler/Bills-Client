@@ -1,9 +1,10 @@
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { selectAccountsLoaded, selectVisibleAccounts } from "../../features/accounts/select";
 import { AppDispatch } from "../../store";
-import { Box, Checkbox, Chip, LoadingOverlay, Stack, Table, Text, useMantineTheme } from "@mantine/core";
+import { Box, LoadingOverlay, Stack, Table, Text, useMantineTheme } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { IconCircle, IconCircleCheckFilled, IconEye, IconEyeOff } from "@tabler/icons-react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { loadAccounts } from "../../features/accounts/actions";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { CheckboxIcon } from "../helpers/checkboxIcon";

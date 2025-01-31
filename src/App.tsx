@@ -1,3 +1,4 @@
+import React from 'react';
 import "./App.css";
 import {
   ActionIcon,
@@ -10,7 +11,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "./store.ts";
+import { AppDispatch } from "./store";
 import {
   IconCalendar,
   IconChartPie,
@@ -19,25 +20,25 @@ import {
   IconTransfer,
   IconChartBar,
 } from "@tabler/icons-react";
-import { loadAccounts } from "./features/accounts/actions.ts";
-import AccountList from "./components/accounts/accountList.tsx";
-import Account from "./components/account/account.tsx";
-import { PageComponentType, SidebarComponentType } from "./types/types.ts";
-import { loadCategories } from "./features/categories/actions.ts";
-import Simulations from "./components/simulations/simulations.tsx";
-import Variables from "./components/variables/variables.tsx";
-import { loadSimulations } from "./features/simulations/actions.ts";
-import { loadNames } from "./features/activities/actions.ts";
-import Categories from "./components/categories/categories.tsx";
-import CategoriesAccountSelector from "./components/categories/categoriesAccountSelector.tsx";
-import Calendar from "./components/calendar/billCalendar.tsx";
-import CalendarAccountSelector from "./components/calendar/calendarAccountSelector.tsx";
-import { loadCalendar } from "./features/calendar/actions.ts";
-import Flow from "./components/flow/flow.tsx";
-import FlowAccountSelector from "./components/flow/flowAccountSelector.tsx";
-import { loadFlow } from "./features/flow/actions.ts";
-import GraphView from "./components/graphView/graphView.tsx";
-import GraphViewAccountSelector from "./components/graphView/graphViewAccountSelector.tsx";
+import { loadAccounts } from "./features/accounts/actions";
+import AccountList from "./components/accounts/accountList";
+import Account from "./components/account/account";
+import { PageComponentType, SidebarComponentType } from "./types/types";
+import { loadCategories } from "./features/categories/actions";
+import Simulations from "./components/simulations/simulations";
+import Variables from "./components/variables/variables";
+import { loadSimulations } from "./features/simulations/actions";
+import { loadNames } from "./features/activities/actions";
+import Categories from "./components/categories/categories";
+import CategoriesAccountSelector from "./components/categories/categoriesAccountSelector";
+import Calendar from "./components/calendar/billCalendar";
+import CalendarAccountSelector from "./components/calendar/calendarAccountSelector";
+import { loadCalendar } from "./features/calendar/actions";
+import Flow from "./components/flow/flow";
+import FlowAccountSelector from "./components/flow/flowAccountSelector";
+import { loadFlow } from "./features/flow/actions";
+import GraphView from "./components/graphView/graphView";
+import GraphViewAccountSelector from "./components/graphView/graphViewAccountSelector";
 
 const pages = {
   accounts: {

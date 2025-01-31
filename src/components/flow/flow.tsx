@@ -1,3 +1,4 @@
+import React from 'react';
 import { selectFlow } from "../../features/flow/selector";
 import { useSelector } from "react-redux";
 import { Box, useMantineTheme } from "@mantine/core";

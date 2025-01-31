@@ -1,3 +1,4 @@
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { selectBreakdownEnd, selectBreakdownStart, selectCategoryBreakdown, selectCategoryBreakdownLoaded, selectSelectedAccounts, selectSelectedCategory, selectSelectedCategoryBreakdown, selectSelectedCategoryBreakdownLoaded, selectSortedSelectedCategoryActivity } from "../../features/categories/select";
 import { useElementAspectRatio } from "../../hooks/useElementAspectRatio";

@@ -1,3 +1,4 @@
+import React from 'react';
 import { ActionIcon, Button, Popover, Table, TextInput } from "@mantine/core";
 import { IconCalculator } from "@tabler/icons-react";
 import { useEffect, useState } from "react";

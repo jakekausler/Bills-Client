@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Divider, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { CSSProperties } from 'react';
 import { CalendarBill } from '../../types/types';
@@ -40,7 +41,7 @@ export function CalendarEvent({ event }: CalendarEventProps) {
       </Group>
       <Divider />
       <Stack gap={0}>
-        {event.is_transfer && (
+        {event.isTransfer && (
           <>
             <Box p={0} m={0}><b>From</b> {event.from}</Box>
             <Box p={0} m={0}><b>To</b> {event.to}</Box>

@@ -9,6 +9,9 @@ export const fetchSaveSimulations = async (simulations: Simulation[]) => {
   const response = await fetch("/api/simulations", {
     method: "POST",
     body: JSON.stringify(simulations),
+    headers: {
+      'Content-Type': 'application/json'
+    }
   });
   return response.json();
 };

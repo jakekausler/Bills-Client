@@ -1,4 +1,4 @@
-import { RootState } from "../../store.ts";
+import { RootState } from "../../store";
 
 export const selectSimulations = (state: RootState) =>
   state.simulations.simulations;

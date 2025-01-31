@@ -7,7 +7,8 @@
     "dev": "vite",
     "dev:api": "deno run --allow-all --watch api/main.ts",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "tsc --noEmit && eslint .",
+    "lint:fix": "tsc --noEmit && eslint . --fix",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -20,6 +21,8 @@
     "@types/d3": "^7.4.3",
     "@types/d3-sankey": "^0.12.4",
     "@types/react-big-calendar": "^1.16.1",
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
     "chart.js": "^4.4.7",
     "chartjs-adapter-dayjs-4": "^1.0.4",
     "chartjs-chart-sankey": "^0.14.0",
@@ -27,6 +30,7 @@
     "d3": "^7.9.0",
     "d3-sankey": "^0.12.3",
     "dayjs": "^1.11.13",
+    "eslint-config-prettier": "^10.0.1",
     "mantine-contextmenu": "^7.15.3",
     "postcss": "^8.4.49",
     "postcss-preset-mantine": "^1.17.0",

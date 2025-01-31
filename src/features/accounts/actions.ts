@@ -9,7 +9,7 @@ export const loadAccounts = (): AppThunk => async (dispatch) => {
 
     dispatch(setAccounts(accounts));
     dispatch(setAccountsLoaded(true));
-  } catch (error) {
+  } catch {
     dispatch(setAccountsError("Failed to load accounts"));
   }
 };

@@ -1,5 +1,6 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
-import { CloseButton, Combobox, Input, InputBase, useCombobox } from '@mantine/core';
+import { CloseButton, Combobox, InputBase, useCombobox } from '@mantine/core';
 
 interface CreatableSelectProps {
   data: { label: string; value: string }[];

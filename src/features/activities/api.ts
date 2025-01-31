@@ -29,6 +29,9 @@ export const fetchAddActivity = async (
   const response = await fetch(`/api/accounts/${accountId}/activity`, {
     method: "PUT",
     body: JSON.stringify(activity),
+    headers: {
+      'Content-Type': 'application/json'
+    }
   });
   return response.json();
 };
@@ -42,6 +45,9 @@ export const fetchSaveActivity = async (
     {
       method: "POST",
       body: JSON.stringify(activity),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     },
   );
   return response.json();
@@ -84,6 +90,9 @@ export const fetchAddBillActivity = async (
     {
       method: "POST",
       body: JSON.stringify(activity),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     },
   );
   return response.json();
@@ -95,6 +104,9 @@ export const fetchAddBill = async (accountId: string, bill: Bill) => {
     {
       method: "PUT",
       body: JSON.stringify(bill),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     },
   );
   return response.json();
@@ -120,6 +132,9 @@ export const fetchSaveBill = async (accountId: string, bill: Bill) => {
     {
       method: "POST",
       body: JSON.stringify(bill),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     },
   );
   return response.json();
@@ -137,6 +152,9 @@ export const fetchSaveInterests = async (
   const response = await fetch(`/api/accounts/${accountId}/interests`, {
     method: "POST",
     body: JSON.stringify(interests),
+    headers: {
+      'Content-Type': 'application/json'
+    }
   });
   return response.json();
 };
@@ -163,6 +181,9 @@ export const fetchAddInterestActivity = async (
     {
       method: "POST",
       body: JSON.stringify(activity),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     },
   );
   return response.json();

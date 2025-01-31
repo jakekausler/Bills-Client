@@ -1,10 +1,11 @@
+import React from 'react';
 import { StrictMode } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { store } from "./store.ts";
+import { store } from "./store";
 import "./index.css";
-import App from "./App.tsx";
+import App from "./App";
 import "@mantine/core/styles.css";
 import { createTheme, MantineProvider } from "@mantine/core";
 import "@mantine/charts/styles.css";

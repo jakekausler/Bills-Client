@@ -1,3 +1,4 @@
+import React from 'react';
 import { selectGraphViewEndDate, selectGraphViewLabels } from "../../features/graphView/select";
 
 import { useSelector } from "react-redux";

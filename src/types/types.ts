@@ -1,4 +1,4 @@
-
+import React from "react";
 export type PageComponentType = React.ComponentType<any>;
 export type SidebarComponentType = React.ComponentType<any>;
 

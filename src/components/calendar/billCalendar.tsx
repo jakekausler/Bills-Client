@@ -1,3 +1,4 @@
+import React from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { selectBills, selectBillsLoaded, selectStartDate } from "../../features/calendar/select";
@@ -23,7 +24,7 @@ export default function BillCalendar() {
     ...bill,
     start: new Date(`${bill.date}T00:00:00`),
     end: new Date(`${bill.date}T00:00:00`),
-    title: `${bill.name} \$${((bill.is_transfer ? Math.abs(bill.amount) : bill.amount).toFixed(2))}`,
+    title: `${bill.name} \$${((bill.isTransfer ? Math.abs(bill.amount) : bill.amount).toFixed(2))}`,
     allDay: true,
   }));
   const loaded = useSelector(selectBillsLoaded);
@@ -55,7 +56,7 @@ export default function BillCalendar() {
     const fontSize = Math.min(Math.max(baseFontSize, minFontSize), maxFontSize);
 
     const style = {
-      backgroundColor: event.is_transfer ? '#9999ff' : (event.amount < 0 ? '#ff9999' : '#99ff99'),
+      backgroundColor: event.isTransfer ? '#9999ff' : (event.amount < 0 ? '#ff9999' : '#99ff99'),
       borderRadius: '0px',
       opacity: 0.8,
       color: 'black',

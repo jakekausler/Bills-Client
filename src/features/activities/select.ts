@@ -1,4 +1,4 @@
-import { RootState } from "../../store.ts";
+import { RootState } from "../../store";
 
 export const selectAllActivities = (state: RootState) =>
   state.activities.activities;

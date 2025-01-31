@@ -1,4 +1,4 @@
-import { RootState } from "../../store.ts";
+import { RootState } from "../../store";
 
 export const selectGraphDatasets = (state: RootState) => state.graph.datasets;
 export const selectGraphLabels = (state: RootState) => state.graph.labels;

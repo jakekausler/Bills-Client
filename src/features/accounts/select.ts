@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "../../store.ts";
-import { sort } from "../../utils/array.ts";
+import { RootState } from "../../store";
+import { sort } from "../../utils/array";
 
 const compareTypes = (typeA: string, typeB: string) => {
   const types = ["Checking", "Savings", "Credit", "Loan", "Investment"];
