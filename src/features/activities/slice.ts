@@ -104,15 +104,15 @@ export const activitiesSlice = createSlice({
     newActivity: (state) => {
       state.selectedActivity = {
         date: state.lastDate,
-        date_is_variable: false,
-        date_variable: null,
+        dateIsVariable: false,
+        dateVariable: null,
         name: "",
         category: "",
         amount: 0,
         flag: false,
-        amount_is_variable: false,
-        amount_variable: null,
-        is_transfer: false,
+        amountIsVariable: false,
+        amountVariable: null,
+        isTransfer: false,
         from: null,
         to: null,
       };
@@ -120,26 +120,34 @@ export const activitiesSlice = createSlice({
     },
     newBill: (state) => {
       state.selectedBill = {
-        start_date: state.lastDate,
-        start_date_is_variable: false,
-        start_date_variable: null,
-        end_date: null,
-        end_date_is_variable: false,
-        end_date_variable: null,
-        every_n: 1,
+        startDate: state.lastDate,
+        startDateIsVariable: false,
+        startDateVariable: null,
+        endDate: null,
+        endDateIsVariable: false,
+        endDateVariable: null,
+        everyN: 1,
         periods: "month",
-        is_automatic: false,
+        isAutomatic: false,
         name: "",
         category: "",
         amount: 0,
         flag: false,
-        amount_is_variable: false,
-        amount_variable: null,
-        is_transfer: false,
+        amountIsVariable: false,
+        amountVariable: null,
+        isTransfer: false,
         from: null,
         to: null,
-        annual_start_date: null,
-        annual_end_date: null,
+        annualStartDate: null,
+        annualEndDate: null,
+        annualStartDateIsVariable: false,
+        annualEndDateIsVariable: false,
+        annualStartDateVariable: null,
+        annualEndDateVariable: null,
+        increaseBy: 0,
+        increaseByIsVariable: false,
+        increaseByVariable: null,
+        increaseByPeriods: "month",
       };
       state.selectedBillLoaded = true;
     },
@@ -150,7 +158,7 @@ export const activitiesSlice = createSlice({
     },
     updateBill: (state, action: PayloadAction<Bill>) => {
       state.selectedBill = action.payload;
-      state.lastDate = action.payload.start_date;
+      state.lastDate = action.payload.startDate;
       state.selectedBillLoaded = true;
     },
     updateInterests: (state, action: PayloadAction<Interest[] | null>) => {

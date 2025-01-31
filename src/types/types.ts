@@ -52,6 +52,14 @@ export type Bill = {
   isAutomatic: boolean;
   annualStartDate: string | null;
   annualEndDate: string | null;
+  annualStartDateIsVariable: boolean;
+  annualEndDateIsVariable: boolean;
+  annualStartDateVariable: string | null;
+  annualEndDateVariable: string | null;
+  increaseBy: number;
+  increaseByIsVariable: boolean;
+  increaseByVariable: string | null;
+  increaseByPeriods: string;
 };
 
 export type Interest = {

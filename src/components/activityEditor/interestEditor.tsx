@@ -78,7 +78,7 @@ export const InterestEditor = ({
     const lastInterest =
       interests.length > 0 ? interests[interests.length - 1] : null;
     if (!lastInterest) return toDateString(new Date());
-    const date = new Date(lastInterest.applicable_date);
+    const date = new Date(lastInterest.applicableDate);
     switch (lastInterest.compounded) {
       case "day":
         return toDateString(dayjs(date).add(1, "day").toDate());
@@ -179,7 +179,7 @@ export const InterestEditor = ({
               <Table.Td>
                 <EditableDateInput
                   size="xs"
-                  value={interest.applicable_date}
+                  value={interest.applicableDate}
                   onBlur={(value) => {
                     if (!value) return;
                     dispatch(
@@ -273,13 +273,13 @@ export const InterestEditor = ({
                 ...interests,
                 {
                   id: uuidv4(),
-                  applicable_date: getNextDate(),
+                  applicableDate: getNextDate(),
                   apr: 0,
                   compounded: getNextCompounded(),
-                  apr_is_variable: false,
-                  apr_variable: "",
-                  applicable_date_is_variable: false,
-                  applicable_date_variable: "",
+                  aprIsVariable: false,
+                  aprVariable: "",
+                  applicableDateIsVariable: false,
+                  applicableDateVariable: "",
                 },
               ]),
             );
@@ -293,7 +293,7 @@ export const InterestEditor = ({
             dispatch(
               updateInterests(
                 [...interests].sort((a, b) =>
-                  a.applicable_date > b.applicable_date ? 1 : -1,
+                  a.applicableDate > b.applicableDate ? 1 : -1,
                 ),
               ),
             );

@@ -89,6 +89,8 @@ export const ActivityEditor = ({
   const dispatch = useDispatch<AppDispatch>();
   const names = useSelector(selectNames);
 
+  console.log(selectedActivity, selectedBillId, selectedInterestId);
+
   const accountsLoaded = useSelector(selectAccountsLoaded);
   const activityLoaded = useSelector(selectSelectedActivityLoaded);
   const categoriesLoaded = useSelector(selectCategoriesLoaded);
@@ -132,8 +134,8 @@ export const ActivityEditor = ({
   }
 
   const validate = (name: string, value: string | number | boolean | null) => {
-    if (name === "date_variable") {
-      if (selectedActivity.date_is_variable) {
+    if (name === "dateVariable") {
+      if (selectedActivity.dateIsVariable) {
         if (!dateVariables.includes(value as string)) {
           return "Invalid date";
         }
@@ -145,9 +147,9 @@ export const ActivityEditor = ({
         return "Invalid date";
       }
     }
-    if (name === "amount_variable") {
-      if (selectedActivity.amount_is_variable) {
-        if (!amountVariables.includes(value as string)) {
+    if (name === "amountVariable") {
+      if (selectedActivity.amountVariable) {
+        if (!amountVariables.includes(value as string) && value !== "{HALF}" && value !== "{FULL}") {
           return "Invalid amount";
         }
       }
@@ -157,9 +159,9 @@ export const ActivityEditor = ({
         return "Invalid amount";
       }
     }
-    if (name === "is_transfer") {
+    if (name === "isTransfer") {
       if (typeof value !== "boolean") {
-        return "Invalid is_transfer";
+        return "Invalid isTransfer";
       }
     }
     if (name === "flag") {
@@ -168,7 +170,7 @@ export const ActivityEditor = ({
       }
     }
     if (name === "from" || name === "to") {
-      if (selectedActivity && !selectedActivity.is_transfer) {
+      if (selectedActivity && !selectedActivity.isTransfer) {
         return null;
       }
       if (!accountList.find((a) => a.items.find((i) => i.value === value))) {
@@ -195,7 +197,7 @@ export const ActivityEditor = ({
   };
 
   const getAmount = (activity: Activity) => {
-    if (activity.is_transfer) {
+    if (activity.isTransfer) {
       return Math.abs(Number(activity.amount));
     }
     return Number(activity.amount);
@@ -245,7 +247,7 @@ export const ActivityEditor = ({
         <>
           <FocusTrap.InitialFocus />
           <Group w="100%">
-            {!selectedActivity.date_is_variable && (
+            {!selectedActivity.dateIsVariable && (
               <EditableDateInput
                 label="Date"
                 value={selectedActivity.date}
@@ -261,23 +263,23 @@ export const ActivityEditor = ({
                 placeholder="Date"
               />
             )}
-            {selectedActivity.date_is_variable && (
+            {selectedActivity.dateIsVariable && (
               <Select
                 label="Date"
-                value={selectedActivity.date_variable as string}
+                value={selectedActivity.dateVariable as string}
                 data={dateVariables.map((v) => ({ label: v, value: v }))}
                 onChange={(v) => {
                   if (!v) return;
                   dispatch(
                     updateActivity({
                       ...selectedActivity,
-                      date_variable: v,
+                      dateVariable: v,
                     }),
                   );
                 }}
                 error={validate(
-                  "date_variable",
-                  selectedActivity.date_variable,
+                  "dateVariable",
+                  selectedActivity.dateVariable,
                 )}
               />
             )}
@@ -286,12 +288,12 @@ export const ActivityEditor = ({
                 dispatch(
                   updateActivity({
                     ...selectedActivity,
-                    date_is_variable: !selectedActivity.date_is_variable,
+                    dateIsVariable: !selectedActivity.dateIsVariable,
                   }),
                 );
               }}
             >
-              {selectedActivity.date_is_variable ? (
+              {selectedActivity.dateIsVariable ? (
                 <IconVariable />
               ) : (
                 <IconVariableOff />
@@ -336,18 +338,18 @@ export const ActivityEditor = ({
           />
           <Checkbox
             label="Is this a transfer?"
-            checked={selectedActivity.is_transfer}
+            checked={selectedActivity.isTransfer}
             onChange={(event) => {
               dispatch(
                 updateActivity({
                   ...selectedActivity,
-                  is_transfer: event.currentTarget.checked,
+                  isTransfer: event.currentTarget.checked,
                 }),
               );
             }}
-            error={validate("is_transfer", selectedActivity.is_transfer)}
+            error={validate("isTransfer", selectedActivity.isTransfer)}
           />
-          {selectedActivity.is_transfer && (
+          {selectedActivity.isTransfer && (
             <>
               <Select
                 label="From Account"
@@ -374,12 +376,12 @@ export const ActivityEditor = ({
             </>
           )}
           <Group w="100%">
-            {(!selectedActivity.amount_is_variable || selectedActivity.amount_variable === "{HALF}" || selectedActivity.amount_variable === "{FULL}") && (
+            {(!selectedActivity.amountVariable || selectedActivity.amountVariable === "{HALF}" || selectedActivity.amountVariable === "{FULL}") && (
               <Group w="100%" style={{ flex: 1 }}>
                 <CalculatorEditor
                   style={{ flex: 1 }}
                   label="Amount"
-                  value={selectedActivity.is_transfer ? Math.abs(Number(selectedActivity.amount)) : Number(selectedActivity.amount)}
+                  value={selectedActivity.isTransfer ? Math.abs(Number(selectedActivity.amount)) : Number(selectedActivity.amount)}
                   onChange={(v: number) => {
                     dispatch(
                       updateActivity({
@@ -395,20 +397,20 @@ export const ActivityEditor = ({
             ) || (
                 <Select
                   label="Amount"
-                  value={selectedActivity.amount_variable as string}
+                  value={selectedActivity.amountVariable as string}
                   data={amountVariables.map((v) => ({ label: v, value: v }))}
                   onChange={(v) => {
                     if (!v) return;
                     dispatch(
                       updateActivity({
                         ...selectedActivity,
-                        amount_variable: v,
+                        amountVariable: v,
                       }),
                     );
                   }}
                   error={validate(
-                    "amount_variable",
-                    selectedActivity.amount_variable,
+                    "amountVariable",
+                    selectedActivity.amountVariable,
                   )}
                 />
               )}
@@ -417,12 +419,12 @@ export const ActivityEditor = ({
                 dispatch(
                   updateActivity({
                     ...selectedActivity,
-                    amount_is_variable: !selectedActivity.amount_is_variable,
+                    amountIsVariable: !selectedActivity.amountIsVariable,
                   }),
                 );
               }}
             >
-              {selectedActivity.amount_is_variable ? (
+              {selectedActivity.amountIsVariable ? (
                 <IconVariable />
               ) : (
                 <IconVariableOff />
@@ -458,7 +460,7 @@ export const ActivityEditor = ({
                   removeActivity(
                     account,
                     activityId as string,
-                    selectedActivity.is_transfer,
+                    selectedActivity.isTransfer,
                     startDate,
                     endDate,
                     graphEndDate,
