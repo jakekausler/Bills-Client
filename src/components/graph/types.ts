@@ -1,13 +1,16 @@
-import React from "react";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import { Dataset } from "../../types/types";
+import React from 'react';
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import { Dataset } from '../../types/types';
 
 export type GraphProps = {
   style?: React.CSSProperties;
   datasets: Dataset[];
   labels: string[];
-  type: "activity" | "yearly";
+  type: 'activity' | 'yearly' | 'monteCarlo';
   endDate: string;
   loaded: boolean;
-  setGraphEndDate: ActionCreatorWithPayload<string, "graph/setGraphEndDate" | "graphView/setGraphViewEndDate">;
+  setGraphEndDate: ActionCreatorWithPayload<
+    string,
+    'graph/setGraphEndDate' | 'graphView/setGraphViewEndDate' | 'monteCarlo/setMonteCarloEndDate'
+  >;
 };

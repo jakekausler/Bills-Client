@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectEndDate,
@@ -21,7 +21,10 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { selectCategories, selectCategoriesLoaded } from "../../features/categories/select";
+import {
+  selectCategories,
+  selectCategoriesLoaded,
+} from "../../features/categories/select";
 import {
   selectAccountsLoaded,
   selectAllAccounts,
@@ -73,21 +76,23 @@ export const BillEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "amount")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === "amount")
+        .map(([name, _]) => name)
     : [];
   const dateVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "date")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === "date")
+        .map(([name, _]) => name)
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
 
-  const [accountList, setAccountList] = useState<{ group: string, items: { value: string, label: string }[] }[]>([]);
+  const [accountList, setAccountList] = useState<
+    { group: string; items: { value: string; label: string }[] }[]
+  >([]);
 
   useEffect(() => {
-    const accList: { [key: string]: { value: string, label: string }[] } = {};
+    const accList: { [key: string]: { value: string; label: string }[] } = {};
     for (const account of accounts) {
       if (!(account.type in accList)) {
         accList[account.type] = [];
@@ -97,14 +102,17 @@ export const BillEditor = ({
         label: account.name,
       });
     }
-    setAccountList(Object.entries(accList).map(([group, items]) => ({
-      group,
-      items,
-    })));
+    setAccountList(
+      Object.entries(accList).map(([group, items]) => ({
+        group,
+        items,
+      })),
+    );
   }, [accounts]);
 
   useEffect(() => {
-    const isLoading = !billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
+    const isLoading =
+      !billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
 
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -151,13 +159,25 @@ export const BillEditor = ({
     }
     if (name === "amountVariable") {
       if (selectedBill.amountIsVariable) {
-        if (!amountVariables.includes(value) && value !== "{HALF}" && value !== "{FULL}") {
+        if (
+          !amountVariables.includes(value) &&
+          value !== "{HALF}" &&
+          value !== "{FULL}" &&
+          value !== "-{HALF}" &&
+          value !== "-{FULL}"
+        ) {
           return "Invalid amount";
         }
       }
     }
     if (name === "amount") {
-      if (isNaN(value) || typeof value === "boolean") {
+      if (
+        (isNaN(value) || typeof value === "boolean") &&
+        value !== "{HALF}" &&
+        value !== "{FULL}" &&
+        value !== "-{HALF}" &&
+        value !== "-{FULL}"
+      ) {
         return "Invalid amount";
       }
     }
@@ -198,7 +218,7 @@ export const BillEditor = ({
       if (value === "" || value === undefined || value === null) {
         return null;
       }
-      const dateParts = value.split('/');
+      const dateParts = value.split("/");
       if (dateParts.length !== 2) {
         return "Invalid date format - use MM/DD";
       }
@@ -223,6 +243,23 @@ export const BillEditor = ({
         return "Invalid day for month";
       }
     }
+    if (name === "increaseBy") {
+      if (isNaN(value) || typeof value === "boolean") {
+        return "Invalid increaseBy";
+      }
+    }
+    if (name === "increaseByVariable") {
+      if (selectedBill.increaseByIsVariable) {
+        if (!amountVariables.includes(value)) {
+          return "Invalid increaseBy";
+        }
+      }
+    }
+    if (name === "increaseByPeriods") {
+      if (!["day", "week", "month", "year"].includes(value)) {
+        return "Invalid increaseByPeriods";
+      }
+    }
     return null;
   };
 
@@ -230,19 +267,23 @@ export const BillEditor = ({
     if (!selectedBill && !bill) {
       return true;
     }
-    return (bill || selectedBill) ? Object.entries(bill || selectedBill as Bill).every(([key, value]) => {
-      return validate(key, value) === null;
-    }) : false;
+    return bill || selectedBill
+      ? Object.entries(bill || (selectedBill as Bill)).every(([key, value]) => {
+          return validate(key, value) === null;
+        })
+      : false;
   };
 
   const handleEnter = (amount?: number) => {
     if (amount !== undefined && isNaN(amount as number)) {
       return;
     }
-    const bill = selectedBill ? {
-      ...selectedBill,
-      amount: amount || selectedBill.amount,
-    } : null;
+    const bill = selectedBill
+      ? {
+          ...selectedBill,
+          amount: amount || selectedBill.amount,
+        }
+      : null;
     if (!allValid(bill)) {
       console.log(bill, "not valid");
       return;
@@ -263,7 +304,7 @@ export const BillEditor = ({
     <Stack h="100%" w="100%" justify="space-between" pos="relative">
       <LoadingOverlay
         visible={showLoading}
-        loaderProps={{ color: 'blue.6', size: 'xl' }}
+        loaderProps={{ color: "blue.6", size: "xl" }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       {selectedBill ? (
@@ -311,8 +352,7 @@ export const BillEditor = ({
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    startDateIsVariable:
-                      !selectedBill.startDateIsVariable,
+                    startDateIsVariable: !selectedBill.startDateIsVariable,
                   }),
                 );
               }}
@@ -478,7 +518,14 @@ export const BillEditor = ({
               <Select
                 label="Amount"
                 value={selectedBill.amountVariable as string}
-                data={amountVariables.map((v) => ({ label: v, value: v })).concat([{ label: "{HALF}", value: "{HALF}" }, { label: "{FULL}", value: "{FULL}" }])}
+                data={amountVariables
+                  .map((v) => ({ label: v, value: v }))
+                  .concat([
+                    { label: "{HALF}", value: "{HALF}" },
+                    { label: "{FULL}", value: "{FULL}" },
+                    { label: "-{HALF}", value: "-{HALF}" },
+                    { label: "-{FULL}", value: "-{FULL}" },
+                  ])}
                 onChange={(v) => {
                   if (!v) return;
                   dispatch(
@@ -488,10 +535,7 @@ export const BillEditor = ({
                     }),
                   );
                 }}
-                error={validate(
-                  "amountVariable",
-                  selectedBill.amountVariable,
-                )}
+                error={validate("amountVariable", selectedBill.amountVariable)}
               />
             )}
             <ActionIcon
@@ -560,7 +604,8 @@ export const BillEditor = ({
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    annualStartDate: e.target.value === "" ? null : e.target.value,
+                    annualStartDate:
+                      e.target.value === "" ? null : e.target.value,
                   }),
                 );
               }}
@@ -574,12 +619,103 @@ export const BillEditor = ({
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    annualEndDate: e.target.value === "" ? null : e.target.value,
+                    annualEndDate:
+                      e.target.value === "" ? null : e.target.value,
                   }),
                 );
               }}
               placeholder="MM/DD"
               error={validate("annualEndDate", selectedBill.annualEndDate)}
+            />
+          </Group>
+          <Group w="100%">
+            <Group style={{ flex: 1 }}>
+              {!selectedBill.increaseByIsVariable && (
+                <CalculatorEditor
+                  style={{ flex: 1 }}
+                  label="Increase By"
+                  value={
+                    selectedBill.isTransfer
+                      ? Math.abs(Number(selectedBill.increaseBy))
+                      : Number(selectedBill.increaseBy)
+                  }
+                  onChange={(v) => {
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        increaseBy: typeof v === "number" ? v : parseFloat(v),
+                      }),
+                    );
+                  }}
+                  error={
+                    validate("increaseBy", selectedBill.increaseBy) || undefined
+                  }
+                  handleEnter={handleEnter}
+                />
+              )}
+              {selectedBill.increaseByIsVariable && (
+                <Select
+                  label="Increase By"
+                  value={selectedBill.increaseByVariable as string}
+                  data={amountVariables.map((v) => ({
+                    label: v,
+                    value: v,
+                  }))}
+                  onChange={(v) => {
+                    if (!v) return;
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        increaseByVariable: v,
+                      }),
+                    );
+                  }}
+                  error={validate(
+                    "increaseByVariable",
+                    selectedBill.increaseByVariable,
+                  )}
+                />
+              )}
+              <ActionIcon
+                onClick={() => {
+                  dispatch(
+                    updateBill({
+                      ...selectedBill,
+                      increaseByIsVariable: !selectedBill.increaseByIsVariable,
+                    }),
+                  );
+                }}
+              >
+                {selectedBill.increaseByIsVariable ? (
+                  <IconVariable />
+                ) : (
+                  <IconVariableOff />
+                )}
+              </ActionIcon>
+            </Group>
+            <Select
+              style={{ flex: 1 }}
+              label="Increase by periods"
+              value={selectedBill.increaseByPeriods}
+              data={[
+                { value: "day", label: "Day" },
+                { value: "week", label: "Week" },
+                { value: "month", label: "Month" },
+                { value: "year", label: "Year" },
+              ]}
+              onChange={(v) => {
+                dispatch(
+                  updateBill({
+                    ...selectedBill,
+                    increaseByPeriods: v ? v : "",
+                  }),
+                );
+              }}
+              searchable
+              error={validate(
+                "increaseByPeriods",
+                selectedBill.increaseByPeriods,
+              )}
             />
           </Group>
           <Group w="100%" grow>

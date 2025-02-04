@@ -39,6 +39,8 @@ import FlowAccountSelector from "./components/flow/flowAccountSelector";
 import { loadFlow } from "./features/flow/actions";
 import GraphView from "./components/graphView/graphView";
 import GraphViewAccountSelector from "./components/graphView/graphViewAccountSelector";
+import MonteCarlo from "./components/monteCarlo/monteCarlo";
+import MonteCarloAccountSelector from "./components/monteCarlo/monteCarloAccountSelector";
 
 const pages = {
   accounts: {
@@ -76,6 +78,12 @@ const pages = {
     title: "Graph View",
     component: GraphView,
     sidebar: GraphViewAccountSelector,
+    icon: IconChartBar,
+  },
+  monteCarlo: {
+    title: "Monte Carlo",
+    component: MonteCarlo,
+    sidebar: MonteCarloAccountSelector,
     icon: IconChartBar,
   },
 };

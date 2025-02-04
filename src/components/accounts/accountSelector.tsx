@@ -14,7 +14,7 @@ export default function AccountSelector({
   updateSelectedAccounts,
 }: {
   selectedAccounts: string[];
-  updateSelectedAccounts: ActionCreatorWithPayload<string[], "graphView/updateSelectedAccounts" | "calendar/updateSelectedAccounts" | "categories/updateSelectedAccounts" | "flow/updateSelectedAccounts">;
+  updateSelectedAccounts: ActionCreatorWithPayload<string[], "graphView/updateSelectedAccounts" | "calendar/updateSelectedAccounts" | "categories/updateSelectedAccounts" | "flow/updateSelectedAccounts" | "monteCarlo/updateSelectedAccounts">;
 }) {
   const accounts = useSelector(selectVisibleAccounts);
   const accountsLoaded = useSelector(selectAccountsLoaded);

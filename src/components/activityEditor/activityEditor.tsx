@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectEndDate,
@@ -23,7 +23,10 @@ import {
 } from "@mantine/core";
 import { AppDispatch } from "../../store";
 import { updateActivity } from "../../features/activities/slice";
-import { selectCategories, selectCategoriesLoaded } from "../../features/categories/select";
+import {
+  selectCategories,
+  selectCategoriesLoaded,
+} from "../../features/categories/select";
 import {
   selectAccountsLoaded,
   selectAllAccounts,
@@ -36,9 +39,7 @@ import {
 import { Activity } from "../../types/types";
 import { selectGraphEndDate } from "../../features/graph/select";
 import { IconVariable, IconVariableOff } from "@tabler/icons-react";
-import {
-  selectSelectedSimulationVariables,
-} from "../../features/simulations/select";
+import { selectSelectedSimulationVariables } from "../../features/simulations/select";
 import CreatableSelect from "../helpers/creatableSelect";
 import { useEffect, useState } from "react";
 import { EditableDateInput } from "../helpers/editableDateInput";
@@ -62,10 +63,12 @@ export const ActivityEditor = ({
   );
   const accounts = useSelector(selectAllAccounts);
 
-  const [accountList, setAccountList] = useState<{ group: string, items: { value: string, label: string }[] }[]>([]);
+  const [accountList, setAccountList] = useState<
+    { group: string; items: { value: string; label: string }[] }[]
+  >([]);
 
   useEffect(() => {
-    const accList: { [key: string]: { value: string, label: string }[] } = {};
+    const accList: { [key: string]: { value: string; label: string }[] } = {};
     for (const account of accounts) {
       if (!(account.type in accList)) {
         accList[account.type] = [];
@@ -75,10 +78,12 @@ export const ActivityEditor = ({
         label: account.name,
       });
     }
-    setAccountList(Object.entries(accList).map(([group, items]) => ({
-      group,
-      items,
-    })));
+    setAccountList(
+      Object.entries(accList).map(([group, items]) => ({
+        group,
+        items,
+      })),
+    );
   }, [accounts]);
 
   const account = useSelector(selectSelectedAccount);
@@ -90,8 +95,6 @@ export const ActivityEditor = ({
   const dispatch = useDispatch<AppDispatch>();
   const names = useSelector(selectNames);
 
-  console.log(selectedActivity, selectedBillId, selectedInterestId);
-
   const accountsLoaded = useSelector(selectAccountsLoaded);
   const activityLoaded = useSelector(selectSelectedActivityLoaded);
   const categoriesLoaded = useSelector(selectCategoriesLoaded);
@@ -102,19 +105,20 @@ export const ActivityEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "amount")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === "amount")
+        .map(([name, _]) => name)
     : [];
   const dateVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "date")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === "date")
+        .map(([name, _]) => name)
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
-    const isLoading = !activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
+    const isLoading =
+      !activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
 
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -150,7 +154,11 @@ export const ActivityEditor = ({
     }
     if (name === "amountVariable") {
       if (selectedActivity.amountVariable) {
-        if (!amountVariables.includes(value as string) && value !== "{HALF}" && value !== "{FULL}") {
+        if (
+          !amountVariables.includes(value as string) &&
+          value !== "{HALF}" &&
+          value !== "{FULL}"
+        ) {
           return "Invalid amount";
         }
       }
@@ -192,9 +200,11 @@ export const ActivityEditor = ({
   };
 
   const allValid = (activity?: Activity) => {
-    return Object.entries(activity || selectedActivity).every(([key, value]) => {
-      return validate(key, value) === null;
-    });
+    return Object.entries(activity || selectedActivity).every(
+      ([key, value]) => {
+        return validate(key, value) === null;
+      },
+    );
   };
 
   const getAmount = (activity: Activity) => {
@@ -206,9 +216,9 @@ export const ActivityEditor = ({
 
   const save = (activity?: Activity) => {
     const activityToSave = {
-      ...(activity || selectedActivity as Activity),
-      amount: getAmount(activity || selectedActivity as Activity),
-    }
+      ...(activity || (selectedActivity as Activity)),
+      amount: getAmount(activity || (selectedActivity as Activity)),
+    };
     dispatch(
       saveActivity(
         account,
@@ -241,7 +251,7 @@ export const ActivityEditor = ({
     <Stack h="100%" w="100%" justify="space-between" pos="relative">
       <LoadingOverlay
         visible={showLoading}
-        loaderProps={{ color: 'blue.6', size: 'xl' }}
+        loaderProps={{ color: "blue.6", size: "xl" }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       {selectedActivity ? (
@@ -278,10 +288,7 @@ export const ActivityEditor = ({
                     }),
                   );
                 }}
-                error={validate(
-                  "dateVariable",
-                  selectedActivity.dateVariable,
-                )}
+                error={validate("dateVariable", selectedActivity.dateVariable)}
               />
             )}
             <ActionIcon
@@ -377,12 +384,18 @@ export const ActivityEditor = ({
             </>
           )}
           <Group w="100%">
-            {(!selectedActivity.amountVariable || selectedActivity.amountVariable === "{HALF}" || selectedActivity.amountVariable === "{FULL}") && (
+            {((!selectedActivity.amountVariable ||
+              selectedActivity.amountVariable === "{HALF}" ||
+              selectedActivity.amountVariable === "{FULL}") && (
               <Group w="100%" style={{ flex: 1 }}>
                 <CalculatorEditor
                   style={{ flex: 1 }}
                   label="Amount"
-                  value={selectedActivity.isTransfer ? Math.abs(Number(selectedActivity.amount)) : Number(selectedActivity.amount)}
+                  value={
+                    selectedActivity.isTransfer
+                      ? Math.abs(Number(selectedActivity.amount))
+                      : Number(selectedActivity.amount)
+                  }
                   onChange={(v: number) => {
                     dispatch(
                       updateActivity({
@@ -391,30 +404,32 @@ export const ActivityEditor = ({
                       }),
                     );
                   }}
-                  error={validate("amount", selectedActivity.amount) || undefined}
+                  error={
+                    validate("amount", selectedActivity.amount) || undefined
+                  }
                   handleEnter={handleEnter}
                 />
               </Group>
-            ) || (
-                <Select
-                  label="Amount"
-                  value={selectedActivity.amountVariable as string}
-                  data={amountVariables.map((v) => ({ label: v, value: v }))}
-                  onChange={(v) => {
-                    if (!v) return;
-                    dispatch(
-                      updateActivity({
-                        ...selectedActivity,
-                        amountVariable: v,
-                      }),
-                    );
-                  }}
-                  error={validate(
-                    "amountVariable",
-                    selectedActivity.amountVariable,
-                  )}
-                />
-              )}
+            )) || (
+              <Select
+                label="Amount"
+                value={selectedActivity.amountVariable as string}
+                data={amountVariables.map((v) => ({ label: v, value: v }))}
+                onChange={(v) => {
+                  if (!v) return;
+                  dispatch(
+                    updateActivity({
+                      ...selectedActivity,
+                      amountVariable: v,
+                    }),
+                  );
+                }}
+                error={validate(
+                  "amountVariable",
+                  selectedActivity.amountVariable,
+                )}
+              />
+            )}
             <ActionIcon
               onClick={() => {
                 dispatch(

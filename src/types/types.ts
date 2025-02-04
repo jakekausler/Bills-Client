@@ -79,6 +79,11 @@ export type Account = {
   balance: number;
   hidden: boolean;
   type: string;
+  pullPriority: number;
+  interestTaxRate: number;
+  withdrawalTaxRate: number;
+  earlyWithdrawlPenalty: number;
+  earlyWithdrawlDate: string | null;
 };
 
 export type GraphData = {
