@@ -23,7 +23,7 @@ const initialState: MonteCarloState = {
   startDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() - 1))),
   endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 24))),
   selectedAccounts: [],
-  nSimulations: 10,
+  nSimulations: 3,
 };
 
 const monteCarloSlice = createSlice({
