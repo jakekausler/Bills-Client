@@ -1,4 +1,4 @@
-import { AppThunk } from "../../store";
+import { AppThunk } from '../../store';
 import {
   setActivities,
   setActivitiesError,
@@ -12,7 +12,7 @@ import {
   setSelectedBillLoaded,
   updateInterests,
   updateNames,
-} from "./slice";
+} from './slice';
 import {
   fetchActivities,
   fetchAddActivity,
@@ -21,6 +21,8 @@ import {
   fetchAddInterestActivity,
   fetchBill,
   fetchBillActivity,
+  fetchChangeAccountForActivity,
+  fetchChangeAccountForBill,
   fetchInterestActivity,
   fetchInterests,
   fetchNames,
@@ -31,33 +33,29 @@ import {
   fetchSaveInterests,
   fetchSkipBill,
   fetchSkipInterest,
-} from "./api";
-import { Account, Activity, Bill, Interest } from "../../types/types";
-import { loadGraphData } from "../graph/actions";
-import { loadAccounts } from "../accounts/actions";
-import { loadCategories } from "../categories/actions";
-import { loadCalendar } from "../calendar/actions";
-import { loadFlow } from "../flow/actions";
+} from './api';
+import { Account, Activity, Bill, Interest } from '../../types/types';
+import { loadGraphData } from '../graph/actions';
+import { loadAccounts } from '../accounts/actions';
+import { loadCategories } from '../categories/actions';
+import { loadCalendar } from '../calendar/actions';
+import { loadFlow } from '../flow/actions';
 
 export const loadActivities =
   (account: Account, startDate: Date, endDate: Date): AppThunk =>
-    async (dispatch) => {
-      try {
-        dispatch(setActivitiesLoaded(false));
-        const activities = await fetchActivities(account, startDate, endDate);
+  async (dispatch) => {
+    try {
+      dispatch(setActivitiesLoaded(false));
+      const activities = await fetchActivities(account, startDate, endDate);
 
-        dispatch(setActivities(activities));
-      } catch (error) {
-        console.error("Failed to load activities", error);
-        dispatch(setActivitiesError("Failed to load activities"));
-      }
-    };
+      dispatch(setActivities(activities));
+    } catch (error) {
+      console.error('Failed to load activities', error);
+      dispatch(setActivitiesError('Failed to load activities'));
+    }
+  };
 
-export const loadAndSelectBill = (
-  accountId: string,
-  billId: string,
-  isTransfer: boolean,
-): AppThunk => {
+export const loadAndSelectBill = (accountId: string, billId: string, isTransfer: boolean): AppThunk => {
   return async (dispatch) => {
     dispatch(setSelectedBillLoaded(false));
     const bill = await fetchBill(accountId, billId, isTransfer);
@@ -114,6 +112,27 @@ export const removeActivity = (
   };
 };
 
+export const changeAccountForActivity = (
+  account: Account,
+  activityId: string,
+  newAccountId: string,
+  isTransfer: boolean,
+  startDate: Date,
+  endDate: Date,
+  graphEndDate: Date,
+): AppThunk => {
+  return async (dispatch) => {
+    await fetchChangeAccountForActivity(account.id, activityId, newAccountId, isTransfer);
+    dispatch(loadActivities(account, startDate, endDate));
+    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadNames());
+    dispatch(loadCategories());
+    dispatch(loadCalendar());
+    dispatch(loadAccounts());
+    dispatch(loadFlow());
+  };
+};
+
 export const loadBillActivity = (
   account: Account,
   billId: string,
@@ -123,13 +142,7 @@ export const loadBillActivity = (
 ): AppThunk => {
   return async (dispatch) => {
     dispatch(setSelectedBillLoaded(false));
-    const billActivity = await fetchBillActivity(
-      account.id,
-      billId,
-      isTransfer,
-      startDate,
-      endDate,
-    );
+    const billActivity = await fetchBillActivity(account.id, billId, isTransfer, startDate, endDate);
     dispatch(setSelectedActivity(billActivity));
     dispatch(setSelectedActivityBillId(billId));
   };
@@ -185,6 +198,27 @@ export const removeBill = (
   };
 };
 
+export const changeAccountForBill = (
+  account: Account,
+  billId: string,
+  newAccountId: string,
+  isTransfer: boolean,
+  startDate: Date,
+  endDate: Date,
+  graphEndDate: Date,
+): AppThunk => {
+  return async (dispatch) => {
+    await fetchChangeAccountForBill(account.id, billId, newAccountId, isTransfer);
+    dispatch(loadActivities(account, startDate, endDate));
+    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadNames());
+    dispatch(loadCategories());
+    dispatch(loadCalendar());
+    dispatch(loadAccounts());
+    dispatch(loadFlow());
+  };
+};
+
 export const loadInterests = (accountId: string): AppThunk => {
   return async (dispatch) => {
     dispatch(setInterestsLoaded(false));
@@ -220,12 +254,7 @@ export const loadInterestActivity = (
 ): AppThunk => {
   return async (dispatch) => {
     dispatch(setSelectedActivityLoaded(false));
-    const interestActivity = await fetchInterestActivity(
-      accountId,
-      interestId,
-      startDate,
-      endDate,
-    );
+    const interestActivity = await fetchInterestActivity(accountId, interestId, startDate, endDate);
     dispatch(setSelectedActivity(interestActivity));
     dispatch(setSelectedActivityInterestId(interestActivity.interest_id));
   };
@@ -251,13 +280,7 @@ export const skipBill = (
   };
 };
 
-
-export const skipInterest = (
-  account: Account,
-  startDate: Date,
-  endDate: Date,
-  graphEndDate: Date,
-): AppThunk => {
+export const skipInterest = (account: Account, startDate: Date, endDate: Date, graphEndDate: Date): AppThunk => {
   return async (dispatch) => {
     await fetchSkipInterest(account.id);
     dispatch(loadActivities(account, startDate, endDate));

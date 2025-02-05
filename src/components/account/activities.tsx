@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Group, LoadingOverlay, Modal, Stack, Table } from "@mantine/core";
+import { Button, Group, LoadingOverlay, Modal, Select, Stack, Table } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectActivitiesLoaded,
@@ -19,6 +19,8 @@ import {
 import { AppDispatch } from "../../store";
 import { Account, Activity } from "../../types/types";
 import {
+  changeAccountForActivity,
+  changeAccountForBill,
   loadAndSelectBill,
   loadBillActivity,
   loadInterestActivity,
@@ -33,10 +35,10 @@ import {
 import { BillEditor } from "../activityEditor/billEditor";
 import { InterestEditor } from "../activityEditor/interestEditor";
 import { ActivityEditor } from "../activityEditor/activityEditor";
-import { selectSelectedAccount } from "../../features/accounts/select";
+import { selectAllAccounts, selectSelectedAccount } from "../../features/accounts/select";
 import { useEffect, useState } from "react";
 import { useContextMenu } from "mantine-contextmenu";
-import { IconCurrencyDollar, IconEdit, IconPlayerSkipForward, IconTrash } from "@tabler/icons-react";
+import { IconCurrencyDollar, IconEdit, IconPlayerSkipForward, IconSwitch, IconTrash } from "@tabler/icons-react";
 import { selectGraphEndDate } from "../../features/graph/select";
 
 export default function Activities({ style }: ActivitiesProps) {
@@ -50,9 +52,11 @@ export default function Activities({ style }: ActivitiesProps) {
   const endDate = new Date(useSelector(selectEndDate));
   const activitiesLoaded = useSelector(selectActivitiesLoaded);
   const graphEndDate = new Date(useSelector(selectGraphEndDate));
+  const accounts = useSelector(selectAllAccounts);
 
   const [editorActivity, setEditorActivity] = useState<Activity | null>(null);
   const [editorChoice, setEditorChoice] = useState<string | null>(null);
+  const [changeAccountActivity, setChangeAccountActivity] = useState<Activity | null>(null);
 
   const lastActivityBeforeToday = [...activities]
     .reverse()
@@ -301,6 +305,14 @@ export default function Activities({ style }: ActivitiesProps) {
                       onClick: () => {
                         activity.billId ? skipBill(activity) : skipInterest();
                       }
+                    }] : []),
+                    ...(!activity.interestId ? [{
+                      key: "changeAccount",
+                      title: "Change Account",
+                      icon: <IconSwitch size={16} />,
+                      onClick: () => {
+                        setChangeAccountActivity(activity);
+                      }
                     }] : [])
                   ].sort((a, b) => {
                     const order = { enter: 0, edit: 1, skip: 2, delete: 3 };
@@ -372,6 +384,33 @@ export default function Activities({ style }: ActivitiesProps) {
             Skip {editorChoice}
           </Button>
         </Group>
+      </Modal>
+      <Modal
+        opened={!!changeAccountActivity}
+        onClose={() => setChangeAccountActivity(null)}
+        withCloseButton={false}
+      >
+        <Stack>
+          <Select
+            data={accounts.map((acc) => {
+              return {
+                value: acc.id,
+                label: acc.name,
+                disabled: acc.id === account?.id || acc.name === changeAccountActivity?.to,
+              }
+            })}
+            value={undefined}
+            onChange={(value) => {
+              if (!account || value === account.id || !changeAccountActivity) return;
+              if (changeAccountActivity.billId) {
+                dispatch(changeAccountForBill(account, changeAccountActivity.billId as string, value as string, changeAccountActivity.isTransfer as boolean, startDate, endDate, graphEndDate));
+              } else {
+                dispatch(changeAccountForActivity(account, changeAccountActivity.id as string, value as string, changeAccountActivity.isTransfer as boolean, startDate, endDate, graphEndDate));
+              }
+              setChangeAccountActivity(null);
+            }}
+          />
+        </Stack>
       </Modal>
     </>
   );
