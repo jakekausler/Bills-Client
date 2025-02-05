@@ -1,10 +1,9 @@
+import { api } from '../../utils/api';
+
 export const fetchGraphViewData = async (accountIds: string[], endDate: string) => {
-  let selectedAccountString = "";
+  let selectedAccountString = '';
   if (accountIds.length > 0) {
-    selectedAccountString = `&selectedAccounts=${accountIds.join(",")}`;
+    selectedAccountString = `&selectedAccounts=${accountIds.join(',')}`;
   }
-  const response = await fetch(
-    `/api/accounts/graph?endDate=${endDate}${selectedAccountString}`,
-  );
-  return response.json();
+  return await api.get(`/api/accounts/graph?endDate=${endDate}${selectedAccountString}`);
 };

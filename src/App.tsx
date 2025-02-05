@@ -41,6 +41,9 @@ import GraphView from "./components/graphView/graphView";
 import GraphViewAccountSelector from "./components/graphView/graphViewAccountSelector";
 import MonteCarlo from "./components/monteCarlo/monteCarlo";
 import MonteCarloAccountSelector from "./components/monteCarlo/monteCarloAccountSelector";
+import { Login } from './components/login/login';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useToken } from './hooks/useToken';
 
 const pages = {
   accounts: {
@@ -89,6 +92,22 @@ const pages = {
 };
 
 function App() {
+  const { token, setToken } = useToken();
+
+  if (!token || token === 'INVALID') {
+    return <Login setToken={setToken} invalid={token === 'INVALID'} />;
+  }
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AppContent />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
   const [opened, { toggle, close }] = useDisclosure();
   const [page, setPage] = useState<string>(Object.keys(pages)[0]);
   const dispatch = useDispatch<AppDispatch>();

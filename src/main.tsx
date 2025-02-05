@@ -1,6 +1,5 @@
 import React from 'react';
 import { StrictMode } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./store";
@@ -35,11 +34,7 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <MantineProvider theme={theme} defaultColorScheme="dark">
         <ContextMenuProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<App />} />
-            </Routes>
-          </BrowserRouter>
+          <App />
         </ContextMenuProvider>
       </MantineProvider>
     </Provider>

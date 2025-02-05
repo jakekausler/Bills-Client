@@ -1,28 +1,14 @@
-import { Account } from "../../types/types";
+import { Account } from '../../types/types';
+import { api } from '../../utils/api';
 
 export const fetchAccounts = async () => {
-  const response = await fetch("/api/accounts");
-  return response.json();
+  return await api.get('/api/accounts');
 };
 
 export const fetchAddAccount = async (account: Account) => {
-  const response = await fetch("/api/accounts", {
-    method: "PUT",
-    body: JSON.stringify(account),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return response.json();
+  return await api.put('/api/accounts', account);
 };
 
 export const fetchEditAccounts = async (accounts: Account[]) => {
-  const response = await fetch("/api/accounts", {
-    method: "POST",
-    body: JSON.stringify(accounts),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return response.json();
+  return await api.post('/api/accounts', accounts);
 };

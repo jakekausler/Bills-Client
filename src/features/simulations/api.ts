@@ -1,22 +1,14 @@
-import { Simulation } from "../../types/types";
+import { Simulation } from '../../types/types';
+import { api } from '../../utils/api';
 
 export const fetchSimulations = async () => {
-  const response = await fetch("/api/simulations");
-  return response.json();
+  return await api.get('/api/simulations');
 };
 
 export const fetchSaveSimulations = async (simulations: Simulation[]) => {
-  const response = await fetch("/api/simulations", {
-    method: "POST",
-    body: JSON.stringify(simulations),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-  return response.json();
+  return await api.post('/api/simulations', simulations);
 };
 
 export const fetchUsedVariables = async () => {
-  const response = await fetch("/api/simulations/used_variables");
-  return response.json();
+  return await api.get('/api/simulations/used_variables');
 };

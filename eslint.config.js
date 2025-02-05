@@ -75,7 +75,7 @@ export default [
 					selector: 'objectLiteralProperty',
 					format: null,
 					filter: {
-						regex: '^Content-Type$',
+						regex: '^(Content-Type|Authorization)$',
 						match: true
 					}
 				}

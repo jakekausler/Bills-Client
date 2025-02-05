@@ -1,10 +1,9 @@
+import { api } from '../../utils/api';
+
 export const fetchBills = async (startDate: string, endDate: string, selectedAccounts: string[]) => {
-  let selectedAccountsString = "";
+  let selectedAccountsString = '';
   if (selectedAccounts.length > 0) {
-    selectedAccountsString = `&selectedAccounts=${selectedAccounts.join(",")}`;
+    selectedAccountsString = `&selectedAccounts=${selectedAccounts.join(',')}`;
   }
-  const response = await fetch(`/api/calendar/bills?startDate=${startDate}&endDate=${endDate}${selectedAccountsString}`);
-  return response.json();
+  return await api.get(`/api/calendar/bills?startDate=${startDate}&endDate=${endDate}${selectedAccountsString}`);
 };
-
-

@@ -1,3 +1,5 @@
+import { api } from '../../utils/api';
+
 export const fetchMonteCarloData = async (
   startDate: string,
   endDate: string,
@@ -8,8 +10,7 @@ export const fetchMonteCarloData = async (
   if (accountIds.length > 0) {
     selectedAccountString = `&selectedAccounts=${accountIds.join(',')}`;
   }
-  const response = await fetch(
+  return await api.get(
     `/api/monte_carlo?startDate=${startDate}&endDate=${endDate}&nSimulations=${nSimulations}${selectedAccountString}`,
   );
-  return response.json();
 };

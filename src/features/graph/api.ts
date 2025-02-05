@@ -1,8 +1,6 @@
-import { Account } from "../../types/types";
+import { Account } from '../../types/types';
+import { api } from '../../utils/api';
 
 export const fetchGraphData = async (account: Account, endDate: Date) => {
-  const response = await fetch(
-    `/api/accounts/${account.id}/graph?endDate=${endDate.toISOString().split('T')[0]}`
-  );
-  return response.json();
+  return await api.get(`/api/accounts/${account.id}/graph?endDate=${endDate.toISOString().split('T')[0]}`);
 };
