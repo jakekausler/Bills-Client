@@ -15,8 +15,6 @@ Chart.register(...registerables);
 
 export function Graph({ style, datasets, labels, type, endDate, loaded, setGraphEndDate }: GraphProps) {
   const dispatch = useDispatch<AppDispatch>();
-  console.log('Graph.tsx: Graph: datasets:', datasets);
-  console.log('Graph.tsx: Graph: labels:', labels);
 
   const [showLoading, setShowLoading] = useState(false);
 

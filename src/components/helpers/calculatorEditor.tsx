@@ -47,7 +47,7 @@ export function CalculatorEditor({
 
   const handleOperation = (operation: Operation) => {
     if (firstOperand === null) {
-      setFirstOperand(Number(restProps.value || displayValue));
+      setFirstOperand(Number(displayValue || restProps.value));
       setCurrentOperation(operation);
       setDisplayValue(operation);
       setOpened(true);
@@ -96,7 +96,7 @@ export function CalculatorEditor({
       );
       const result = calculate(firstOperand, secondOperand, currentOperation);
       if (isNaN(result)) return;
-      restProps.onChange?.(result);
+      restProps.onChange?.(Math.round(result * 100) / 100);
       setOpened(false);
       setFirstOperand(null);
       setCurrentOperation(null);
@@ -164,8 +164,7 @@ export function CalculatorEditor({
     });
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(event);
+  const onBeforeInput = (event: React.CompositionEvent<HTMLInputElement>) => {
     const key = event.data;
     const input = event.currentTarget;
     const selectionStart = input.selectionStart || 0;
@@ -195,6 +194,20 @@ export function CalculatorEditor({
       return;
     }
 
+    // Handle numbers
+    if (key.match(/^\d*\.?\d*$/)) {
+      event.preventDefault();
+      handleNumber(key);
+      return;
+    }
+
+    event.preventDefault();
+    return;
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const key = event.key;
+
     if (key === "Enter") {
       // Only handle Enter if we're in the middle of a calculation
       if (
@@ -214,13 +227,6 @@ export function CalculatorEditor({
 
     if (key === "Tab") {
       restProps.onChange?.(Number(displayValue || restProps.value));
-      return;
-    }
-
-    // Handle numbers
-    if (key.match(/^\d*\.?\d*$/)) {
-      event.preventDefault();
-      handleNumber(key);
       return;
     }
 
@@ -262,7 +268,6 @@ export function CalculatorEditor({
       return;
     }
 
-    event.preventDefault();
     return;
   };
 
@@ -287,7 +292,8 @@ export function CalculatorEditor({
               <IconCalculator size="1.1rem" />
             </ActionIcon>
           }
-          onBeforeInput={handleKeyDown}
+          onBeforeInput={onBeforeInput}
+          onKeyDown={onKeyDown}
           onBlur={() => {
             restProps.onChange?.(Number(displayValue || 0));
           }}

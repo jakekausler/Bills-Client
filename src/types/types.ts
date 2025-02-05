@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 export type PageComponentType = React.ComponentType<any>;
 export type SidebarComponentType = React.ComponentType<any>;
 
@@ -67,7 +67,7 @@ export type Interest = {
   apr: number | string;
   aprIsVariable: boolean;
   aprVariable: string | null;
-  compounded: "day" | "week" | "month" | "year";
+  compounded: 'day' | 'week' | 'month' | 'year';
   applicableDate: string;
   applicableDateIsVariable: boolean;
   applicableDateVariable: string | null;
@@ -84,12 +84,19 @@ export type Account = {
   withdrawalTaxRate: number;
   earlyWithdrawlPenalty: number;
   earlyWithdrawlDate: string | null;
+  interestPayAccount: string | null;
+  usesRMD: boolean;
+  accountOwnerDOB: string | null;
+  rmdAccount: string | null;
+  minimumBalance: number | null;
+  minimumPullAmount: number | null;
+  performPulls: boolean;
 };
 
 export type GraphData = {
   datasets: Dataset[];
   labels: string[];
-  type: "activity" | "yearly";
+  type: 'activity' | 'yearly';
 };
 
 export type Dataset = {
