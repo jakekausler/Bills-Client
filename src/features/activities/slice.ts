@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Activity, BaseActivity, Bill, Interest } from "../../types/types";
-import { toDateString } from "../../utils/date";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Activity, BaseActivity, Bill, Interest } from '../../types/types';
+import { toDateString } from '../../utils/date';
 
 interface ActivitiesState {
   activities: Activity[];
@@ -31,7 +31,7 @@ interface ActivitiesState {
 const initialState: ActivitiesState = {
   activities: [],
   activitiesLoaded: false,
-  activitiesError: "",
+  activitiesError: '',
   selectedActivity: null,
   selectedActivityBillId: null,
   selectedActivityInterestId: null,
@@ -40,19 +40,15 @@ const initialState: ActivitiesState = {
   selectedBillLoaded: false,
   interests: null,
   interestsLoaded: false,
-  startDate: toDateString(
-    new Date(new Date().setMonth(new Date().getMonth() - 1)),
-  ),
-  endDate: toDateString(
-    new Date(new Date().setMonth(new Date().getMonth() + 3)),
-  ),
+  startDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() - 1))),
+  endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 3))),
   lastDate: toDateString(new Date()),
   names: {},
   namesLoaded: false,
 };
 
 export const activitiesSlice = createSlice({
-  name: "activities",
+  name: 'activities',
   initialState,
   reducers: {
     setActivities: (state, action: PayloadAction<Activity[]>) => {
@@ -73,16 +69,10 @@ export const activitiesSlice = createSlice({
       }
       state.selectedActivityLoaded = true;
     },
-    setSelectedActivityBillId: (
-      state,
-      action: PayloadAction<string | null>,
-    ) => {
+    setSelectedActivityBillId: (state, action: PayloadAction<string | null>) => {
       state.selectedActivityBillId = action.payload;
     },
-    setSelectedActivityInterestId: (
-      state,
-      action: PayloadAction<string | null>,
-    ) => {
+    setSelectedActivityInterestId: (state, action: PayloadAction<string | null>) => {
       state.selectedActivityInterestId = action.payload;
     },
     setSelectedActivityLoaded: (state, action: PayloadAction<boolean>) => {
@@ -106,15 +96,34 @@ export const activitiesSlice = createSlice({
         date: state.lastDate,
         dateIsVariable: false,
         dateVariable: null,
-        name: "",
-        category: "",
+        name: '',
+        category: '',
         amount: 0,
         flag: false,
+        flagColor: null,
         amountIsVariable: false,
         amountVariable: null,
         isTransfer: false,
         from: null,
         to: null,
+      };
+      state.selectedActivityLoaded = true;
+    },
+    duplicateActivity: (state, action: PayloadAction<Activity>) => {
+      state.selectedActivity = {
+        date: state.lastDate,
+        dateIsVariable: false,
+        dateVariable: null,
+        name: `Copy of ${action.payload.name}`,
+        category: action.payload.category,
+        amount: action.payload.amount,
+        flag: action.payload.flag,
+        flagColor: action.payload.flagColor,
+        amountIsVariable: action.payload.amountIsVariable,
+        amountVariable: action.payload.amountVariable,
+        isTransfer: action.payload.isTransfer,
+        from: action.payload.from,
+        to: action.payload.to,
       };
       state.selectedActivityLoaded = true;
     },
@@ -127,12 +136,13 @@ export const activitiesSlice = createSlice({
         endDateIsVariable: false,
         endDateVariable: null,
         everyN: 1,
-        periods: "month",
+        periods: 'month',
         isAutomatic: false,
-        name: "",
-        category: "",
+        name: '',
+        category: '',
         amount: 0,
         flag: false,
+        flagColor: null,
         amountIsVariable: false,
         amountVariable: null,
         isTransfer: false,
@@ -144,10 +154,10 @@ export const activitiesSlice = createSlice({
         annualEndDateIsVariable: false,
         annualStartDateVariable: null,
         annualEndDateVariable: null,
-        increaseBy: 0,
-        increaseByIsVariable: false,
-        increaseByVariable: null,
-        increaseByPeriods: "month",
+        increaseBy: 0.03,
+        increaseByIsVariable: true,
+        increaseByVariable: 'INFLATION',
+        increaseByDate: '01/01',
       };
       state.selectedBillLoaded = true;
     },
@@ -189,6 +199,7 @@ export const {
   setEndDate,
   newActivity,
   newBill,
+  duplicateActivity,
   updateActivity,
   updateBill,
   updateInterests,
@@ -200,4 +211,3 @@ export const {
   setActivitiesLoaded,
 } = activitiesSlice.actions;
 export default activitiesSlice.reducer;
-

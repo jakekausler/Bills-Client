@@ -1,5 +1,5 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectEndDate,
   selectNames,
@@ -7,7 +7,7 @@ import {
   selectSelectedBill,
   selectSelectedBillLoaded,
   selectStartDate,
-} from "../../features/activities/select";
+} from '../../features/activities/select';
 import {
   ActionIcon,
   Button,
@@ -21,44 +21,31 @@ import {
   Text,
   TextInput,
   useMantineTheme,
-} from "@mantine/core";
-import {
-  selectCategories,
-  selectCategoriesLoaded,
-} from "../../features/categories/select";
-import {
-  selectAccountsLoaded,
-  selectAllAccounts,
-  selectSelectedAccount,
-} from "../../features/accounts/select";
-import { selectGraphEndDate } from "../../features/graph/select";
-import { AppDispatch } from "../../store";
-import { updateBill } from "../../features/activities/slice";
-import { Account, Bill } from "../../types/types";
-import { removeBill, saveBill } from "../../features/activities/actions";
-import { IconVariable, IconVariableOff } from "@tabler/icons-react";
-import { selectSelectedSimulationVariables } from "../../features/simulations/select";
-import CreatableSelect from "../helpers/creatableSelect";
-import { useEffect, useState } from "react";
-import { EditableDateInput } from "../helpers/editableDateInput";
-import { CalculatorEditor } from "../helpers/calculatorEditor";
-import { FlagSelect } from "../helpers/flagSelect";
-export const BillEditor = ({
-  resetSelected,
-}: {
-  resetSelected: () => void;
-}) => {
+} from '@mantine/core';
+import { selectCategories, selectCategoriesLoaded } from '../../features/categories/select';
+import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
+import { selectGraphEndDate } from '../../features/graph/select';
+import { AppDispatch } from '../../store';
+import { updateBill } from '../../features/activities/slice';
+import { Account, Bill } from '../../types/types';
+import { removeBill, saveBill } from '../../features/activities/actions';
+import { IconVariable, IconVariableOff } from '@tabler/icons-react';
+import { selectSelectedSimulationVariables } from '../../features/simulations/select';
+import CreatableSelect from '../helpers/creatableSelect';
+import { useEffect, useState } from 'react';
+import { EditableDateInput } from '../helpers/editableDateInput';
+import { CalculatorEditor } from '../helpers/calculatorEditor';
+import { FlagSelect } from '../helpers/flagSelect';
+export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const selectedBill = useSelector(selectSelectedBill);
   const billId = selectedBill?.id;
-  const categories = Object.entries(useSelector(selectCategories)).map(
-    ([group, items]) => ({
-      group,
-      items: items.map((item) => ({
-        value: `${group}.${item}`,
-        label: item,
-      })),
-    }),
-  );
+  const categories = Object.entries(useSelector(selectCategories)).map(([group, items]) => ({
+    group,
+    items: items.map((item) => ({
+      value: `${group}.${item}`,
+      label: item,
+    })),
+  }));
   const accounts = useSelector(selectAllAccounts);
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
@@ -77,20 +64,18 @@ export const BillEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "amount")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === 'amount')
+        .map(([name, _]) => name)
     : [];
   const dateVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "date")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === 'date')
+        .map(([name, _]) => name)
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
 
-  const [accountList, setAccountList] = useState<
-    { group: string; items: { value: string; label: string }[] }[]
-  >([]);
+  const [accountList, setAccountList] = useState<{ group: string; items: { value: string; label: string }[] }[]>([]);
 
   useEffect(() => {
     const accList: { [key: string]: { value: string; label: string }[] } = {};
@@ -112,8 +97,7 @@ export const BillEditor = ({
   }, [accounts]);
 
   useEffect(() => {
-    const isLoading =
-      !billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
+    const isLoading = !billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
 
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -131,146 +115,167 @@ export const BillEditor = ({
     if (!selectedBill) {
       return null;
     }
-    if (name === "startDateVariable") {
+    if (name === 'startDateVariable') {
       if (selectedBill.startDateIsVariable) {
         if (!dateVariables.includes(value)) {
-          return "Invalid startDate";
+          return 'Invalid startDate';
         }
       }
     }
-    if (name === "startDate") {
+    if (name === 'startDate') {
       const date = new Date(value);
-      if (date.toString() === "Invalid Date") {
-        return "Invalid date";
+      if (date.toString() === 'Invalid Date') {
+        return 'Invalid date';
       }
     }
-    if (name === "endDateVariable") {
+    if (name === 'endDateVariable') {
       if (selectedBill.endDateIsVariable) {
         if (!!value && !dateVariables.includes(value)) {
-          return "Invalid endDate";
+          return 'Invalid endDate';
         }
       }
     }
-    if (name === "endDate") {
-      if (value === "" || value === undefined || value === null) {
+    if (name === 'endDate') {
+      if (value === '' || value === undefined || value === null) {
         return null;
       }
       const date = new Date(value);
-      if (date.toString() === "Invalid Date") {
-        return "Invalid date";
+      if (date.toString() === 'Invalid Date') {
+        return 'Invalid date';
       }
     }
-    if (name === "amountVariable") {
+    if (name === 'amountVariable') {
       if (selectedBill.amountIsVariable) {
         if (
           !amountVariables.includes(value) &&
-          value !== "{HALF}" &&
-          value !== "{FULL}" &&
-          value !== "-{HALF}" &&
-          value !== "-{FULL}"
+          value !== '{HALF}' &&
+          value !== '{FULL}' &&
+          value !== '-{HALF}' &&
+          value !== '-{FULL}'
         ) {
-          return "Invalid amount";
+          return 'Invalid amount';
         }
       }
     }
-    if (name === "amount") {
+    if (name === 'amount') {
       if (
-        (isNaN(value) || typeof value === "boolean") &&
-        value !== "{HALF}" &&
-        value !== "{FULL}" &&
-        value !== "-{HALF}" &&
-        value !== "-{FULL}"
+        (isNaN(value) || typeof value === 'boolean') &&
+        value !== '{HALF}' &&
+        value !== '{FULL}' &&
+        value !== '-{HALF}' &&
+        value !== '-{FULL}'
       ) {
-        return "Invalid amount";
+        return 'Invalid amount';
       }
     }
-    if (name === "isTransfer") {
-      if (typeof value !== "boolean") {
-        return "Invalid isTransfer";
+    if (name === 'isTransfer') {
+      if (typeof value !== 'boolean') {
+        return 'Invalid isTransfer';
       }
     }
-    if (name === "from" || name === "to") {
+    if (name === 'from' || name === 'to') {
       if (selectedBill && !selectedBill.isTransfer) {
         return null;
       }
       if (!accountList.find((a) => a.items.find((i) => i.value === value))) {
-        return "Invalid account";
+        return 'Invalid account';
       }
     }
-    if (name === "category") {
+    if (name === 'category') {
       if (!categories.find((c) => !!c.items.find((i) => i.value === value))) {
-        return "Invalid category";
+        return 'Invalid category';
       }
     }
-    if (name === "name") {
-      if (!selectedBill.name || selectedBill.name.trim() === "") {
-        return "Invalid name";
+    if (name === 'name') {
+      if (!selectedBill.name || selectedBill.name.trim() === '') {
+        return 'Invalid name';
       }
     }
-    if (name === "everyN") {
-      if (isNaN(value) || typeof value === "boolean") {
-        return "Invalid everyN";
+    if (name === 'everyN') {
+      if (isNaN(value) || typeof value === 'boolean') {
+        return 'Invalid everyN';
       }
     }
-    if (name === "periods") {
-      if (!["day", "week", "month", "year"].includes(value)) {
-        return "Invalid periods";
+    if (name === 'periods') {
+      if (!['day', 'week', 'month', 'year'].includes(value)) {
+        return 'Invalid periods';
       }
     }
-    if (name === "annualStartDate" || name === "annualEndDate") {
-      if (value === "" || value === undefined || value === null) {
+    if (name === 'annualStartDate' || name === 'annualEndDate') {
+      if (value === '' || value === undefined || value === null) {
         return null;
       }
-      const dateParts = value.split("/");
+      const dateParts = value.split('/');
       if (dateParts.length !== 2) {
-        return "Invalid date format - use MM/DD";
+        return 'Invalid date format - use MM/DD';
       }
 
       const month = parseInt(dateParts[0]);
       const day = parseInt(dateParts[1]);
 
       if (isNaN(month) || month < 1 || month > 12) {
-        return "Invalid month";
+        return 'Invalid month';
       }
 
       if (month < 10 && dateParts[0].length === 1) {
-        return "Please use 01, 02, 03, etc.";
+        return 'Please use 01, 02, 03, etc.';
       }
 
       if (day < 10 && dateParts[1].length === 1) {
-        return "Please use 01, 02, 03, etc.";
+        return 'Please use 01, 02, 03, etc.';
       }
 
       const daysInMonth = new Date(2024, month, 0).getDate();
       if (isNaN(day) || day < 1 || day > daysInMonth) {
-        return "Invalid day for month";
+        return 'Invalid day for month';
       }
     }
-    if (name === "increaseBy") {
-      if (isNaN(value) || typeof value === "boolean") {
-        return "Invalid increaseBy";
+    if (name === 'increaseBy') {
+      if (isNaN(value) || typeof value === 'boolean') {
+        return 'Invalid increaseBy';
       }
     }
-    if (name === "increaseByVariable") {
+    if (name === 'increaseByVariable') {
       if (selectedBill.increaseByIsVariable) {
         if (!amountVariables.includes(value)) {
-          return "Invalid increaseBy";
+          return 'Invalid increaseBy';
         }
       }
     }
-    if (name === "increaseByPeriods") {
-      if (!["day", "week", "month", "year"].includes(value)) {
-        return "Invalid increaseByPeriods";
+    if (name === 'increaseByDate') {
+      const dateParts = value.split('/');
+      if (dateParts.length !== 2) {
+        return 'Invalid date format - use MM/DD';
+      }
+
+      const month = parseInt(dateParts[0]);
+      const day = parseInt(dateParts[1]);
+
+      if (isNaN(month) || month < 1 || month > 12) {
+        return 'Invalid month';
+      }
+
+      if (month < 10 && dateParts[0].length === 1) {
+        return 'Please use 01, 02, 03, etc.';
+      }
+
+      if (day < 10 && dateParts[1].length === 1) {
+        return 'Please use 01, 02, 03, etc.';
+      }
+
+      const daysInMonth = new Date(2024, month, 0).getDate();
+      if (isNaN(day) || day < 1 || day > daysInMonth) {
+        return 'Invalid day for month';
       }
     }
-    if (name === "flag") {
-      if (typeof value !== "boolean") {
-        return "Invalid flag";
+    if (name === 'flag') {
+      if (typeof value !== 'boolean') {
+        return 'Invalid flag';
       }
     }
-    if (name === "flagColor") {
+    if (name === 'flagColor') {
       if (!theme.colors[value] && value !== null) {
-        return "Invalid flagColor";
+        return 'Invalid flagColor';
       }
     }
 
@@ -283,8 +288,8 @@ export const BillEditor = ({
     }
     return bill || selectedBill
       ? Object.entries(bill || (selectedBill as Bill)).every(([key, value]) => {
-        return validate(key, value) === null;
-      })
+          return validate(key, value) === null;
+        })
       : false;
   };
 
@@ -294,23 +299,15 @@ export const BillEditor = ({
     }
     const bill = selectedBill
       ? {
-        ...selectedBill,
-        amount: amount || selectedBill.amount,
-      }
+          ...selectedBill,
+          amount: amount || selectedBill.amount,
+        }
       : null;
     if (!allValid(bill)) {
-      console.log(bill, "not valid");
+      console.log(bill, 'not valid');
       return;
     }
-    dispatch(
-      saveBill(
-        account as Account,
-        selectedBill as Bill,
-        startDate,
-        endDate,
-        graphEndDate,
-      ),
-    );
+    dispatch(saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphEndDate));
     resetSelected();
   };
 
@@ -318,7 +315,7 @@ export const BillEditor = ({
     <Stack h="100%" w="100%" justify="space-between" pos="relative">
       <LoadingOverlay
         visible={showLoading}
-        loaderProps={{ color: "blue.6", size: "xl" }}
+        loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       {selectedBill ? (
@@ -355,10 +352,7 @@ export const BillEditor = ({
                     }),
                   );
                 }}
-                error={validate(
-                  "startDateVariable",
-                  selectedBill.startDateVariable,
-                )}
+                error={validate('startDateVariable', selectedBill.startDateVariable)}
               />
             )}
             <ActionIcon
@@ -371,11 +365,7 @@ export const BillEditor = ({
                 );
               }}
             >
-              {selectedBill.startDateIsVariable ? (
-                <IconVariable />
-              ) : (
-                <IconVariableOff />
-              )}
+              {selectedBill.startDateIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
           </Group>
           <Group w="100%">
@@ -408,10 +398,7 @@ export const BillEditor = ({
                     }),
                   );
                 }}
-                error={validate(
-                  "endDateVariable",
-                  selectedBill.endDateVariable,
-                )}
+                error={validate('endDateVariable', selectedBill.endDateVariable)}
               />
             )}
             <ActionIcon
@@ -424,21 +411,17 @@ export const BillEditor = ({
                 );
               }}
             >
-              {selectedBill.endDateIsVariable ? (
-                <IconVariable />
-              ) : (
-                <IconVariableOff />
-              )}
+              {selectedBill.endDateIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
           </Group>
           <CreatableSelect
             label="Name"
-            error={validate("name", selectedBill.name)}
+            error={validate('name', selectedBill.name)}
             value={selectedBill.name}
             onChange={(v: string | null) => {
               const newBill = {
                 ...selectedBill,
-                name: v || "",
+                name: v || '',
               };
               if (!categoryTouched && v && v in names) {
                 newBill.category = names[v];
@@ -459,13 +442,13 @@ export const BillEditor = ({
               dispatch(
                 updateBill({
                   ...selectedBill,
-                  category: v ? v : "",
+                  category: v ? v : '',
                 }),
               );
               setCategoryTouched(true);
             }}
             searchable
-            error={validate("category", selectedBill.category)}
+            error={validate('category', selectedBill.category)}
           />
           <Checkbox
             label="Is this a transfer?"
@@ -478,7 +461,7 @@ export const BillEditor = ({
                 }),
               );
             }}
-            error={validate("isTransfer", selectedBill.isTransfer)}
+            error={validate('isTransfer', selectedBill.isTransfer)}
           />
           {selectedBill.isTransfer && (
             <>
@@ -491,7 +474,7 @@ export const BillEditor = ({
                 onChange={(v) => {
                   dispatch(updateBill({ ...selectedBill, from: v }));
                 }}
-                error={validate("from", selectedBill.from)}
+                error={validate('from', selectedBill.from)}
               />
               <Select
                 label="To Account"
@@ -502,7 +485,7 @@ export const BillEditor = ({
                 onChange={(v) => {
                   dispatch(updateBill({ ...selectedBill, to: v }));
                 }}
-                error={validate("to", selectedBill.to)}
+                error={validate('to', selectedBill.to)}
               />
             </>
           )}
@@ -511,20 +494,16 @@ export const BillEditor = ({
               <CalculatorEditor
                 style={{ flex: 1 }}
                 label="Amount"
-                value={
-                  selectedBill.isTransfer
-                    ? Math.abs(Number(selectedBill.amount))
-                    : Number(selectedBill.amount)
-                }
+                value={selectedBill.isTransfer ? Math.abs(Number(selectedBill.amount)) : Number(selectedBill.amount)}
                 onChange={(v) => {
                   dispatch(
                     updateBill({
                       ...selectedBill,
-                      amount: typeof v === "number" ? v : parseFloat(v),
+                      amount: typeof v === 'number' ? v : parseFloat(v),
                     }),
                   );
                 }}
-                error={validate("amount", selectedBill.amount) || undefined}
+                error={validate('amount', selectedBill.amount) || undefined}
                 handleEnter={handleEnter}
               />
             )}
@@ -535,10 +514,10 @@ export const BillEditor = ({
                 data={amountVariables
                   .map((v) => ({ label: v, value: v }))
                   .concat([
-                    { label: "{HALF}", value: "{HALF}" },
-                    { label: "{FULL}", value: "{FULL}" },
-                    { label: "-{HALF}", value: "-{HALF}" },
-                    { label: "-{FULL}", value: "-{FULL}" },
+                    { label: '{HALF}', value: '{HALF}' },
+                    { label: '{FULL}', value: '{FULL}' },
+                    { label: '-{HALF}', value: '-{HALF}' },
+                    { label: '-{FULL}', value: '-{FULL}' },
                   ])}
                 onChange={(v) => {
                   if (!v) return;
@@ -549,7 +528,7 @@ export const BillEditor = ({
                     }),
                   );
                 }}
-                error={validate("amountVariable", selectedBill.amountVariable)}
+                error={validate('amountVariable', selectedBill.amountVariable)}
               />
             )}
             <ActionIcon
@@ -562,11 +541,7 @@ export const BillEditor = ({
                 );
               }}
             >
-              {selectedBill.amountIsVariable ? (
-                <IconVariable />
-              ) : (
-                <IconVariableOff />
-              )}
+              {selectedBill.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
           </Group>
           <Group grow w="100%">
@@ -577,14 +552,14 @@ export const BillEditor = ({
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    everyN: typeof v === "number" ? v : parseInt(v),
+                    everyN: typeof v === 'number' ? v : parseInt(v),
                   }),
                 );
               }}
               min={1}
-              error={validate("everyN", selectedBill.everyN)}
+              error={validate('everyN', selectedBill.everyN)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === 'Enter') {
                   handleEnter();
                 }
               }}
@@ -593,53 +568,51 @@ export const BillEditor = ({
               label="Periods"
               value={selectedBill.periods}
               data={[
-                { value: "day", label: "Day" },
-                { value: "week", label: "Week" },
-                { value: "month", label: "Month" },
-                { value: "year", label: "Year" },
+                { value: 'day', label: 'Day' },
+                { value: 'week', label: 'Week' },
+                { value: 'month', label: 'Month' },
+                { value: 'year', label: 'Year' },
               ]}
               onChange={(v) => {
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    periods: v ? v : "",
+                    periods: v ? v : '',
                   }),
                 );
               }}
               searchable
-              error={validate("periods", selectedBill.periods)}
+              error={validate('periods', selectedBill.periods)}
             />
           </Group>
           <Group w="100%">
             <TextInput
               label="Annual start date"
-              value={selectedBill.annualStartDate || ""}
+              value={selectedBill.annualStartDate || ''}
               onChange={(e) => {
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    annualStartDate:
-                      e.target.value === "" ? null : e.target.value,
+                    annualStartDate: e.target.value === '' ? null : e.target.value,
                   }),
                 );
               }}
-              error={validate("annualStartDate", selectedBill.annualStartDate)}
+              error={validate('annualStartDate', selectedBill.annualStartDate)}
               placeholder="MM/DD"
             />
             <TextInput
               label="Annual end date"
-              value={selectedBill.annualEndDate || ""}
+              value={selectedBill.annualEndDate || ''}
               onChange={(e) => {
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    annualEndDate:
-                      e.target.value === "" ? null : e.target.value,
+                    annualEndDate: e.target.value === '' ? null : e.target.value,
                   }),
                 );
               }}
               placeholder="MM/DD"
-              error={validate("annualEndDate", selectedBill.annualEndDate)}
+              error={validate('annualEndDate', selectedBill.annualEndDate)}
             />
           </Group>
           <Group w="100%">
@@ -657,13 +630,11 @@ export const BillEditor = ({
                     dispatch(
                       updateBill({
                         ...selectedBill,
-                        increaseBy: typeof v === "number" ? v : parseFloat(v),
+                        increaseBy: typeof v === 'number' ? v : parseFloat(v),
                       }),
                     );
                   }}
-                  error={
-                    validate("increaseBy", selectedBill.increaseBy) || undefined
-                  }
+                  error={validate('increaseBy', selectedBill.increaseBy) || undefined}
                   handleEnter={handleEnter}
                 />
               )}
@@ -684,10 +655,7 @@ export const BillEditor = ({
                       }),
                     );
                   }}
-                  error={validate(
-                    "increaseByVariable",
-                    selectedBill.increaseByVariable,
-                  )}
+                  error={validate('increaseByVariable', selectedBill.increaseByVariable)}
                 />
               )}
               <ActionIcon
@@ -700,36 +668,22 @@ export const BillEditor = ({
                   );
                 }}
               >
-                {selectedBill.increaseByIsVariable ? (
-                  <IconVariable />
-                ) : (
-                  <IconVariableOff />
-                )}
+                {selectedBill.increaseByIsVariable ? <IconVariable /> : <IconVariableOff />}
               </ActionIcon>
             </Group>
-            <Select
-              style={{ flex: 1 }}
-              label="Increase by periods"
-              value={selectedBill.increaseByPeriods}
-              data={[
-                { value: "day", label: "Day" },
-                { value: "week", label: "Week" },
-                { value: "month", label: "Month" },
-                { value: "year", label: "Year" },
-              ]}
-              onChange={(v) => {
+            <TextInput
+              label="Increase By Date"
+              value={selectedBill.increaseByDate}
+              onChange={(e) => {
                 dispatch(
                   updateBill({
                     ...selectedBill,
-                    increaseByPeriods: v ? v : "",
+                    increaseByDate: e.target.value,
                   }),
                 );
               }}
-              searchable
-              error={validate(
-                "increaseByPeriods",
-                selectedBill.increaseByPeriods,
-              )}
+              error={validate('increaseByDate', selectedBill.increaseByDate)}
+              placeholder="MM/DD"
             />
           </Group>
           <Group w="100%">
@@ -744,15 +698,7 @@ export const BillEditor = ({
             <Button
               disabled={!allValid()}
               onClick={() => {
-                dispatch(
-                  saveBill(
-                    account as Account,
-                    selectedBill as Bill,
-                    startDate,
-                    endDate,
-                    graphEndDate,
-                  ),
-                );
+                dispatch(saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphEndDate));
                 resetSelected();
               }}
             >

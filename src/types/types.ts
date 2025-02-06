@@ -61,7 +61,7 @@ export type Bill = {
   increaseBy: number;
   increaseByIsVariable: boolean;
   increaseByVariable: string | null;
-  increaseByPeriods: string;
+  increaseByDate: string;
 };
 
 export type Interest = {

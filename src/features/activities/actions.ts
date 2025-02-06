@@ -63,6 +63,16 @@ export const loadAndSelectBill = (accountId: string, billId: string, isTransfer:
   };
 };
 
+export const loadAndDuplicateBill = (accountId: string, billId: string, isTransfer: boolean): AppThunk => {
+  return async (dispatch) => {
+    dispatch(setSelectedBillLoaded(false));
+    const bill = await fetchBill(accountId, billId, isTransfer);
+    bill.id = undefined;
+    bill.name = `Copy of ${bill.name}`;
+    dispatch(setSelectedBill(bill));
+  };
+};
+
 export const saveActivity = (
   account: Account,
   activity: Activity,
@@ -78,7 +88,22 @@ export const saveActivity = (
     } else if (interestId) {
       await fetchAddInterestActivity(account.id, activity, interestId);
     } else if (activity.id) {
-      await fetchSaveActivity(account.id, activity);
+      if (activity.id === 'AUTO-PULL' || activity.id === 'RMD') {
+        // Enter as a new activity
+        activity.id = undefined;
+        fetchAddActivity(account.id, activity);
+      } else if (activity.id === 'TAX') {
+        // Do nothing, we shouldn't be able to edit tax
+        return;
+      } else if (activity.id === 'SOCIAL-SECURITY') {
+        // Do nothing, we shouldn't be able to edit social security
+        return;
+      } else if (activity.id === 'PENSION') {
+        // Do nothing, we shouldn't be able to edit pension
+        return;
+      } else {
+        await fetchSaveActivity(account.id, activity);
+      }
     } else {
       await fetchAddActivity(account.id, activity);
     }

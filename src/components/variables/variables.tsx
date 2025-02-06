@@ -1,29 +1,20 @@
 import React from 'react';
-import {
-  ActionIcon,
-  Button,
-  LoadingOverlay,
-  NumberInput,
-  Stack,
-  Table,
-  Text,
-  TextInput,
-} from "@mantine/core";
-import { useDispatch, useSelector } from "react-redux";
+import { ActionIcon, Button, LoadingOverlay, NumberInput, Stack, Table, Text, TextInput } from '@mantine/core';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectSelectedSimulation,
   selectSimulations,
   selectUsedVariables,
   selectUsedVariablesLoaded,
-} from "../../features/simulations/select";
-import { AppDispatch } from "../../store";
-import { saveSimulations } from "../../features/simulations/actions";
-import { IconX } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { ConditionalTooltip } from "../helpers/conditionalTooltip";
-import { UsedVariable } from "../../types/types";
-import { toDateString } from "../../utils/date";
-import { EditableDateInput } from "../helpers/editableDateInput";
+} from '../../features/simulations/select';
+import { AppDispatch } from '../../store';
+import { saveSimulations } from '../../features/simulations/actions';
+import { IconX } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import { ConditionalTooltip } from '../helpers/conditionalTooltip';
+import { UsedVariable } from '../../types/types';
+import { toDateString } from '../../utils/date';
+import { EditableDateInput } from '../helpers/editableDateInput';
 
 function UsedVariableTooltip({ used }: { used: UsedVariable[] }) {
   return (
@@ -42,10 +33,8 @@ function UsedVariableTooltip({ used }: { used: UsedVariable[] }) {
             return (
               <Table.Tr key={u.name}>
                 <Table.Td>{u.name}</Table.Td>
-                <Table.Td>{u.account || u.from || "unknown"}</Table.Td>
-                <Table.Td>
-                  {u.date ? new Date(u.date).toLocaleDateString() : "variable"}
-                </Table.Td>
+                <Table.Td>{u.account || u.from || 'unknown'}</Table.Td>
+                <Table.Td>{u.date ? new Date(u.date).toLocaleDateString() : 'variable'}</Table.Td>
               </Table.Tr>
             );
           })}
@@ -119,14 +108,12 @@ export default function Variables() {
                       value={variableNames[idx]}
                       onBlur={() => {
                         if (
-                          variableNames[idx] === "" ||
+                          variableNames[idx] === '' ||
                           variableNames[idx] === undefined ||
                           variableNames[idx] === null
                         )
                           return;
-                        setVariableNames(
-                          variableNames.map((name, i) => (i === idx ? variable : name)),
-                        );
+                        setVariableNames(variableNames.map((name, i) => (i === idx ? variable : name)));
                         dispatch(
                           saveSimulations(
                             simulations.map((s) => {
@@ -144,16 +131,12 @@ export default function Variables() {
                         );
                       }}
                       onChange={(event) => {
-                        setVariableNames(
-                          variableNames.map((n, i) =>
-                            i === idx ? event.target.value : n,
-                          ),
-                        );
+                        setVariableNames(variableNames.map((n, i) => (i === idx ? event.target.value : n)));
                       }}
                     />
                   </Table.Td>
                   <Table.Td>
-                    {value.type === "amount" && (
+                    {value.type === 'amount' && (
                       <NumberInput
                         style={{ flex: 1 }}
                         label="Value"
@@ -167,10 +150,7 @@ export default function Variables() {
                                   ...s.variables,
                                   [variable]: {
                                     ...s.variables[variable],
-                                    value:
-                                      typeof amount === "number"
-                                        ? amount
-                                        : parseFloat(amount),
+                                    value: typeof amount === 'number' ? amount : parseFloat(amount),
                                   },
                                 },
                               })),
@@ -178,40 +158,37 @@ export default function Variables() {
                           )
                         }
                       />
-                    )
-                    }
-                    {
-                      value.type === "date" && (
-                        <EditableDateInput
-                          label="Value"
-                          value={value.value as string}
-                          onBlur={(date) => {
-                            if (!date) {
-                              return;
-                            }
-                            dispatch(
-                              saveSimulations(
-                                simulations.map((s) => ({
-                                  ...s,
-                                  variables: {
-                                    ...s.variables,
-                                    [variable]: {
-                                      ...s.variables[variable],
-                                      value: date,
-                                    },
+                    )}
+                    {value.type === 'date' && (
+                      <EditableDateInput
+                        label="Value"
+                        value={value.value as string}
+                        onBlur={(date) => {
+                          if (!date) {
+                            return;
+                          }
+                          dispatch(
+                            saveSimulations(
+                              simulations.map((s) => ({
+                                ...s,
+                                variables: {
+                                  ...s.variables,
+                                  [variable]: {
+                                    ...s.variables[variable],
+                                    value: date,
                                   },
-                                })),
-                              ),
-                            );
-                          }}
-                          placeholder="Select date"
-                        />
-                      )
-                    }
+                                },
+                              })),
+                            ),
+                          );
+                        }}
+                        placeholder="Select date"
+                      />
+                    )}
                   </Table.Td>
-                  <Table.Td style={{ position: "relative" }}>
+                  <Table.Td style={{ position: 'relative' }}>
                     <ActionIcon
-                      style={{ bottom: "px", position: "absolute" }}
+                      style={{ bottom: 'px', position: 'absolute' }}
                       size="34px"
                       disabled={usedVariables[variable]?.length > 0}
                       onClick={() =>
@@ -250,7 +227,7 @@ export default function Variables() {
                         variables: {
                           ...s.variables,
                           [`Variable ${Object.keys(s.variables).length}`]: {
-                            type: "amount",
+                            type: 'amount',
                             value: 0,
                           },
                         },
@@ -273,7 +250,7 @@ export default function Variables() {
                         variables: {
                           ...s.variables,
                           [`Variable ${Object.keys(s.variables).length}`]: {
-                            type: "date",
+                            type: 'date',
                             value: toDateString(new Date()),
                           },
                         },
