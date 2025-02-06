@@ -25,9 +25,7 @@ function UsedVariableTooltip({ used }: { used: UsedVariable[] }) {
           <Table.Tr>
             <Table.Th>Name</Table.Th>
             <Table.Th>Account</Table.Th>
-            {used.some((u) => !!u.date) && (
-              <Table.Th>Date</Table.Th>
-            )}
+            {used.some((u) => !!u.date) && <Table.Th>Date</Table.Th>}
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -36,9 +34,7 @@ function UsedVariableTooltip({ used }: { used: UsedVariable[] }) {
               <Table.Tr key={idx}>
                 <Table.Td>{u.name}</Table.Td>
                 <Table.Td>{u.account || u.from || 'unknown'}</Table.Td>
-                {!!u.date && (
-                  <Table.Td>{new Date(u.date).toLocaleDateString()}</Table.Td>
-                )}
+                {!!u.date && <Table.Td>{new Date(u.date).toLocaleDateString()}</Table.Td>}
               </Table.Tr>
             );
           })}
@@ -155,7 +151,15 @@ export default function Variables() {
                           setVariableValues(variableValues.map((v, i) => (i === idx ? amount : v)));
                         }}
                         onBlur={(event) => {
-                          setVariableValues(variableValues.map((v, i) => (i === idx ? typeof event.target.value === 'number' ? event.target.value : parseFloat(event.target.value) : v)));
+                          setVariableValues(
+                            variableValues.map((v, i) =>
+                              i === idx
+                                ? typeof event.target.value === 'number'
+                                  ? event.target.value
+                                  : parseFloat(event.target.value)
+                                : v,
+                            ),
+                          );
                           if (variableValues[idx] !== value.value) {
                             dispatch(
                               saveSimulations(
@@ -165,7 +169,10 @@ export default function Variables() {
                                     ...s.variables,
                                     [variable]: {
                                       ...s.variables[variable],
-                                      value: typeof event.target.value === 'number' ? event.target.value : parseFloat(event.target.value),
+                                      value:
+                                        typeof event.target.value === 'number'
+                                          ? event.target.value
+                                          : parseFloat(event.target.value),
                                     },
                                   },
                                 })),
