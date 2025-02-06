@@ -114,7 +114,7 @@ export type GraphActivity = {
 
 export type Simulation = {
   name: string;
-  variables: Record<string, { type: string; value: number | string | boolean }>;
+  variables: Record<string, { type: string; value: number | string }>;
   enabled: boolean;
   selected: boolean;
 };

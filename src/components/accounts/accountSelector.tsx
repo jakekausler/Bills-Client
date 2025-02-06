@@ -87,7 +87,7 @@ export default function AccountSelector({
             </Table.Td>
           </Table.Tr>
           {Object.entries(accountsWithCategories).map(([type, accounts]) => (
-            <>
+            <React.Fragment key={type}>
               <Table.Tr>
                 <Table.Td><Box h={8} /></Table.Td>
               </Table.Tr>
@@ -133,7 +133,7 @@ export default function AccountSelector({
                   </Table.Td>
                 </Table.Tr>
               ))}
-            </>
+            </React.Fragment>
           ))}
         </Table.Tbody>
       </Table>

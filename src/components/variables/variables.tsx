@@ -51,6 +51,9 @@ export default function Variables() {
   const [variableNames, setVariableNames] = useState<string[]>(
     simulation?.variables ? Object.keys(simulation.variables) : [],
   );
+  const [variableValues, setVariableValues] = useState<(string | number)[]>(
+    simulation?.variables ? Object.values(simulation.variables).map((v) => v.value) : [],
+  );
   const usedVariables = useSelector(selectUsedVariables);
   const variablesLoaded = useSelector(selectUsedVariablesLoaded);
 
@@ -74,6 +77,7 @@ export default function Variables() {
       return;
     }
     setVariableNames(Object.keys(simulation.variables));
+    setVariableValues(Object.values(simulation.variables).map((v) => v.value));
   }, [simulation]);
 
   if (!simulation) {
@@ -140,8 +144,12 @@ export default function Variables() {
                       <NumberInput
                         style={{ flex: 1 }}
                         label="Value"
-                        value={value.value as number}
-                        onChange={(amount) =>
+                        value={variableValues[idx]}
+                        onChange={(amount) => {
+                          setVariableValues(variableValues.map((v, i) => (i === idx ? amount : v)));
+                        }}
+                        onBlur={(event) => {
+                          setVariableValues(variableValues.map((v, i) => (i === idx ? typeof event.target.value === 'number' ? event.target.value : parseFloat(event.target.value) : v)));
                           dispatch(
                             saveSimulations(
                               simulations.map((s) => ({
@@ -150,13 +158,13 @@ export default function Variables() {
                                   ...s.variables,
                                   [variable]: {
                                     ...s.variables[variable],
-                                    value: typeof amount === 'number' ? amount : parseFloat(amount),
+                                    value: typeof event.target.value === 'number' ? event.target.value : parseFloat(event.target.value),
                                   },
                                 },
                               })),
                             ),
-                          )
-                        }
+                          );
+                        }}
                       />
                     )}
                     {value.type === 'date' && (

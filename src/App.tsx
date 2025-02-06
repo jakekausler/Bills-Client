@@ -174,8 +174,10 @@ function AppContent() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p="md">
-        <SidebarComponent close={close} />
+      <AppShell.Navbar p="md" style={{ overflow: 'auto' }}>
+        <Box>
+          <SidebarComponent close={close} />
+        </Box>
       </AppShell.Navbar>
 
       <AppShell.Main>
