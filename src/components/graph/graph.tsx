@@ -59,6 +59,7 @@ export function Graph({ style, datasets, labels, type, endDate, loaded, setGraph
               pointHoverRadius: 5,
               pointHitRadius: 10,
               ...dataset,
+              data: dataset.data.map((d, i) => (d === 0 && (i === 0 || dataset.data[i - 1] === 0) ? null : d)),
             })),
             labels,
           }}
