@@ -20,6 +20,7 @@ import {
   Stack,
   Text,
   TextInput,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   selectCategories,
@@ -41,7 +42,7 @@ import CreatableSelect from "../helpers/creatableSelect";
 import { useEffect, useState } from "react";
 import { EditableDateInput } from "../helpers/editableDateInput";
 import { CalculatorEditor } from "../helpers/calculatorEditor";
-
+import { FlagSelect } from "../helpers/flagSelect";
 export const BillEditor = ({
   resetSelected,
 }: {
@@ -76,13 +77,13 @@ export const BillEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === "amount")
-        .map(([name, _]) => name)
+      .filter(([_, value]) => value.type === "amount")
+      .map(([name, _]) => name)
     : [];
   const dateVariables = simulationVariables
     ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === "date")
-        .map(([name, _]) => name)
+      .filter(([_, value]) => value.type === "date")
+      .map(([name, _]) => name)
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
@@ -123,6 +124,8 @@ export const BillEditor = ({
       setShowLoading(false);
     }
   }, [billLoaded, accountsLoaded, categoriesLoaded, namesLoaded]);
+
+  const theme = useMantineTheme();
 
   const validate = (name: string, value: any) => {
     if (!selectedBill) {
@@ -260,6 +263,17 @@ export const BillEditor = ({
         return "Invalid increaseByPeriods";
       }
     }
+    if (name === "flag") {
+      if (typeof value !== "boolean") {
+        return "Invalid flag";
+      }
+    }
+    if (name === "flagColor") {
+      if (!theme.colors[value] && value !== null) {
+        return "Invalid flagColor";
+      }
+    }
+
     return null;
   };
 
@@ -269,8 +283,8 @@ export const BillEditor = ({
     }
     return bill || selectedBill
       ? Object.entries(bill || (selectedBill as Bill)).every(([key, value]) => {
-          return validate(key, value) === null;
-        })
+        return validate(key, value) === null;
+      })
       : false;
   };
 
@@ -280,9 +294,9 @@ export const BillEditor = ({
     }
     const bill = selectedBill
       ? {
-          ...selectedBill,
-          amount: amount || selectedBill.amount,
-        }
+        ...selectedBill,
+        amount: amount || selectedBill.amount,
+      }
       : null;
     if (!allValid(bill)) {
       console.log(bill, "not valid");
@@ -716,6 +730,14 @@ export const BillEditor = ({
                 "increaseByPeriods",
                 selectedBill.increaseByPeriods,
               )}
+            />
+          </Group>
+          <Group w="100%">
+            <FlagSelect
+              flagColor={selectedBill.flagColor}
+              onChange={(v: { flagColor: string | null; flag: boolean }) => {
+                dispatch(updateBill({ ...selectedBill, flagColor: v.flagColor, flag: v.flag }));
+              }}
             />
           </Group>
           <Group w="100%" grow>

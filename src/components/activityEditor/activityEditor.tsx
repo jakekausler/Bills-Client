@@ -20,6 +20,7 @@ import {
   Select,
   Stack,
   Text,
+  useMantineTheme,
 } from "@mantine/core";
 import { AppDispatch } from "../../store";
 import { updateActivity } from "../../features/activities/slice";
@@ -44,6 +45,7 @@ import CreatableSelect from "../helpers/creatableSelect";
 import { useEffect, useState } from "react";
 import { EditableDateInput } from "../helpers/editableDateInput";
 import { CalculatorEditor } from "../helpers/calculatorEditor";
+import { FlagSelect } from "../helpers/flagSelect";
 
 export const ActivityEditor = ({
   resetSelected,
@@ -105,13 +107,13 @@ export const ActivityEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === "amount")
-        .map(([name, _]) => name)
+      .filter(([_, value]) => value.type === "amount")
+      .map(([name, _]) => name)
     : [];
   const dateVariables = simulationVariables
     ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === "date")
-        .map(([name, _]) => name)
+      .filter(([_, value]) => value.type === "date")
+      .map(([name, _]) => name)
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
@@ -137,6 +139,8 @@ export const ActivityEditor = ({
   if (!selectedActivity) {
     return <Text>No activity selected</Text>;
   }
+
+  const theme = useMantineTheme();
 
   const validate = (name: string, value: string | number | boolean | null) => {
     if (name === "dateVariable") {
@@ -176,6 +180,11 @@ export const ActivityEditor = ({
     if (name === "flag") {
       if (typeof value !== "boolean") {
         return "Invalid flag";
+      }
+    }
+    if (name === "flagColor") {
+      if (value !== null && !theme.colors[value as string]) {
+        return "Invalid flagColor";
       }
     }
     if (name === "from" || name === "to") {
@@ -387,49 +396,49 @@ export const ActivityEditor = ({
             {((!selectedActivity.amountVariable ||
               selectedActivity.amountVariable === "{HALF}" ||
               selectedActivity.amountVariable === "{FULL}") && (
-              <Group w="100%" style={{ flex: 1 }}>
-                <CalculatorEditor
-                  style={{ flex: 1 }}
+                <Group w="100%" style={{ flex: 1 }}>
+                  <CalculatorEditor
+                    style={{ flex: 1 }}
+                    label="Amount"
+                    value={
+                      selectedActivity.isTransfer
+                        ? Math.abs(Number(selectedActivity.amount))
+                        : Number(selectedActivity.amount)
+                    }
+                    onChange={(v: number) => {
+                      dispatch(
+                        updateActivity({
+                          ...selectedActivity,
+                          amount: v,
+                        }),
+                      );
+                    }}
+                    error={
+                      validate("amount", selectedActivity.amount) || undefined
+                    }
+                    handleEnter={handleEnter}
+                  />
+                </Group>
+              )) || (
+                <Select
                   label="Amount"
-                  value={
-                    selectedActivity.isTransfer
-                      ? Math.abs(Number(selectedActivity.amount))
-                      : Number(selectedActivity.amount)
-                  }
-                  onChange={(v: number) => {
+                  value={selectedActivity.amountVariable as string}
+                  data={amountVariables.map((v) => ({ label: v, value: v }))}
+                  onChange={(v) => {
+                    if (!v) return;
                     dispatch(
                       updateActivity({
                         ...selectedActivity,
-                        amount: v,
+                        amountVariable: v,
                       }),
                     );
                   }}
-                  error={
-                    validate("amount", selectedActivity.amount) || undefined
-                  }
-                  handleEnter={handleEnter}
+                  error={validate(
+                    "amountVariable",
+                    selectedActivity.amountVariable,
+                  )}
                 />
-              </Group>
-            )) || (
-              <Select
-                label="Amount"
-                value={selectedActivity.amountVariable as string}
-                data={amountVariables.map((v) => ({ label: v, value: v }))}
-                onChange={(v) => {
-                  if (!v) return;
-                  dispatch(
-                    updateActivity({
-                      ...selectedActivity,
-                      amountVariable: v,
-                    }),
-                  );
-                }}
-                error={validate(
-                  "amountVariable",
-                  selectedActivity.amountVariable,
-                )}
-              />
-            )}
+              )}
             <ActionIcon
               onClick={() => {
                 dispatch(
@@ -447,18 +456,16 @@ export const ActivityEditor = ({
               )}
             </ActionIcon>
           </Group>
-          <Checkbox
-            label="Flag this transaction?"
-            checked={selectedActivity.flag}
-            onChange={(event) => {
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  flag: event.currentTarget.checked,
-                }),
-              );
+          <FlagSelect
+            flagColor={selectedActivity.flagColor}
+            onChange={(v: { flagColor: string | null; flag: boolean }) => {
+              dispatch(updateActivity({ ...selectedActivity, flagColor: v.flagColor, flag: v.flag }));
             }}
-            error={validate("flag", selectedActivity.flag)}
+            dropdownProps={{
+              zIndex: 1001,
+              withinPortal: true,
+              position: "bottom",
+            }}
           />
           <Group w="100%" grow>
             <Button

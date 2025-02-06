@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Group, LoadingOverlay, Modal, Select, Stack, Table } from "@mantine/core";
+import { Button, Group, LoadingOverlay, Modal, Select, Stack, Table, useMantineTheme } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectActivitiesLoaded,
@@ -38,7 +38,7 @@ import { ActivityEditor } from "../activityEditor/activityEditor";
 import { selectAllAccounts, selectSelectedAccount } from "../../features/accounts/select";
 import { useEffect, useState } from "react";
 import { useContextMenu } from "mantine-contextmenu";
-import { IconCurrencyDollar, IconEdit, IconPlayerSkipForward, IconSwitch, IconTrash } from "@tabler/icons-react";
+import { IconCurrencyDollar, IconEdit, IconFlag, IconPlayerSkipForward, IconSwitch, IconTrash } from "@tabler/icons-react";
 import { selectGraphEndDate } from "../../features/graph/select";
 
 export default function Activities({ style }: ActivitiesProps) {
@@ -193,6 +193,8 @@ export default function Activities({ style }: ActivitiesProps) {
     }
   };
 
+  const theme = useMantineTheme();
+
   return (
     <>
       <Stack pos="relative" h="100%" style={{ ...style, overflow: "auto" }}>
@@ -230,9 +232,8 @@ export default function Activities({ style }: ActivitiesProps) {
                         ? "4px solid var(--mantine-color-gray-6)"
                         : undefined,
                   }}
-                  c={
-                    activity.billId ? "blue" : activity.interestId ? "blue" : ""
-                  }
+                  c={activity.flag ? (activity.flagColor ? theme.colors[activity.flagColor][activity.billId && activity.firstBill ? 6 : 4] : "gray") : ""}
+                  fs={activity.billId ? "italic" : undefined}
                   fw={
                     activity.firstBill
                       ? "bold"
@@ -319,7 +320,7 @@ export default function Activities({ style }: ActivitiesProps) {
                     return order[a.key as keyof typeof order] - order[b.key as keyof typeof order];
                   }))}
                 >
-                  <Table.Td fz="xs">{activity.flag ? "🚩" : ""}</Table.Td>
+                  <Table.Td fz="xs">{activity.flag ? <IconFlag color={activity.flagColor ? theme.colors[activity.flagColor][4] : "gray"} size={16} /> : ""}</Table.Td>
                   <Table.Td style={{ whiteSpace: "nowrap" }} fz="xs">
                     {new Date(`${activity.date}T00:00:00`).toLocaleDateString()}
                   </Table.Td>

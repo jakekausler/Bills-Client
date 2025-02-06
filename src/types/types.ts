@@ -11,6 +11,7 @@ export type BaseActivity = {
   category: string;
   amount: number | string;
   flag: boolean;
+  flagColor: string | null;
   amountIsVariable: boolean;
   amountVariable: string | null;
   isTransfer: boolean;
@@ -36,6 +37,7 @@ export type Bill = {
   category: string;
   amount: number | string;
   flag: boolean;
+  flagColor: string | null;
   amountIsVariable: boolean;
   amountVariable: string | null;
   isTransfer: boolean;
