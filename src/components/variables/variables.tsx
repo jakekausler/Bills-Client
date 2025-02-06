@@ -25,16 +25,20 @@ function UsedVariableTooltip({ used }: { used: UsedVariable[] }) {
           <Table.Tr>
             <Table.Th>Name</Table.Th>
             <Table.Th>Account</Table.Th>
-            <Table.Th>Date</Table.Th>
+            {used.some((u) => !!u.date) && (
+              <Table.Th>Date</Table.Th>
+            )}
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {used.map((u) => {
+          {used.map((u, idx) => {
             return (
-              <Table.Tr key={u.name}>
+              <Table.Tr key={idx}>
                 <Table.Td>{u.name}</Table.Td>
                 <Table.Td>{u.account || u.from || 'unknown'}</Table.Td>
-                <Table.Td>{u.date ? new Date(u.date).toLocaleDateString() : 'variable'}</Table.Td>
+                {!!u.date && (
+                  <Table.Td>{new Date(u.date).toLocaleDateString()}</Table.Td>
+                )}
               </Table.Tr>
             );
           })}
@@ -118,21 +122,23 @@ export default function Variables() {
                         )
                           return;
                         setVariableNames(variableNames.map((name, i) => (i === idx ? variable : name)));
-                        dispatch(
-                          saveSimulations(
-                            simulations.map((s) => {
-                              const updatedSimulation = {
-                                ...s,
-                                variables: {
-                                  ...s.variables,
-                                  [variableNames[idx]]: s.variables[variable],
-                                },
-                              };
-                              delete updatedSimulation.variables[variable];
-                              return updatedSimulation;
-                            }),
-                          ),
-                        );
+                        if (variableNames[idx] !== variable) {
+                          dispatch(
+                            saveSimulations(
+                              simulations.map((s) => {
+                                const updatedSimulation = {
+                                  ...s,
+                                  variables: {
+                                    ...s.variables,
+                                    [variableNames[idx]]: s.variables[variable],
+                                  },
+                                };
+                                delete updatedSimulation.variables[variable];
+                                return updatedSimulation;
+                              }),
+                            ),
+                          );
+                        }
                       }}
                       onChange={(event) => {
                         setVariableNames(variableNames.map((n, i) => (i === idx ? event.target.value : n)));
@@ -150,20 +156,22 @@ export default function Variables() {
                         }}
                         onBlur={(event) => {
                           setVariableValues(variableValues.map((v, i) => (i === idx ? typeof event.target.value === 'number' ? event.target.value : parseFloat(event.target.value) : v)));
-                          dispatch(
-                            saveSimulations(
-                              simulations.map((s) => ({
-                                ...s,
-                                variables: {
-                                  ...s.variables,
-                                  [variable]: {
-                                    ...s.variables[variable],
-                                    value: typeof event.target.value === 'number' ? event.target.value : parseFloat(event.target.value),
+                          if (variableValues[idx] !== value.value) {
+                            dispatch(
+                              saveSimulations(
+                                simulations.map((s) => ({
+                                  ...s,
+                                  variables: {
+                                    ...s.variables,
+                                    [variable]: {
+                                      ...s.variables[variable],
+                                      value: typeof event.target.value === 'number' ? event.target.value : parseFloat(event.target.value),
+                                    },
                                   },
-                                },
-                              })),
-                            ),
-                          );
+                                })),
+                              ),
+                            );
+                          }
                         }}
                       />
                     )}
@@ -175,20 +183,22 @@ export default function Variables() {
                           if (!date) {
                             return;
                           }
-                          dispatch(
-                            saveSimulations(
-                              simulations.map((s) => ({
-                                ...s,
-                                variables: {
-                                  ...s.variables,
-                                  [variable]: {
-                                    ...s.variables[variable],
-                                    value: date,
+                          if (date !== value.value) {
+                            dispatch(
+                              saveSimulations(
+                                simulations.map((s) => ({
+                                  ...s,
+                                  variables: {
+                                    ...s.variables,
+                                    [variable]: {
+                                      ...s.variables[variable],
+                                      value: date,
+                                    },
                                   },
-                                },
-                              })),
-                            ),
-                          );
+                                })),
+                              ),
+                            );
+                          }
                         }}
                         placeholder="Select date"
                       />
