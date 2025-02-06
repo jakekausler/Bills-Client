@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Group, LoadingOverlay, Modal, Select, Stack, Table, useMantineTheme } from '@mantine/core';
+import { Box, Button, Group, LoadingOverlay, Modal, Select, Stack, Table, useMantineTheme } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActivitiesLoaded,
@@ -178,97 +178,98 @@ export default function Activities({ style }: ActivitiesProps) {
 
   return (
     <>
-      <Stack pos="relative" h="100%" style={{ ...style, overflow: 'auto' }}>
+      <Stack pos="relative" h="100%">
         <LoadingOverlay
           visible={showLoading}
           loaderProps={{ color: 'blue.6', size: 'xl' }}
           overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
         />
-        <Table style={{ width: '100%', tableLayout: 'auto' }} stickyHeader stickyHeaderOffset={0}>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th></Table.Th>
-              <Table.Th fz="xs">Date</Table.Th>
-              <Table.Th fz="xs">Payee</Table.Th>
-              <Table.Th fz="xs">Category</Table.Th>
-              <Table.Th fz="xs">Amount</Table.Th>
-              <Table.Th fz="xs">Balance</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {activities.map((activity, idx) => {
-              return (
-                <Table.Tr
-                  key={`${activity.id}-${idx}`}
-                  bg={idx % 2 === 0 ? 'gray.9' : ''}
-                  onClick={() => selectActivity(activity)}
-                  style={{
-                    cursor: 'pointer',
-                    borderBottom:
-                      activity.id === lastActivityBeforeToday?.id ? '4px solid var(--mantine-color-gray-6)' : undefined,
-                  }}
-                  c={
-                    activity.flag
-                      ? activity.flagColor
-                        ? theme.colors[activity.flagColor][activity.billId && activity.firstBill ? 6 : 4]
-                        : 'gray'
-                      : ''
-                  }
-                  fs={activity.billId ? 'italic' : undefined}
-                  fw={activity.firstBill ? 'bold' : activity.firstInterest ? 'bold' : ''}
-                  onContextMenu={showContextMenu(
-                    [
-                      {
-                        key: 'edit',
-                        title: 'Edit',
-                        icon: <IconEdit size={16} />,
-                        onClick: () => {
-                          if (
-                            (activity.billId && activity.firstBill) ||
-                            (activity.interestId && activity.firstInterest)
-                          ) {
-                            activity.billId
-                              ? dispatch(loadAndSelectBill(account?.id as string, activity.billId, activity.isTransfer))
-                              : dispatch(loadInterests(account?.id as string));
-                          } else {
-                            selectActivity(activity);
-                          }
+        <Stack h="100%" style={{ ...style, overflow: 'auto' }}>
+          <Table style={{ width: '100%', tableLayout: 'auto' }} stickyHeader stickyHeaderOffset={0}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th></Table.Th>
+                <Table.Th fz="xs">Date</Table.Th>
+                <Table.Th fz="xs">Payee</Table.Th>
+                <Table.Th fz="xs">Category</Table.Th>
+                <Table.Th fz="xs">Amount</Table.Th>
+                <Table.Th fz="xs">Balance</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {activities.map((activity, idx) => {
+                return (
+                  <Table.Tr
+                    key={`${activity.id}-${idx}`}
+                    bg={idx % 2 === 0 ? 'gray.9' : ''}
+                    onClick={() => selectActivity(activity)}
+                    style={{
+                      cursor: 'pointer',
+                      borderBottom:
+                        activity.id === lastActivityBeforeToday?.id ? '4px solid var(--mantine-color-gray-6)' : undefined,
+                    }}
+                    c={
+                      activity.flag
+                        ? activity.flagColor
+                          ? theme.colors[activity.flagColor][activity.billId && activity.firstBill ? 6 : 4]
+                          : 'gray'
+                        : ''
+                    }
+                    fs={activity.billId ? 'italic' : undefined}
+                    fw={activity.firstBill ? 'bold' : activity.firstInterest ? 'bold' : ''}
+                    onContextMenu={showContextMenu(
+                      [
+                        {
+                          key: 'edit',
+                          title: 'Edit',
+                          icon: <IconEdit size={16} />,
+                          onClick: () => {
+                            if (
+                              (activity.billId && activity.firstBill) ||
+                              (activity.interestId && activity.firstInterest)
+                            ) {
+                              activity.billId
+                                ? dispatch(loadAndSelectBill(account?.id as string, activity.billId, activity.isTransfer))
+                                : dispatch(loadInterests(account?.id as string));
+                            } else {
+                              selectActivity(activity);
+                            }
+                          },
                         },
-                      },
-                      {
-                        key: 'delete',
-                        title: 'Delete',
-                        icon: <IconTrash size={16} />,
-                        onClick: () => {
-                          if (activity.billId) {
-                            dispatch(
-                              removeBill(
-                                account as Account,
-                                activity.billId as string,
-                                activity.isTransfer,
-                                startDate,
-                                endDate,
-                                graphEndDate,
-                              ),
-                            );
-                          } else if (activity.interestId) {
-                            dispatch(saveInterests(account as Account, [], startDate, endDate, graphEndDate));
-                          } else {
-                            dispatch(
-                              removeActivity(
-                                account as Account,
-                                activity.id as string,
-                                activity.isTransfer,
-                                startDate,
-                                endDate,
-                                graphEndDate,
-                              ),
-                            );
-                          }
+                        {
+                          key: 'delete',
+                          title: 'Delete',
+                          icon: <IconTrash size={16} />,
+                          onClick: () => {
+                            if (activity.billId) {
+                              dispatch(
+                                removeBill(
+                                  account as Account,
+                                  activity.billId as string,
+                                  activity.isTransfer,
+                                  startDate,
+                                  endDate,
+                                  graphEndDate,
+                                ),
+                              );
+                            } else if (activity.interestId) {
+                              dispatch(saveInterests(account as Account, [], startDate, endDate, graphEndDate));
+                            } else {
+                              dispatch(
+                                removeActivity(
+                                  account as Account,
+                                  activity.id as string,
+                                  activity.isTransfer,
+                                  startDate,
+                                  endDate,
+                                  graphEndDate,
+                                ),
+                              );
+                            }
+                          },
                         },
-                      },
-                      ...((activity.billId && activity.firstBill) || (activity.interestId && activity.firstInterest)
-                        ? [
+                        ...((activity.billId && activity.firstBill) || (activity.interestId && activity.firstInterest)
+                          ? [
                             {
                               key: 'enter',
                               title: 'Enter',
@@ -286,9 +287,9 @@ export default function Activities({ style }: ActivitiesProps) {
                               },
                             },
                           ]
-                        : []),
-                      ...(!activity.interestId
-                        ? [
+                          : []),
+                        ...(!activity.interestId
+                          ? [
                             {
                               key: 'changeAccount',
                               title: 'Change Account',
@@ -316,40 +317,41 @@ export default function Activities({ style }: ActivitiesProps) {
                               },
                             },
                           ]
-                        : []),
-                    ].sort((a, b) => {
-                      const order = { enter: 0, edit: 1, skip: 2, delete: 3 };
-                      return order[a.key as keyof typeof order] - order[b.key as keyof typeof order];
-                    }),
-                  )}
-                >
-                  <Table.Td fz="xs">
-                    {activity.flag ? (
-                      <IconFlag color={activity.flagColor ? theme.colors[activity.flagColor][4] : 'gray'} size={16} />
-                    ) : (
-                      ''
+                          : []),
+                      ].sort((a, b) => {
+                        const order = { enter: 0, edit: 1, skip: 2, delete: 3 };
+                        return order[a.key as keyof typeof order] - order[b.key as keyof typeof order];
+                      }),
                     )}
-                  </Table.Td>
-                  <Table.Td style={{ whiteSpace: 'nowrap' }} fz="xs">
-                    {new Date(`${activity.date}T00:00:00`).toLocaleDateString()}
-                  </Table.Td>
-                  <Table.Td fz="xs">{activity.name}</Table.Td>
-                  <Table.Td fz="xs">{activity.category.split('.')[1]}</Table.Td>
-                  <Table.Td
-                    fz="xs"
-                    style={{ whiteSpace: 'nowrap' }}
-                    c={(activity.amount as number) < 0 ? 'red' : 'green'}
                   >
-                    {'$ ' + (activity.amount as number).toFixed(2)}
-                  </Table.Td>
-                  <Table.Td fz="xs" style={{ whiteSpace: 'nowrap' }} c={activity.balance < 0 ? 'red' : 'green'}>
-                    {'$ ' + activity.balance.toFixed(2)}
-                  </Table.Td>
-                </Table.Tr>
-              );
-            })}
-          </Table.Tbody>
-        </Table>
+                    <Table.Td fz="xs">
+                      {activity.flag ? (
+                        <IconFlag color={activity.flagColor ? theme.colors[activity.flagColor][4] : 'gray'} size={16} />
+                      ) : (
+                        ''
+                      )}
+                    </Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }} fz="xs">
+                      {new Date(`${activity.date}T00:00:00`).toLocaleDateString()}
+                    </Table.Td>
+                    <Table.Td fz="xs">{activity.name}</Table.Td>
+                    <Table.Td fz="xs">{activity.category.split('.')[1]}</Table.Td>
+                    <Table.Td
+                      fz="xs"
+                      style={{ whiteSpace: 'nowrap' }}
+                      c={(activity.amount as number) < 0 ? 'red' : 'green'}
+                    >
+                      {'$ ' + (activity.amount as number).toFixed(2)}
+                    </Table.Td>
+                    <Table.Td fz="xs" style={{ whiteSpace: 'nowrap' }} c={activity.balance < 0 ? 'red' : 'green'}>
+                      {'$ ' + activity.balance.toFixed(2)}
+                    </Table.Td>
+                  </Table.Tr>
+                );
+              })}
+            </Table.Tbody>
+          </Table>
+        </Stack>
       </Stack>
       <Modal opened={!!currentActivity || !!currentBill || !!interests} onClose={resetSelected} withCloseButton={false}>
         {currentBill && <BillEditor resetSelected={resetSelected} />}

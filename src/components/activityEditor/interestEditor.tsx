@@ -62,8 +62,8 @@ export const InterestEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === "amount")
-        .map(([name, _]) => name)
+      .filter(([_, value]) => value.type === "amount")
+      .map(([name, _]) => name)
     : [];
 
   const dispatch = useDispatch<AppDispatch>();
@@ -115,7 +115,7 @@ export const InterestEditor = ({
   };
 
   const validate = (index: number, name: string, value: any) => {
-    if (name === "applicable_date") {
+    if (name === "applicableDate") {
       const date = new Date(value);
       if (date.toString() === "Invalid Date") {
         return "Invalid date";
@@ -198,9 +198,9 @@ export const InterestEditor = ({
                         interests.map((i) =>
                           i.id === interest.id
                             ? {
-                                ...i,
-                                applicable_date: value,
-                              }
+                              ...i,
+                              applicableDate: value,
+                            }
                             : i,
                         ),
                       ),
@@ -226,9 +226,9 @@ export const InterestEditor = ({
                             interests.map((i) =>
                               i.id === interest.id
                                 ? {
-                                    ...i,
-                                    aprVariable: aprVariable as string,
-                                  }
+                                  ...i,
+                                  aprVariable: aprVariable as string,
+                                }
                                 : i,
                             ),
                           ),
@@ -249,12 +249,12 @@ export const InterestEditor = ({
                             interests.map((i) =>
                               i.id === interest.id
                                 ? {
-                                    ...i,
-                                    apr:
-                                      typeof apr === "number"
-                                        ? apr
-                                        : parseFloat(apr),
-                                  }
+                                  ...i,
+                                  apr:
+                                    typeof apr === "number"
+                                      ? apr
+                                      : parseFloat(apr),
+                                }
                                 : i,
                             ),
                           ),
@@ -304,13 +304,13 @@ export const InterestEditor = ({
                         interests.map((i) =>
                           i.id === interest.id
                             ? {
-                                ...i,
-                                compounded: compounded as
-                                  | "day"
-                                  | "week"
-                                  | "month"
-                                  | "year",
-                              }
+                              ...i,
+                              compounded: compounded as
+                                | "day"
+                                | "week"
+                                | "month"
+                                | "year",
+                            }
                             : i,
                         ),
                       ),

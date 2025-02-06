@@ -66,8 +66,8 @@ export const FlagSelect = ({ flagColor, onChange, dropdownProps }: { flagColor: 
             { value: "orange", label: "Orange" },
             { value: "gray", label: "Gray" }
           ].map((option) => (
-            <Combobox.Option value={option.value}>
-              <FlagItem key={option.value} value={option.value} />
+            <Combobox.Option key={option.value} value={option.value}>
+              <FlagItem value={option.value} />
             </Combobox.Option>
           ))}
         </Combobox.Options>
