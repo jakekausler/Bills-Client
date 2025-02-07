@@ -1,8 +1,8 @@
-import { PayloadAction } from "@reduxjs/toolkit";
+import { PayloadAction } from '@reduxjs/toolkit';
 
-import { createSlice } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
-import { Flow } from "../../types/types";
+import { createSlice } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
+import { Flow } from '../../types/types';
 
 interface FlowState {
   flow: Flow;
@@ -21,16 +21,16 @@ const initialState: FlowState = {
     links: [],
   },
   flowLoaded: false,
-  flowError: "",
+  flowError: '',
 
   selectedAccounts: [],
 
-  startDate: dayjs().startOf("month").format("YYYY-MM-DD"),
-  endDate: dayjs().endOf("month").format("YYYY-MM-DD"),
+  startDate: dayjs().startOf('month').format('YYYY-MM-DD'),
+  endDate: dayjs().endOf('month').format('YYYY-MM-DD'),
 };
 
 export const flowSlice = createSlice({
-  name: "flow",
+  name: 'flow',
   initialState,
   reducers: {
     updateSelectedAccounts: (state, action: PayloadAction<string[]>) => {
@@ -55,13 +55,7 @@ export const flowSlice = createSlice({
   },
 });
 
-export const {
-  updateSelectedAccounts,
-  setFlow,
-  setFlowError,
-  setFlowLoaded,
-  updateStartDate,
-  updateEndDate,
-} = flowSlice.actions;
+export const { updateSelectedAccounts, setFlow, setFlowError, setFlowLoaded, updateStartDate, updateEndDate } =
+  flowSlice.actions;
 
 export default flowSlice.reducer;

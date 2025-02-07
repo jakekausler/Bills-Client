@@ -1,12 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { PayloadAction } from "@reduxjs/toolkit";
-import { Dataset, GraphData } from "../../types/types";
-import { toDateString } from "../../utils/date";
+import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { Dataset, GraphData } from '../../types/types';
+import { toDateString } from '../../utils/date';
 
 interface GraphViewState {
   datasets: Dataset[];
   labels: string[];
-  type: "activity" | "yearly";
+  type: 'activity' | 'yearly';
   loaded: boolean;
   error: string;
   selectedAccounts: string[];
@@ -17,15 +17,15 @@ interface GraphViewState {
 const initialState: GraphViewState = {
   datasets: [],
   labels: [],
-  type: "activity",
+  type: 'activity',
   loaded: false,
-  error: "",
+  error: '',
   endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 24))),
   selectedAccounts: [],
 };
 
 const graphViewSlice = createSlice({
-  name: "graphView",
+  name: 'graphView',
   initialState,
   reducers: {
     setGraphViewData: (state, action: PayloadAction<GraphData>) => {
@@ -49,11 +49,6 @@ const graphViewSlice = createSlice({
   },
 });
 
-export const {
-  setGraphViewData,
-  setGraphViewError,
-  setGraphViewEndDate,
-  setGraphViewLoaded,
-  updateSelectedAccounts,
-} = graphViewSlice.actions;
+export const { setGraphViewData, setGraphViewError, setGraphViewEndDate, setGraphViewLoaded, updateSelectedAccounts } =
+  graphViewSlice.actions;
 export default graphViewSlice.reducer;

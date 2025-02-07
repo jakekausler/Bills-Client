@@ -1,7 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { PayloadAction } from "@reduxjs/toolkit";
-import { Simulation, UsedVariableMap } from "../../types/types";
+import { PayloadAction } from '@reduxjs/toolkit';
+import { Simulation, UsedVariableMap } from '../../types/types';
 
 interface SimulationsState {
   simulations: Simulation[];
@@ -20,7 +20,7 @@ const initialState: SimulationsState = {
 };
 
 export const simulationsSlice = createSlice({
-  name: "simulations",
+  name: 'simulations',
   initialState,
   reducers: {
     setSimulations: (state, action: PayloadAction<Simulation[]>) => {
@@ -40,6 +40,7 @@ export const simulationsSlice = createSlice({
   },
 });
 
-export const { setSimulations, setSimulationsLoaded, setUsedVariables, setUsedVariablesLoaded } = simulationsSlice.actions;
+export const { setSimulations, setSimulationsLoaded, setUsedVariables, setUsedVariablesLoaded } =
+  simulationsSlice.actions;
 
 export default simulationsSlice.reducer;

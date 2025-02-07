@@ -1,9 +1,9 @@
-import { AppThunk } from "../../store";
-import { selectStartDate } from "./select";
-import { selectEndDate } from "./select";
-import { selectSelectedAccounts } from "./select";
-import { setBills, setBillsLoaded } from "./slice";
-import { fetchBills } from "./api";
+import { AppThunk } from '../../store';
+import { selectStartDate } from './select';
+import { selectEndDate } from './select';
+import { selectSelectedAccounts } from './select';
+import { setBills, setBillsLoaded } from './slice';
+import { fetchBills } from './api';
 
 export const loadCalendar = (): AppThunk => async (dispatch, getState) => {
   dispatch(setBillsLoaded(false));

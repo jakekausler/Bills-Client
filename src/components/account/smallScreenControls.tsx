@@ -1,23 +1,15 @@
 import React from 'react';
-import { ActionIcon, Button, Group, Modal, Stack } from "@mantine/core";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store";
-import { toggleGraph } from "../../features/graph/slice";
-import { useDisclosure } from "@mantine/hooks";
-import {
-  selectEndDate,
-  selectStartDate,
-} from "../../features/activities/select";
-import {
-  newActivity,
-  newBill,
-  setEndDate,
-  setStartDate,
-} from "../../features/activities/slice";
-import { loadInterests } from "../../features/activities/actions";
-import { selectSelectedAccount } from "../../features/accounts/select";
-import { EditableDateInput } from "../helpers/editableDateInput";
-import { IconActivity, IconCalendar, IconClockDollar, IconCurrencyDollar, IconPercentage } from "@tabler/icons-react";
+import { ActionIcon, Button, Group, Modal, Stack } from '@mantine/core';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '../../store';
+import { toggleGraph } from '../../features/graph/slice';
+import { useDisclosure } from '@mantine/hooks';
+import { selectEndDate, selectStartDate } from '../../features/activities/select';
+import { newActivity, newBill, setEndDate, setStartDate } from '../../features/activities/slice';
+import { loadInterests } from '../../features/activities/actions';
+import { selectSelectedAccount } from '../../features/accounts/select';
+import { EditableDateInput } from '../helpers/editableDateInput';
+import { IconActivity, IconCalendar, IconClockDollar, IconCurrencyDollar, IconPercentage } from '@tabler/icons-react';
 
 export default function SmallScreenControls({
   visibleFrom,
@@ -99,4 +91,3 @@ export default function SmallScreenControls({
     </>
   );
 }
-

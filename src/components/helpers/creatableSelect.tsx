@@ -11,16 +11,9 @@ interface CreatableSelectProps {
   clearable?: boolean;
 }
 
-export default function CreatableSelect({
-  data,
-  value,
-  onChange,
-  label,
-  error,
-  clearable
-}: CreatableSelectProps) {
+export default function CreatableSelect({ data, value, onChange, label, error, clearable }: CreatableSelectProps) {
   const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption()
+    onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
   const [search, setSearch] = useState(value || '');
@@ -29,9 +22,7 @@ export default function CreatableSelect({
     setSearch(value || '');
   }, [value]);
 
-  const filteredOptions = data.filter((item) =>
-    item.label.toLowerCase().includes(search.toLowerCase().trim())
-  );
+  const filteredOptions = data.filter((item) => item.label.toLowerCase().includes(search.toLowerCase().trim()));
 
   const options = filteredOptions.map((item) => (
     <Combobox.Option value={item.value} key={item.value}>
@@ -64,9 +55,7 @@ export default function CreatableSelect({
             setSearch(newValue);
 
             // Try to find a matching option
-            const matchingOption = data.find(item =>
-              item.label.toLowerCase() === newValue.toLowerCase().trim()
-            );
+            const matchingOption = data.find((item) => item.label.toLowerCase() === newValue.toLowerCase().trim());
 
             // Pass the matching value if found, otherwise pass the raw input
             onChange(matchingOption ? matchingOption.value : newValue);
@@ -74,9 +63,7 @@ export default function CreatableSelect({
             combobox.updateSelectedOptionIndex();
 
             // Open dropdown if there are matching options
-            const hasMatches = data.some(item =>
-              item.label.toLowerCase().includes(newValue.toLowerCase().trim())
-            );
+            const hasMatches = data.some((item) => item.label.toLowerCase().includes(newValue.toLowerCase().trim()));
             if (hasMatches && newValue) {
               combobox.openDropdown();
             } else {

@@ -4,9 +4,9 @@ import React from 'react';
 // import { useEffect, useRef, useState } from "react";
 // import { toDateString } from "../../utils/date";
 
-import { DateInput } from "@mantine/dates";
-import { toDateString } from "../../utils/date";
-import { useState } from "react";
+import { DateInput } from '@mantine/dates';
+import { toDateString } from '../../utils/date';
+import { useState } from 'react';
 
 // type DatePart = "month" | "day" | "year";
 
@@ -239,7 +239,7 @@ export const EditableDateInput = ({
   onBlur: (value: string | null) => void;
   placeholder: string;
   minDate?: Date;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }) => {
   const [editedDate, setEditedDate] = useState(value);
 
@@ -271,5 +271,5 @@ export const EditableDateInput = ({
       size={size}
       highlightToday={true}
     />
-  )
-}
+  );
+};

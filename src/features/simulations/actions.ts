@@ -1,11 +1,7 @@
-import { AppThunk } from "../../store";
-import { Simulation } from "../../types/types";
-import {
-  fetchSaveSimulations,
-  fetchSimulations,
-  fetchUsedVariables,
-} from "./api";
-import { setSimulations, setSimulationsLoaded, setUsedVariables, setUsedVariablesLoaded } from "./slice";
+import { AppThunk } from '../../store';
+import { Simulation } from '../../types/types';
+import { fetchSaveSimulations, fetchSimulations, fetchUsedVariables } from './api';
+import { setSimulations, setSimulationsLoaded, setUsedVariables, setUsedVariablesLoaded } from './slice';
 
 export const loadSimulations = (): AppThunk => {
   return async (dispatch) => {
@@ -15,7 +11,7 @@ export const loadSimulations = (): AppThunk => {
       dispatch(setSimulations(simulations));
       dispatch(loadUsedVariables());
     } catch (error) {
-      console.error("Failed to load simulations", error);
+      console.error('Failed to load simulations', error);
     }
   };
 };

@@ -1,10 +1,10 @@
 import React from 'react';
-import { selectGraphViewEndDate, selectGraphViewLabels } from "../../features/graphView/select";
+import { selectGraphViewEndDate, selectGraphViewLabels } from '../../features/graphView/select';
 
-import { useSelector } from "react-redux";
-import { selectGraphViewDatasets, selectGraphViewLoaded, selectGraphViewType } from "../../features/graphView/select";
-import { Graph } from "../graph/graph";
-import { setGraphViewEndDate } from "../../features/graphView/slice";
+import { useSelector } from 'react-redux';
+import { selectGraphViewDatasets, selectGraphViewLoaded, selectGraphViewType } from '../../features/graphView/select';
+import { Graph } from '../graph/graph';
+import { setGraphViewEndDate } from '../../features/graphView/slice';
 
 export default function GraphView() {
   const datasets = useSelector(selectGraphViewDatasets);

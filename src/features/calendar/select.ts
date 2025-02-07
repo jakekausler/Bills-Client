@@ -1,4 +1,4 @@
-import { RootState } from "../../store";
+import { RootState } from '../../store';
 
 export const selectBills = (state: RootState) => state.calendar.bills;
 export const selectBillsLoaded = (state: RootState) => state.calendar.billsLoaded;

@@ -206,7 +206,9 @@ export default function Activities({ style }: ActivitiesProps) {
                     style={{
                       cursor: 'pointer',
                       borderBottom:
-                        activity.id === lastActivityBeforeToday?.id ? '4px solid var(--mantine-color-gray-6)' : undefined,
+                        activity.id === lastActivityBeforeToday?.id
+                          ? '4px solid var(--mantine-color-gray-6)'
+                          : undefined,
                     }}
                     c={
                       activity.flag
@@ -229,7 +231,9 @@ export default function Activities({ style }: ActivitiesProps) {
                               (activity.interestId && activity.firstInterest)
                             ) {
                               activity.billId
-                                ? dispatch(loadAndSelectBill(account?.id as string, activity.billId, activity.isTransfer))
+                                ? dispatch(
+                                    loadAndSelectBill(account?.id as string, activity.billId, activity.isTransfer),
+                                  )
                                 : dispatch(loadInterests(account?.id as string));
                             } else {
                               selectActivity(activity);
@@ -270,53 +274,53 @@ export default function Activities({ style }: ActivitiesProps) {
                         },
                         ...((activity.billId && activity.firstBill) || (activity.interestId && activity.firstInterest)
                           ? [
-                            {
-                              key: 'enter',
-                              title: 'Enter',
-                              icon: <IconCurrencyDollar size={16} />,
-                              onClick: () => {
-                                activity.billId ? billAsActivityEditor(activity) : interestAsActivityEditor(activity);
+                              {
+                                key: 'enter',
+                                title: 'Enter',
+                                icon: <IconCurrencyDollar size={16} />,
+                                onClick: () => {
+                                  activity.billId ? billAsActivityEditor(activity) : interestAsActivityEditor(activity);
+                                },
                               },
-                            },
-                            {
-                              key: 'skip',
-                              title: 'Skip',
-                              icon: <IconPlayerSkipForward size={16} />,
-                              onClick: () => {
-                                activity.billId ? skipBill(activity) : skipInterest();
+                              {
+                                key: 'skip',
+                                title: 'Skip',
+                                icon: <IconPlayerSkipForward size={16} />,
+                                onClick: () => {
+                                  activity.billId ? skipBill(activity) : skipInterest();
+                                },
                               },
-                            },
-                          ]
+                            ]
                           : []),
                         ...(!activity.interestId
                           ? [
-                            {
-                              key: 'changeAccount',
-                              title: 'Change Account',
-                              icon: <IconSwitch size={16} />,
-                              onClick: () => {
-                                setChangeAccountActivity(activity);
+                              {
+                                key: 'changeAccount',
+                                title: 'Change Account',
+                                icon: <IconSwitch size={16} />,
+                                onClick: () => {
+                                  setChangeAccountActivity(activity);
+                                },
                               },
-                            },
-                            {
-                              key: 'duplicate',
-                              title: 'Duplicate',
-                              icon: <IconCopy size={16} />,
-                              onClick: () => {
-                                if (activity.billId && account) {
-                                  dispatch(
-                                    loadAndDuplicateBill(
-                                      account.id as string,
-                                      activity.billId as string,
-                                      activity.isTransfer,
-                                    ),
-                                  );
-                                } else {
-                                  dispatch(duplicateActivity(activity));
-                                }
+                              {
+                                key: 'duplicate',
+                                title: 'Duplicate',
+                                icon: <IconCopy size={16} />,
+                                onClick: () => {
+                                  if (activity.billId && account) {
+                                    dispatch(
+                                      loadAndDuplicateBill(
+                                        account.id as string,
+                                        activity.billId as string,
+                                        activity.isTransfer,
+                                      ),
+                                    );
+                                  } else {
+                                    dispatch(duplicateActivity(activity));
+                                  }
+                                },
                               },
-                            },
-                          ]
+                            ]
                           : []),
                       ].sort((a, b) => {
                         const order = { enter: 0, edit: 1, skip: 2, delete: 3 };

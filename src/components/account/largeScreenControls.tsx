@@ -1,19 +1,14 @@
 import React from 'react';
-import { Button, Group } from "@mantine/core";
-import {
-  newActivity,
-  newBill,
-  setEndDate,
-  setStartDate,
-} from "../../features/activities/slice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { selectEndDate } from "../../features/activities/select";
-import { selectStartDate } from "../../features/activities/select";
-import { AppDispatch } from "../../store";
-import { loadInterests } from "../../features/activities/actions";
-import { selectSelectedAccount } from "../../features/accounts/select";
-import { EditableDateInput } from "../helpers/editableDateInput";
+import { Button, Group } from '@mantine/core';
+import { newActivity, newBill, setEndDate, setStartDate } from '../../features/activities/slice';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { selectEndDate } from '../../features/activities/select';
+import { selectStartDate } from '../../features/activities/select';
+import { AppDispatch } from '../../store';
+import { loadInterests } from '../../features/activities/actions';
+import { selectSelectedAccount } from '../../features/accounts/select';
+import { EditableDateInput } from '../helpers/editableDateInput';
 
 export default function LargeScreenControls({
   visibleFrom,
@@ -32,15 +27,7 @@ export default function LargeScreenControls({
 
   const dispatch = useDispatch<AppDispatch>();
   return (
-    <Group
-      visibleFrom={visibleFrom}
-      hiddenFrom={hiddenFrom}
-      w="100%"
-      h={h}
-      grow
-      align="end"
-      style={style}
-    >
+    <Group visibleFrom={visibleFrom} hiddenFrom={hiddenFrom} w="100%" h={h} grow align="end" style={style}>
       <EditableDateInput
         label="Start date"
         value={startDate}

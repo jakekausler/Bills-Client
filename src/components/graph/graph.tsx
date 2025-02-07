@@ -59,7 +59,16 @@ export function Graph({ style, datasets, labels, type, endDate, loaded, setGraph
               pointHoverRadius: 5,
               pointHitRadius: 10,
               ...dataset,
-              data: dataset.data.map((d, i) => (d === 0 && (i === 0 || dataset.data[i - 1] === 0) ? null : d)),
+              // Display 0s as null so they don't show up in the graph
+              // Only display 0s if they are used in a line from 0 to somewhere else
+              // In essence, this removes lines that go from 0 to 0
+              data: dataset.data.map((d, i) =>
+                d === 0 &&
+                (i === 0 || dataset.data[i - 1] === 0) &&
+                (i === dataset.data.length - 1 || dataset.data[i + 1] === 0)
+                  ? null
+                  : d,
+              ),
             })),
             labels,
           }}
@@ -84,75 +93,75 @@ export function Graph({ style, datasets, labels, type, endDate, loaded, setGraph
                 callbacks:
                   type === 'activity'
                     ? {
-                      title: function (context: any) {
-                        if (context.length > 0) {
-                          let datasetLabel = '';
-                          if (datasets.length > 1) {
-                            datasetLabel = datasets[context[0].datasetIndex].label + '\n';
-                          }
-                          return (
-                            datasetLabel +
-                            new Date(context[0].label).toLocaleDateString('en-US', {
-                              month: 'long',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })
-                          );
-                        }
-                      },
-                      label: function (context: any) {
-                        return [
-                          ...context.dataset.activity[context.dataIndex].map((t: any) => {
-                            return `${t.name}: $ ${t.amount.toLocaleString('en-US')}`;
-                          }),
-                        ];
-                      },
-                      footer: function (context: any) {
-                        return context
-                          .map((t: any) => {
-                            return (
-                              `Balance: $ ${t.dataset.data[t.dataIndex].toLocaleString('en-US')}` +
-                              (context.length > 1 ? ` (${t.dataset.label})` : '')
-                            );
-                          })
-                          .join(', ');
-                      },
-                    }
-                    : type === 'monteCarlo'
-                      ? {
                         title: function (context: any) {
-                          let datasetLabel = '';
-                          if (datasets.length > 1) {
-                            datasetLabel = datasets[context[0].datasetIndex].label + '\n';
-                          }
                           if (context.length > 0) {
+                            let datasetLabel = '';
+                            if (datasets.length > 1) {
+                              datasetLabel = datasets[context[0].datasetIndex].label + '\n';
+                            }
                             return (
                               datasetLabel +
-                              new Date(context[0].label).toLocaleDateString('en-US', { year: 'numeric' })
+                              new Date(context[0].label).toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })
                             );
                           }
                         },
                         label: function (context: any) {
-                          return `$ ${context.dataset.data[context.dataIndex].toLocaleString('en-US')}`;
+                          return [
+                            ...context.dataset.activity[context.dataIndex].map((t: any) => {
+                              return `${t.name}: $ ${t.amount.toLocaleString('en-US')}`;
+                            }),
+                          ];
+                        },
+                        footer: function (context: any) {
+                          return context
+                            .map((t: any) => {
+                              return (
+                                `Balance: $ ${t.dataset.data[t.dataIndex].toLocaleString('en-US')}` +
+                                (context.length > 1 ? ` (${t.dataset.label})` : '')
+                              );
+                            })
+                            .join(', ');
                         },
                       }
+                    : type === 'monteCarlo'
+                      ? {
+                          title: function (context: any) {
+                            let datasetLabel = '';
+                            if (datasets.length > 1) {
+                              datasetLabel = datasets[context[0].datasetIndex].label + '\n';
+                            }
+                            if (context.length > 0) {
+                              return (
+                                datasetLabel +
+                                new Date(context[0].label).toLocaleDateString('en-US', { year: 'numeric' })
+                              );
+                            }
+                          },
+                          label: function (context: any) {
+                            return `$ ${context.dataset.data[context.dataIndex].toLocaleString('en-US')}`;
+                          },
+                        }
                       : {
-                        title: function (context: any) {
-                          let datasetLabel = '';
-                          if (datasets.length > 1) {
-                            datasetLabel = datasets[context[0].datasetIndex].label + '\n';
-                          }
-                          if (context.length > 0) {
-                            return (
-                              datasetLabel +
-                              new Date(context[0].label).toLocaleDateString('en-US', { year: 'numeric' })
-                            );
-                          }
+                          title: function (context: any) {
+                            let datasetLabel = '';
+                            if (datasets.length > 1) {
+                              datasetLabel = datasets[context[0].datasetIndex].label + '\n';
+                            }
+                            if (context.length > 0) {
+                              return (
+                                datasetLabel +
+                                new Date(context[0].label).toLocaleDateString('en-US', { year: 'numeric' })
+                              );
+                            }
+                          },
+                          label: function (context: any) {
+                            return `$ ${context.dataset.data[context.dataIndex].toLocaleString('en-US')}`;
+                          },
                         },
-                        label: function (context: any) {
-                          return `$ ${context.dataset.data[context.dataIndex].toLocaleString('en-US')}`;
-                        },
-                      },
               },
             },
           }}

@@ -1,4 +1,4 @@
-import { RootState } from "../../store";
+import { RootState } from '../../store';
 
 export const selectFlow = (state: RootState) => state.flow.flow;
 export const selectFlowLoaded = (state: RootState) => state.flow.flowLoaded;

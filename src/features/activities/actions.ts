@@ -88,7 +88,7 @@ export const saveActivity = (
     } else if (interestId) {
       await fetchAddInterestActivity(account.id, activity, interestId);
     } else if (activity.id) {
-      if (activity.id === 'AUTO-PULL' || activity.id === 'RMD') {
+      if (activity.id === 'AUTO-PULL' || activity.id === 'RMD' || activity.id === 'AUTO-PUSH') {
         // Enter as a new activity
         activity.id = undefined;
         fetchAddActivity(account.id, activity);
@@ -281,7 +281,7 @@ export const loadInterestActivity = (
     dispatch(setSelectedActivityLoaded(false));
     const interestActivity = await fetchInterestActivity(accountId, interestId, startDate, endDate);
     dispatch(setSelectedActivity(interestActivity));
-    dispatch(setSelectedActivityInterestId(interestActivity.interest_id));
+    dispatch(setSelectedActivityInterestId(interestActivity.interestId));
   };
 };
 

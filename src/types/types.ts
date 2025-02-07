@@ -92,7 +92,10 @@ export type Account = {
   rmdAccount: string | null;
   minimumBalance: number | null;
   minimumPullAmount: number | null;
-  performPulls: boolean;
+  performsPullsAndPushes: boolean;
+  pushStart: string | null;
+  pushEnd: string | null;
+  pushAccount: string | null;
 };
 
 export type GraphData = {

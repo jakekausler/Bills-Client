@@ -1,11 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store";
-import { useEffect } from "react";
-import { selectSelectedAccounts } from "../../features/flow/selector";
-import { updateSelectedAccounts } from "../../features/flow/slice";
-import AccountSelector from "../accounts/accountSelector";
-import { loadFlow } from "../../features/flow/actions";
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '../../store';
+import { useEffect } from 'react';
+import { selectSelectedAccounts } from '../../features/flow/selector';
+import { updateSelectedAccounts } from '../../features/flow/slice';
+import AccountSelector from '../accounts/accountSelector';
+import { loadFlow } from '../../features/flow/actions';
 
 export default function GraphViewAccountSelector() {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,10 +15,5 @@ export default function GraphViewAccountSelector() {
     dispatch(loadFlow());
   }, [selectedAccounts]);
 
-  return (
-    <AccountSelector
-      selectedAccounts={selectedAccounts}
-      updateSelectedAccounts={updateSelectedAccounts}
-    />
-  );
+  return <AccountSelector selectedAccounts={selectedAccounts} updateSelectedAccounts={updateSelectedAccounts} />;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export function useElementAspectRatio(ref: React.RefObject<HTMLElement>) {
   const [isSkinny, setIsSkinny] = useState(false);

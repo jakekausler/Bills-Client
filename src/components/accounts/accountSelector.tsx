@@ -1,20 +1,27 @@
 import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { selectAccountsLoaded, selectVisibleAccounts } from "../../features/accounts/select";
-import { AppDispatch } from "../../store";
-import { Box, LoadingOverlay, Stack, Table, Text, useMantineTheme } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
-import { loadAccounts } from "../../features/accounts/actions";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import { CheckboxIcon } from "../helpers/checkboxIcon";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAccountsLoaded, selectVisibleAccounts } from '../../features/accounts/select';
+import { AppDispatch } from '../../store';
+import { Box, LoadingOverlay, Stack, Table, Text, useMantineTheme } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { loadAccounts } from '../../features/accounts/actions';
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import { CheckboxIcon } from '../helpers/checkboxIcon';
 
 export default function AccountSelector({
   selectedAccounts,
   updateSelectedAccounts,
 }: {
   selectedAccounts: string[];
-  updateSelectedAccounts: ActionCreatorWithPayload<string[], "graphView/updateSelectedAccounts" | "calendar/updateSelectedAccounts" | "categories/updateSelectedAccounts" | "flow/updateSelectedAccounts" | "monteCarlo/updateSelectedAccounts">;
+  updateSelectedAccounts: ActionCreatorWithPayload<
+    string[],
+    | 'graphView/updateSelectedAccounts'
+    | 'calendar/updateSelectedAccounts'
+    | 'categories/updateSelectedAccounts'
+    | 'flow/updateSelectedAccounts'
+    | 'monteCarlo/updateSelectedAccounts'
+  >;
 }) {
   const accounts = useSelector(selectVisibleAccounts);
   const accountsLoaded = useSelector(selectAccountsLoaded);
@@ -45,13 +52,16 @@ export default function AccountSelector({
     dispatch(loadAccounts());
   }, [dispatch]);
 
-  const accountsWithCategories = accounts.reduce((acc, account) => {
-    if (!acc[account.type]) {
-      acc[account.type] = [];
-    }
-    acc[account.type].push(account);
-    return acc;
-  }, {} as Record<string, typeof accounts>);
+  const accountsWithCategories = accounts.reduce(
+    (acc, account) => {
+      if (!acc[account.type]) {
+        acc[account.type] = [];
+      }
+      acc[account.type].push(account);
+      return acc;
+    },
+    {} as Record<string, typeof accounts>,
+  );
 
   return (
     <Stack h="100%" w="100%" pos="relative">
@@ -69,7 +79,9 @@ export default function AccountSelector({
         <Table.Tbody>
           <Table.Tr>
             <Table.Td>
-              <Text size="xs" fw={500}>Select All</Text>
+              <Text size="xs" fw={500}>
+                Select All
+              </Text>
             </Table.Td>
             <Table.Td>
               <CheckboxIcon
@@ -89,11 +101,15 @@ export default function AccountSelector({
           {Object.entries(accountsWithCategories).map(([type, accounts]) => (
             <React.Fragment key={type}>
               <Table.Tr>
-                <Table.Td><Box h={8} /></Table.Td>
+                <Table.Td>
+                  <Box h={8} />
+                </Table.Td>
               </Table.Tr>
               <Table.Tr>
                 <Table.Td>
-                  <Text size="xs" fw={500}>{type}</Text>
+                  <Text size="xs" fw={500}>
+                    {type}
+                  </Text>
                 </Table.Td>
                 <Table.Td>
                   <CheckboxIcon
@@ -103,7 +119,7 @@ export default function AccountSelector({
                         updateSelectedAccounts(
                           accounts.every((a) => selectedAccounts.includes(a.id))
                             ? selectedAccounts.filter((id) => !accounts.some((a) => a.id === id))
-                            : [...selectedAccounts, ...accounts.map((a) => a.id)]
+                            : [...selectedAccounts, ...accounts.map((a) => a.id)],
                         ),
                       )
                     }
@@ -123,7 +139,9 @@ export default function AccountSelector({
                       onChange={() =>
                         dispatch(
                           updateSelectedAccounts(
-                            selectedAccounts.includes(account.id) ? selectedAccounts.filter((a) => a !== account.id) : [...selectedAccounts, account.id],
+                            selectedAccounts.includes(account.id)
+                              ? selectedAccounts.filter((a) => a !== account.id)
+                              : [...selectedAccounts, account.id],
                           ),
                         )
                       }

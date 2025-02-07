@@ -1,5 +1,5 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectEndDate,
   selectNames,
@@ -9,7 +9,7 @@ import {
   selectSelectedActivityInterestId,
   selectSelectedActivityLoaded,
   selectStartDate,
-} from "../../features/activities/select";
+} from '../../features/activities/select';
 import {
   ActionIcon,
   Button,
@@ -21,53 +21,35 @@ import {
   Stack,
   Text,
   useMantineTheme,
-} from "@mantine/core";
-import { AppDispatch } from "../../store";
-import { updateActivity } from "../../features/activities/slice";
-import {
-  selectCategories,
-  selectCategoriesLoaded,
-} from "../../features/categories/select";
-import {
-  selectAccountsLoaded,
-  selectAllAccounts,
-  selectSelectedAccount,
-} from "../../features/accounts/select";
-import {
-  removeActivity,
-  saveActivity,
-} from "../../features/activities/actions";
-import { Activity } from "../../types/types";
-import { selectGraphEndDate } from "../../features/graph/select";
-import { IconVariable, IconVariableOff } from "@tabler/icons-react";
-import { selectSelectedSimulationVariables } from "../../features/simulations/select";
-import CreatableSelect from "../helpers/creatableSelect";
-import { useEffect, useState } from "react";
-import { EditableDateInput } from "../helpers/editableDateInput";
-import { CalculatorEditor } from "../helpers/calculatorEditor";
-import { FlagSelect } from "../helpers/flagSelect";
+} from '@mantine/core';
+import { AppDispatch } from '../../store';
+import { updateActivity } from '../../features/activities/slice';
+import { selectCategories, selectCategoriesLoaded } from '../../features/categories/select';
+import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
+import { removeActivity, saveActivity } from '../../features/activities/actions';
+import { Activity } from '../../types/types';
+import { selectGraphEndDate } from '../../features/graph/select';
+import { IconVariable, IconVariableOff } from '@tabler/icons-react';
+import { selectSelectedSimulationVariables } from '../../features/simulations/select';
+import CreatableSelect from '../helpers/creatableSelect';
+import { useEffect, useState } from 'react';
+import { EditableDateInput } from '../helpers/editableDateInput';
+import { CalculatorEditor } from '../helpers/calculatorEditor';
+import { FlagSelect } from '../helpers/flagSelect';
 
-export const ActivityEditor = ({
-  resetSelected,
-}: {
-  resetSelected: () => void;
-}) => {
+export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const selectedActivity = useSelector(selectSelectedActivity);
   const activityId = selectedActivity?.id;
-  const categories = Object.entries(useSelector(selectCategories)).map(
-    ([group, items]) => ({
-      group,
-      items: items.map((item) => ({
-        value: `${group}.${item}`,
-        label: item,
-      })),
-    }),
-  );
+  const categories = Object.entries(useSelector(selectCategories)).map(([group, items]) => ({
+    group,
+    items: items.map((item) => ({
+      value: `${group}.${item}`,
+      label: item,
+    })),
+  }));
   const accounts = useSelector(selectAllAccounts);
 
-  const [accountList, setAccountList] = useState<
-    { group: string; items: { value: string; label: string }[] }[]
-  >([]);
+  const [accountList, setAccountList] = useState<{ group: string; items: { value: string; label: string }[] }[]>([]);
 
   useEffect(() => {
     const accList: { [key: string]: { value: string; label: string }[] } = {};
@@ -107,20 +89,19 @@ export const ActivityEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "amount")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === 'amount')
+        .map(([name, _]) => name)
     : [];
   const dateVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "date")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === 'date')
+        .map(([name, _]) => name)
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
-    const isLoading =
-      !activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
+    const isLoading = !activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
 
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -143,77 +124,71 @@ export const ActivityEditor = ({
   const theme = useMantineTheme();
 
   const validate = (name: string, value: string | number | boolean | null) => {
-    if (name === "dateVariable") {
+    if (name === 'dateVariable') {
       if (selectedActivity.dateIsVariable) {
         if (!dateVariables.includes(value as string)) {
-          return "Invalid date";
+          return 'Invalid date';
         }
       }
     }
-    if (name === "date") {
+    if (name === 'date') {
       const date = new Date(value as string);
-      if (date.toString() === "Invalid Date") {
-        return "Invalid date";
+      if (date.toString() === 'Invalid Date') {
+        return 'Invalid date';
       }
     }
-    if (name === "amountVariable") {
+    if (name === 'amountVariable') {
       if (selectedActivity.amountVariable) {
-        if (
-          !amountVariables.includes(value as string) &&
-          value !== "{HALF}" &&
-          value !== "{FULL}"
-        ) {
-          return "Invalid amount";
+        if (!amountVariables.includes(value as string) && value !== '{HALF}' && value !== '{FULL}') {
+          return 'Invalid amount';
         }
       }
     }
-    if (name === "amount") {
-      if (isNaN(value as number) || typeof value === "boolean") {
-        return "Invalid amount";
+    if (name === 'amount') {
+      if (isNaN(value as number) || typeof value === 'boolean') {
+        return 'Invalid amount';
       }
     }
-    if (name === "isTransfer") {
-      if (typeof value !== "boolean") {
-        return "Invalid isTransfer";
+    if (name === 'isTransfer') {
+      if (typeof value !== 'boolean') {
+        return 'Invalid isTransfer';
       }
     }
-    if (name === "flag") {
-      if (typeof value !== "boolean") {
-        return "Invalid flag";
+    if (name === 'flag') {
+      if (typeof value !== 'boolean') {
+        return 'Invalid flag';
       }
     }
-    if (name === "flagColor") {
+    if (name === 'flagColor') {
       if (value !== null && !theme.colors[value as string]) {
-        return "Invalid flagColor";
+        return 'Invalid flagColor';
       }
     }
-    if (name === "from" || name === "to") {
+    if (name === 'from' || name === 'to') {
       if (selectedActivity && !selectedActivity.isTransfer) {
         return null;
       }
       if (!accountList.find((a) => a.items.find((i) => i.value === value))) {
-        return "Invalid account";
+        return 'Invalid account';
       }
     }
-    if (name === "category") {
+    if (name === 'category') {
       if (!categories.find((c) => !!c.items.find((i) => i.value === value))) {
-        return "Invalid category";
+        return 'Invalid category';
       }
     }
-    if (name === "name") {
-      if (!selectedActivity.name || selectedActivity.name.trim() === "") {
-        return "Invalid name";
+    if (name === 'name') {
+      if (!selectedActivity.name || selectedActivity.name.trim() === '') {
+        return 'Invalid name';
       }
     }
     return null;
   };
 
   const allValid = (activity?: Activity) => {
-    return Object.entries(activity || selectedActivity).every(
-      ([key, value]) => {
-        return validate(key, value) === null;
-      },
-    );
+    return Object.entries(activity || selectedActivity).every(([key, value]) => {
+      return validate(key, value) === null;
+    });
   };
 
   const getAmount = (activity: Activity) => {
@@ -229,15 +204,7 @@ export const ActivityEditor = ({
       amount: getAmount(activity || (selectedActivity as Activity)),
     };
     dispatch(
-      saveActivity(
-        account,
-        activityToSave,
-        startDate,
-        endDate,
-        graphEndDate,
-        selectedBillId,
-        selectedInterestId,
-      ),
+      saveActivity(account, activityToSave, startDate, endDate, graphEndDate, selectedBillId, selectedInterestId),
     );
     resetSelected();
   };
@@ -260,7 +227,7 @@ export const ActivityEditor = ({
     <Stack h="100%" w="100%" justify="space-between" pos="relative">
       <LoadingOverlay
         visible={showLoading}
-        loaderProps={{ color: "blue.6", size: "xl" }}
+        loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       {selectedActivity ? (
@@ -297,7 +264,7 @@ export const ActivityEditor = ({
                     }),
                   );
                 }}
-                error={validate("dateVariable", selectedActivity.dateVariable)}
+                error={validate('dateVariable', selectedActivity.dateVariable)}
               />
             )}
             <ActionIcon
@@ -310,21 +277,17 @@ export const ActivityEditor = ({
                 );
               }}
             >
-              {selectedActivity.dateIsVariable ? (
-                <IconVariable />
-              ) : (
-                <IconVariableOff />
-              )}
+              {selectedActivity.dateIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
           </Group>
           <CreatableSelect
             label="Name"
-            error={validate("name", selectedActivity.name)}
+            error={validate('name', selectedActivity.name)}
             value={selectedActivity.name}
             onChange={(v: string | null) => {
               const newActivity = {
                 ...selectedActivity,
-                name: v || "",
+                name: v || '',
               };
               if (!categoryTouched && v && v in names) {
                 newActivity.category = names[v];
@@ -345,13 +308,13 @@ export const ActivityEditor = ({
               dispatch(
                 updateActivity({
                   ...selectedActivity,
-                  category: v ? v : "",
+                  category: v ? v : '',
                 }),
               );
               setCategoryTouched(true);
             }}
             searchable
-            error={validate("category", selectedActivity.category)}
+            error={validate('category', selectedActivity.category)}
           />
           <Checkbox
             label="Is this a transfer?"
@@ -364,7 +327,7 @@ export const ActivityEditor = ({
                 }),
               );
             }}
-            error={validate("isTransfer", selectedActivity.isTransfer)}
+            error={validate('isTransfer', selectedActivity.isTransfer)}
           />
           {selectedActivity.isTransfer && (
             <>
@@ -377,7 +340,7 @@ export const ActivityEditor = ({
                 onChange={(v) => {
                   dispatch(updateActivity({ ...selectedActivity, from: v }));
                 }}
-                error={validate("from", selectedActivity.from)}
+                error={validate('from', selectedActivity.from)}
               />
               <Select
                 label="To Account"
@@ -388,57 +351,52 @@ export const ActivityEditor = ({
                 onChange={(v) => {
                   dispatch(updateActivity({ ...selectedActivity, to: v }));
                 }}
-                error={validate("to", selectedActivity.to)}
+                error={validate('to', selectedActivity.to)}
               />
             </>
           )}
           <Group w="100%">
             {((!selectedActivity.amountVariable ||
-              selectedActivity.amountVariable === "{HALF}" ||
-              selectedActivity.amountVariable === "{FULL}") && (
-                <Group w="100%" style={{ flex: 1 }}>
-                  <CalculatorEditor
-                    style={{ flex: 1 }}
-                    label="Amount"
-                    value={
-                      selectedActivity.isTransfer
-                        ? Math.abs(Number(selectedActivity.amount))
-                        : Number(selectedActivity.amount)
-                    }
-                    onChange={(v: number) => {
-                      dispatch(
-                        updateActivity({
-                          ...selectedActivity,
-                          amount: v,
-                        }),
-                      );
-                    }}
-                    error={
-                      validate("amount", selectedActivity.amount) || undefined
-                    }
-                    handleEnter={handleEnter}
-                  />
-                </Group>
-              )) || (
-                <Select
+              selectedActivity.amountVariable === '{HALF}' ||
+              selectedActivity.amountVariable === '{FULL}') && (
+              <Group w="100%" style={{ flex: 1 }}>
+                <CalculatorEditor
+                  style={{ flex: 1 }}
                   label="Amount"
-                  value={selectedActivity.amountVariable as string}
-                  data={amountVariables.map((v) => ({ label: v, value: v }))}
-                  onChange={(v) => {
-                    if (!v) return;
+                  value={
+                    selectedActivity.isTransfer
+                      ? Math.abs(Number(selectedActivity.amount))
+                      : Number(selectedActivity.amount)
+                  }
+                  onChange={(v: number) => {
                     dispatch(
                       updateActivity({
                         ...selectedActivity,
-                        amountVariable: v,
+                        amount: v,
                       }),
                     );
                   }}
-                  error={validate(
-                    "amountVariable",
-                    selectedActivity.amountVariable,
-                  )}
+                  error={validate('amount', selectedActivity.amount) || undefined}
+                  handleEnter={handleEnter}
                 />
-              )}
+              </Group>
+            )) || (
+              <Select
+                label="Amount"
+                value={selectedActivity.amountVariable as string}
+                data={amountVariables.map((v) => ({ label: v, value: v }))}
+                onChange={(v) => {
+                  if (!v) return;
+                  dispatch(
+                    updateActivity({
+                      ...selectedActivity,
+                      amountVariable: v,
+                    }),
+                  );
+                }}
+                error={validate('amountVariable', selectedActivity.amountVariable)}
+              />
+            )}
             <ActionIcon
               onClick={() => {
                 dispatch(
@@ -449,11 +407,7 @@ export const ActivityEditor = ({
                 );
               }}
             >
-              {selectedActivity.amountIsVariable ? (
-                <IconVariable />
-              ) : (
-                <IconVariableOff />
-              )}
+              {selectedActivity.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
           </Group>
           <FlagSelect
@@ -464,7 +418,7 @@ export const ActivityEditor = ({
             dropdownProps={{
               zIndex: 1001,
               withinPortal: true,
-              position: "bottom",
+              position: 'bottom',
             }}
           />
           <Group w="100%" grow>

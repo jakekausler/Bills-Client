@@ -4,11 +4,13 @@
   overflow: unset !important;
 }
 
-.rbc-off-range, .rbc-off-range-bg {
+.rbc-off-range,
+.rbc-off-range-bg {
   background-color: #00000000 !important;
   color: #00000000 !important;
 }
 
-.rbc-now, .rbc-today {
+.rbc-now,
+.rbc-today {
   background-color: #ffffff22 !important;
 }

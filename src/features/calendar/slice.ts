@@ -1,8 +1,8 @@
-import { PayloadAction } from "@reduxjs/toolkit";
+import { PayloadAction } from '@reduxjs/toolkit';
 
-import { createSlice } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
-import { CalendarBill } from "../../types/types";
+import { createSlice } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
+import { CalendarBill } from '../../types/types';
 
 interface CalendarState {
   bills: CalendarBill[];
@@ -18,16 +18,16 @@ interface CalendarState {
 const initialState: CalendarState = {
   bills: [],
   billsLoaded: false,
-  billsError: "",
+  billsError: '',
 
   selectedAccounts: [],
 
-  startDate: dayjs().startOf("month").format("YYYY-MM-DD"),
-  endDate: dayjs().endOf("month").format("YYYY-MM-DD"),
+  startDate: dayjs().startOf('month').format('YYYY-MM-DD'),
+  endDate: dayjs().endOf('month').format('YYYY-MM-DD'),
 };
 
 export const calendarSlice = createSlice({
-  name: "calendar",
+  name: 'calendar',
   initialState,
   reducers: {
     setBills: (state, action: PayloadAction<CalendarBill[]>) => {
@@ -52,13 +52,7 @@ export const calendarSlice = createSlice({
   },
 });
 
-export const {
-  setBills,
-  setBillsError,
-  updateStartDate,
-  updateEndDate,
-  updateSelectedAccounts,
-  setBillsLoaded,
-} = calendarSlice.actions;
+export const { setBills, setBillsError, updateStartDate, updateEndDate, updateSelectedAccounts, setBillsLoaded } =
+  calendarSlice.actions;
 
 export default calendarSlice.reducer;

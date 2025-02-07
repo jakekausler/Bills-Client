@@ -4,7 +4,7 @@ import { CSSProperties } from 'react';
 import { CalendarBill } from '../../types/types';
 
 interface CalendarEventProps {
-  event: CalendarBill
+  event: CalendarBill;
 }
 
 export function CalendarEvent({ event }: CalendarEventProps) {
@@ -41,15 +41,23 @@ export function CalendarEvent({ event }: CalendarEventProps) {
       </Group>
       <Divider />
       <Stack gap={0}>
-        {event.isTransfer && (
+        {(event.isTransfer && (
           <>
-            <Box p={0} m={0}><b>From</b> {event.from}</Box>
-            <Box p={0} m={0}><b>To</b> {event.to}</Box>
+            <Box p={0} m={0}>
+              <b>From</b> {event.from}
+            </Box>
+            <Box p={0} m={0}>
+              <b>To</b> {event.to}
+            </Box>
           </>
-        ) || (
-            <Box p={0} m={0}><b>Account</b> {event.account}</Box>
-          )}
-        <Box p={0} m={0}><b>Category</b> {event.category}</Box>
+        )) || (
+          <Box p={0} m={0}>
+            <b>Account</b> {event.account}
+          </Box>
+        )}
+        <Box p={0} m={0}>
+          <b>Category</b> {event.category}
+        </Box>
       </Stack>
     </Stack>
   );
@@ -62,4 +70,4 @@ export function CalendarEvent({ event }: CalendarEventProps) {
       </Box>
     </Tooltip>
   );
-} 
+}

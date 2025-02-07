@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Account } from "../../types/types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Account } from '../../types/types';
 
 interface AccountsState {
   accounts: Account[];
@@ -12,13 +12,13 @@ interface AccountsState {
 const initialState: AccountsState = {
   accounts: [],
   accountsLoaded: false,
-  accountsError: "",
+  accountsError: '',
 
   selectedAccount: null,
 };
 
 export const accountsSlice = createSlice({
-  name: "accounts",
+  name: 'accounts',
   initialState,
   reducers: {
     setAccounts: (state, action: PayloadAction<Account[]>) => {
@@ -37,6 +37,5 @@ export const accountsSlice = createSlice({
   },
 });
 
-export const { setAccounts, setAccountsError, setSelectedAccount, setAccountsLoaded } =
-  accountsSlice.actions;
+export const { setAccounts, setAccountsError, setSelectedAccount, setAccountsLoaded } = accountsSlice.actions;
 export default accountsSlice.reducer;

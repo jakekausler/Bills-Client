@@ -1,93 +1,88 @@
 import React from 'react';
-import "./App.css";
-import {
-  ActionIcon,
-  AppShell,
-  Box,
-  Burger,
-  Button,
-  Group,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "./store";
-import {
-  IconCalendar,
-  IconChartPie,
-  IconTable,
-  IconGraph,
-  IconTransfer,
-  IconChartBar,
-} from "@tabler/icons-react";
-import { loadAccounts } from "./features/accounts/actions";
-import AccountList from "./components/accounts/accountList";
-import Account from "./components/account/account";
-import { PageComponentType, SidebarComponentType } from "./types/types";
-import { loadCategories } from "./features/categories/actions";
-import Simulations from "./components/simulations/simulations";
-import Variables from "./components/variables/variables";
-import { loadSimulations } from "./features/simulations/actions";
-import { loadNames } from "./features/activities/actions";
-import Categories from "./components/categories/categories";
-import CategoriesAccountSelector from "./components/categories/categoriesAccountSelector";
-import Calendar from "./components/calendar/billCalendar";
-import CalendarAccountSelector from "./components/calendar/calendarAccountSelector";
-import { loadCalendar } from "./features/calendar/actions";
-import Flow from "./components/flow/flow";
-import FlowAccountSelector from "./components/flow/flowAccountSelector";
-import { loadFlow } from "./features/flow/actions";
-import GraphView from "./components/graphView/graphView";
-import GraphViewAccountSelector from "./components/graphView/graphViewAccountSelector";
-import MonteCarlo from "./components/monteCarlo/monteCarlo";
-import MonteCarloAccountSelector from "./components/monteCarlo/monteCarloAccountSelector";
+import './App.css';
+import { ActionIcon, AppShell, Box, Burger, Button, Group } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from './store';
+import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar } from '@tabler/icons-react';
+import { loadAccounts } from './features/accounts/actions';
+import AccountList from './components/accounts/accountList';
+import Account from './components/account/account';
+import { PageComponentType, SidebarComponentType } from './types/types';
+import { loadCategories } from './features/categories/actions';
+import Simulations from './components/simulations/simulations';
+import Variables from './components/variables/variables';
+import { loadSimulations } from './features/simulations/actions';
+import { loadNames } from './features/activities/actions';
+import Categories from './components/categories/categories';
+import CategoriesAccountSelector from './components/categories/categoriesAccountSelector';
+import Calendar from './components/calendar/billCalendar';
+import CalendarAccountSelector from './components/calendar/calendarAccountSelector';
+import { loadCalendar } from './features/calendar/actions';
+import Flow from './components/flow/flow';
+import FlowAccountSelector from './components/flow/flowAccountSelector';
+import { loadFlow } from './features/flow/actions';
+import GraphView from './components/graphView/graphView';
+import GraphViewAccountSelector from './components/graphView/graphViewAccountSelector';
+import MonteCarlo from './components/monteCarlo/monteCarlo';
+import MonteCarloAccountSelector from './components/monteCarlo/monteCarloAccountSelector';
 import { Login } from './components/login/login';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useToken } from './hooks/useToken';
 
-const pages = {
+type Page = {
+  title: string;
+  component: React.ComponentType;
+  sidebar: React.ComponentType<{ close: () => void }>;
+  icon: React.ComponentType;
+  hidden?: boolean;
+};
+
+const pages: Record<string, Page> = {
   accounts: {
-    title: "Accounts",
+    title: 'Accounts',
     component: Account,
     sidebar: AccountList,
     icon: IconTable,
   },
   simulations: {
-    title: "Simulation",
+    title: 'Simulation',
     component: Variables,
     sidebar: Simulations,
     icon: IconGraph,
   },
   calendar: {
-    title: "Calendar",
+    title: 'Calendar',
     component: Calendar,
     sidebar: CalendarAccountSelector,
     icon: IconCalendar,
   },
   categories: {
-    title: "Categories",
+    title: 'Categories',
     component: Categories,
     sidebar: CategoriesAccountSelector,
-
     icon: IconChartPie,
   },
   flow: {
-    title: "Flow",
+    title: 'Flow',
     component: Flow,
     sidebar: FlowAccountSelector,
     icon: IconTransfer,
+    hidden: true,
   },
   graphView: {
-    title: "Graph View",
+    title: 'Graph View',
     component: GraphView,
     sidebar: GraphViewAccountSelector,
     icon: IconChartBar,
   },
   monteCarlo: {
-    title: "Monte Carlo",
+    title: 'Monte Carlo',
     component: MonteCarlo,
     sidebar: MonteCarloAccountSelector,
     icon: IconChartBar,
+    hidden: true,
   },
 };
 
@@ -121,18 +116,16 @@ function AppContent() {
     dispatch(loadFlow());
   }, []);
 
-  const PageComponent = pages[page as keyof typeof pages]
-    .component as PageComponentType;
+  const PageComponent = pages[page as keyof typeof pages].component as PageComponentType;
 
-  const SidebarComponent = pages[page as keyof typeof pages]
-    .sidebar as SidebarComponentType;
+  const SidebarComponent = pages[page as keyof typeof pages].sidebar as SidebarComponentType;
 
   return (
     <AppShell
       header={{ height: 50 }}
-      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       styles={{
-        main: { height: "calc(100vh - 50px)" },
+        main: { height: 'calc(100vh - 50px)' },
       }}
       padding="md"
     >
@@ -140,7 +133,8 @@ function AppContent() {
         <Group p="xs" w="100%">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <Group justify="space-between" style={{ flex: 1 }}>
-            {Object.entries(pages).map(([key, { title, icon }]) => {
+            {Object.entries(pages).map(([key, { title, icon, hidden }]) => {
+              if (hidden) return null;
               const Icon = icon as React.ComponentType;
               return (
                 <Box key={key}>

@@ -1,8 +1,8 @@
-import { PayloadAction } from "@reduxjs/toolkit";
+import { PayloadAction } from '@reduxjs/toolkit';
 
-import { createSlice } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
-import { CategoryActivity, CategoryBreakdown } from "../../types/types";
+import { createSlice } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
+import { CategoryActivity, CategoryBreakdown } from '../../types/types';
 
 interface CategoriesState {
   categories: Record<string, string[]>;
@@ -27,25 +27,25 @@ interface CategoriesState {
 const initialState: CategoriesState = {
   categories: {},
   categoriesLoaded: false,
-  categoriesError: "",
+  categoriesError: '',
 
   categoryBreakdown: {},
   categoryBreakdownLoaded: false,
 
-  selectedCategory: "",
+  selectedCategory: '',
   selectedCategoryBreakdown: {},
   selectedCategoryBreakdownLoaded: false,
   selectedCategoryActivity: [],
   selectedCategoryActivityLoaded: false,
 
-  breakdownStart: dayjs().subtract(1, "month").format("YYYY-MM-DD"),
-  breakdownEnd: dayjs().format("YYYY-MM-DD"),
+  breakdownStart: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
+  breakdownEnd: dayjs().format('YYYY-MM-DD'),
 
   selectedAccounts: [],
 };
 
 export const categoriesSlice = createSlice({
-  name: "categories",
+  name: 'categories',
   initialState,
   reducers: {
     setCategories: (state, action: PayloadAction<Record<string, string[]>>) => {

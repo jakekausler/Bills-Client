@@ -1,11 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { selectSimulations, selectSimulationsLoaded } from "../../features/simulations/select";
-import { AppDispatch } from "../../store";
-import { ActionIcon, Checkbox, LoadingOverlay, Radio, Stack, Table, Text, TextInput } from "@mantine/core";
-import { loadSimulations, saveSimulations } from "../../features/simulations/actions";
-import { useEffect, useState } from "react";
-import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectSimulations, selectSimulationsLoaded } from '../../features/simulations/select';
+import { AppDispatch } from '../../store';
+import { ActionIcon, Checkbox, LoadingOverlay, Radio, Stack, Table, Text, TextInput } from '@mantine/core';
+import { loadSimulations, saveSimulations } from '../../features/simulations/actions';
+import { useEffect, useState } from 'react';
+import { IconEdit, IconEye, IconPlus, IconTrash } from '@tabler/icons-react';
 
 export default function Simulations() {
   const simulations = useSelector(selectSimulations);
@@ -44,20 +44,34 @@ export default function Simulations() {
       <Radio.Group
         value={simulations.find((s) => s.selected)?.name}
         onChange={(value) => {
-          dispatch(saveSimulations(simulations.map((s) => ({ ...s, selected: s.name === value }))))
+          dispatch(saveSimulations(simulations.map((s) => ({ ...s, selected: s.name === value }))));
         }}
       >
         <Table>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Name</Table.Th>
-              <Table.Th><IconEye /></Table.Th>
-              <Table.Th><IconEdit /></Table.Th>
+              <Table.Th>
+                <IconEye />
+              </Table.Th>
+              <Table.Th>
+                <IconEdit />
+              </Table.Th>
               <Table.Th>
                 <ActionIcon
                   onClick={() => {
                     setSimulationNames([...simulationNames, `Simulation ${simulations.length + 1}`]);
-                    dispatch(saveSimulations([...simulations, { name: `Simulation ${simulations.length + 1}`, enabled: true, selected: false, variables: simulations.find((s) => s.name === 'Default')?.variables ?? {} }]));
+                    dispatch(
+                      saveSimulations([
+                        ...simulations,
+                        {
+                          name: `Simulation ${simulations.length + 1}`,
+                          enabled: true,
+                          selected: false,
+                          variables: simulations.find((s) => s.name === 'Default')?.variables ?? {},
+                        },
+                      ]),
+                    );
                   }}
                 >
                   <IconPlus />
@@ -69,17 +83,15 @@ export default function Simulations() {
             {simulations.map((simulation, index) => (
               <Table.Tr key={simulation.name}>
                 <Table.Td>
-                  {simulation.name === 'Default' && (
-                    <Text>{simulation.name}</Text>
-                  )}
+                  {simulation.name === 'Default' && <Text>{simulation.name}</Text>}
                   {simulation.name !== 'Default' && (
                     <TextInput
                       value={simulationNames[index]}
                       onChange={(e) => {
-                        setSimulationNames(simulationNames.map((n, i) => i === index ? e.target.value : n));
+                        setSimulationNames(simulationNames.map((n, i) => (i === index ? e.target.value : n)));
                       }}
                       onBlur={() => {
-                        dispatch(saveSimulations(simulations.map((s, i) => ({ ...s, name: simulationNames[i] }))))
+                        dispatch(saveSimulations(simulations.map((s, i) => ({ ...s, name: simulationNames[i] }))));
                       }}
                     />
                   )}
@@ -90,9 +102,7 @@ export default function Simulations() {
                     onChange={() =>
                       dispatch(
                         saveSimulations(
-                          simulations.map((s) =>
-                            s.name === simulation.name ? { ...s, enabled: !s.enabled } : s,
-                          ),
+                          simulations.map((s) => (s.name === simulation.name ? { ...s, enabled: !s.enabled } : s)),
                         ),
                       )
                     }
@@ -104,12 +114,17 @@ export default function Simulations() {
                 <Table.Td>
                   <ActionIcon
                     onClick={() => {
-                      dispatch(saveSimulations(
-                        simulations
-                          .filter((s) => s.name !== simulation.name)
-                          // Ensure that the default simulation is selected if the deleted simulation is selected
-                          .map((s) => ({ ...s, selected: simulation.selected && s.name === 'Default' ? true : s.selected }))
-                      ));
+                      dispatch(
+                        saveSimulations(
+                          simulations
+                            .filter((s) => s.name !== simulation.name)
+                            // Ensure that the default simulation is selected if the deleted simulation is selected
+                            .map((s) => ({
+                              ...s,
+                              selected: simulation.selected && s.name === 'Default' ? true : s.selected,
+                            })),
+                        ),
+                      );
                       setSimulationNames(simulationNames.filter((n) => n !== simulation.name));
                     }}
                     disabled={simulation.name === 'Default'}

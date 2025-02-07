@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip } from "@mantine/core";
+import { Tooltip } from '@mantine/core';
 
 export const ConditionalTooltip = ({
   children,

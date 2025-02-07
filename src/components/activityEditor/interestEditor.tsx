@@ -1,21 +1,13 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectEndDate,
   selectInterests,
   selectInterestsLoaded,
   selectNamesLoaded,
   selectStartDate,
-} from "../../features/activities/select";
-import {
-  ActionIcon,
-  FocusTrap,
-  Group,
-  LoadingOverlay,
-  Select,
-  Stack,
-  Table,
-} from "@mantine/core";
+} from '../../features/activities/select';
+import { ActionIcon, FocusTrap, Group, LoadingOverlay, Select, Stack, Table } from '@mantine/core';
 import {
   IconDeviceFloppy,
   IconPlus,
@@ -24,31 +16,24 @@ import {
   IconVariable,
   IconVariableOff,
   IconX,
-} from "@tabler/icons-react";
-import { AppDispatch } from "../../store";
-import { updateInterests } from "../../features/activities/slice";
-import { saveInterests } from "../../features/activities/actions";
-import {
-  selectAccountsLoaded,
-  selectSelectedAccount,
-} from "../../features/accounts/select";
-import { selectGraphEndDate } from "../../features/graph/select";
-import dayjs from "dayjs";
-import { v4 as uuidv4 } from "uuid";
-import { toDateString } from "../../utils/date";
-import { selectCategoriesLoaded } from "../../features/categories/select";
-import { useEffect } from "react";
-import { useState } from "react";
-import { EditableDateInput } from "../helpers/editableDateInput";
-import { CalculatorEditor } from "../helpers/calculatorEditor";
-import { Interest } from "../../types/types";
-import { selectSelectedSimulationVariables } from "../../features/simulations/select";
+} from '@tabler/icons-react';
+import { AppDispatch } from '../../store';
+import { updateInterests } from '../../features/activities/slice';
+import { saveInterests } from '../../features/activities/actions';
+import { selectAccountsLoaded, selectSelectedAccount } from '../../features/accounts/select';
+import { selectGraphEndDate } from '../../features/graph/select';
+import dayjs from 'dayjs';
+import { v4 as uuidv4 } from 'uuid';
+import { toDateString } from '../../utils/date';
+import { selectCategoriesLoaded } from '../../features/categories/select';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { EditableDateInput } from '../helpers/editableDateInput';
+import { CalculatorEditor } from '../helpers/calculatorEditor';
+import { Interest } from '../../types/types';
+import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 
-export const InterestEditor = ({
-  resetSelected,
-}: {
-  resetSelected: () => void;
-}) => {
+export const InterestEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const interests = useSelector(selectInterests) || [];
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
@@ -62,8 +47,8 @@ export const InterestEditor = ({
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === "amount")
-      .map(([name, _]) => name)
+        .filter(([_, value]) => value.type === 'amount')
+        .map(([name, _]) => name)
     : [];
 
   const dispatch = useDispatch<AppDispatch>();
@@ -71,8 +56,7 @@ export const InterestEditor = ({
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
-    const isLoading =
-      !interestsLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
+    const isLoading = !interestsLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
 
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -89,51 +73,49 @@ export const InterestEditor = ({
   }
 
   const getNextDate = () => {
-    const lastInterest =
-      interests.length > 0 ? interests[interests.length - 1] : null;
+    const lastInterest = interests.length > 0 ? interests[interests.length - 1] : null;
     if (!lastInterest) return toDateString(new Date());
     const date = new Date(lastInterest.applicableDate);
     switch (lastInterest.compounded) {
-      case "day":
-        return toDateString(dayjs(date).add(1, "day").toDate());
-      case "week":
-        return toDateString(dayjs(date).add(1, "week").toDate());
-      case "month":
-        return toDateString(dayjs(date).add(1, "month").toDate());
-      case "year":
-        return toDateString(dayjs(date).add(1, "year").toDate());
+      case 'day':
+        return toDateString(dayjs(date).add(1, 'day').toDate());
+      case 'week':
+        return toDateString(dayjs(date).add(1, 'week').toDate());
+      case 'month':
+        return toDateString(dayjs(date).add(1, 'month').toDate());
+      case 'year':
+        return toDateString(dayjs(date).add(1, 'year').toDate());
       default:
         return toDateString(new Date());
     }
   };
 
   const getNextCompounded = () => {
-    const lastInterest =
-      interests.length > 0 ? interests[interests.length - 1] : null;
-    if (!lastInterest) return "month";
+    const lastInterest = interests.length > 0 ? interests[interests.length - 1] : null;
+    if (!lastInterest) return 'month';
     return lastInterest.compounded;
   };
 
   const validate = (index: number, name: string, value: any) => {
-    if (name === "applicableDate") {
+    if (name === 'applicableDate') {
       const date = new Date(value);
-      if (date.toString() === "Invalid Date") {
-        return "Invalid date";
+      if (date.toString() === 'Invalid Date') {
+        return 'Invalid date';
       }
     }
-    if (name === "apr") {
-      if (isNaN(value) || typeof value === "boolean") {
-        return "Invalid apr";
+    if (name === 'apr') {
+      if (isNaN(value) || typeof value === 'boolean') {
+        return 'Invalid apr';
       }
     }
-    if (name === "aprVariable") {
+    if (name === 'aprVariable') {
       if (!amountVariables.includes(value as string)) {
-        return "Invalid variable";
+        return 'Invalid variable';
       }
     }
-    if (name === "compounded") {
-      if (!["day", "week", "month", "year"].includes(value)) {
-        return "Invalid compounded";
+    if (name === 'compounded') {
+      if (!['day', 'week', 'month', 'year'].includes(value)) {
+        return 'Invalid compounded';
       }
     }
     return null;
@@ -171,7 +153,7 @@ export const InterestEditor = ({
     <Stack h="100%" w="100%" justify="space-between" pos="relative">
       <LoadingOverlay
         visible={showLoading}
-        loaderProps={{ color: "blue.6", size: "xl" }}
+        loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       <FocusTrap.InitialFocus />
@@ -198,9 +180,9 @@ export const InterestEditor = ({
                         interests.map((i) =>
                           i.id === interest.id
                             ? {
-                              ...i,
-                              applicableDate: value,
-                            }
+                                ...i,
+                                applicableDate: value,
+                              }
                             : i,
                         ),
                       ),
@@ -226,18 +208,15 @@ export const InterestEditor = ({
                             interests.map((i) =>
                               i.id === interest.id
                                 ? {
-                                  ...i,
-                                  aprVariable: aprVariable as string,
-                                }
+                                    ...i,
+                                    aprVariable: aprVariable as string,
+                                  }
                                 : i,
                             ),
                           ),
                         );
                       }}
-                      error={
-                        validate(index, "aprVariable", interest.aprVariable) ||
-                        undefined
-                      }
+                      error={validate(index, 'aprVariable', interest.aprVariable) || undefined}
                     />
                   ) : (
                     <CalculatorEditor
@@ -249,18 +228,15 @@ export const InterestEditor = ({
                             interests.map((i) =>
                               i.id === interest.id
                                 ? {
-                                  ...i,
-                                  apr:
-                                    typeof apr === "number"
-                                      ? apr
-                                      : parseFloat(apr),
-                                }
+                                    ...i,
+                                    apr: typeof apr === 'number' ? apr : parseFloat(apr),
+                                  }
                                 : i,
                             ),
                           ),
                         );
                       }}
-                      error={validate(index, "apr", interest.apr) || undefined}
+                      error={validate(index, 'apr', interest.apr) || undefined}
                       handleEnter={(apr) => handleEnter(index, apr)}
                     />
                   )}
@@ -270,20 +246,13 @@ export const InterestEditor = ({
                         updateInterests(
                           interests.map((interest, i) => ({
                             ...interest,
-                            aprIsVariable:
-                              i === index
-                                ? !interest.aprIsVariable
-                                : interest.aprIsVariable,
+                            aprIsVariable: i === index ? !interest.aprIsVariable : interest.aprIsVariable,
                           })),
                         ),
                       );
                     }}
                   >
-                    {interest.aprIsVariable ? (
-                      <IconVariable />
-                    ) : (
-                      <IconVariableOff />
-                    )}
+                    {interest.aprIsVariable ? <IconVariable /> : <IconVariableOff />}
                   </ActionIcon>
                 </Group>
               </Table.Td>
@@ -291,10 +260,10 @@ export const InterestEditor = ({
                 <Select
                   size="xs"
                   data={[
-                    { value: "day", label: "Daily" },
-                    { value: "week", label: "Weekly" },
-                    { value: "month", label: "Monthly" },
-                    { value: "year", label: "Yearly" },
+                    { value: 'day', label: 'Daily' },
+                    { value: 'week', label: 'Weekly' },
+                    { value: 'month', label: 'Monthly' },
+                    { value: 'year', label: 'Yearly' },
                   ]}
                   value={interest.compounded}
                   onChange={(compounded) => {
@@ -304,30 +273,22 @@ export const InterestEditor = ({
                         interests.map((i) =>
                           i.id === interest.id
                             ? {
-                              ...i,
-                              compounded: compounded as
-                                | "day"
-                                | "week"
-                                | "month"
-                                | "year",
-                            }
+                                ...i,
+                                compounded: compounded as 'day' | 'week' | 'month' | 'year',
+                              }
                             : i,
                         ),
                       ),
                     );
                   }}
-                  error={validate(index, "compounded", interest.compounded)}
+                  error={validate(index, 'compounded', interest.compounded)}
                 />
               </Table.Td>
               <Table.Td>
                 <ActionIcon
                   size="sm"
                   onClick={() => {
-                    dispatch(
-                      updateInterests(
-                        interests.filter((i) => i.id !== interest.id),
-                      ),
-                    );
+                    dispatch(updateInterests(interests.filter((i) => i.id !== interest.id)));
                   }}
                 >
                   <IconX />
@@ -350,9 +311,9 @@ export const InterestEditor = ({
                   apr: 0,
                   compounded: getNextCompounded(),
                   aprIsVariable: false,
-                  aprVariable: "",
+                  aprVariable: '',
                   applicableDateIsVariable: false,
-                  applicableDateVariable: "",
+                  applicableDateVariable: '',
                 },
               ]),
             );
@@ -363,13 +324,7 @@ export const InterestEditor = ({
         <ActionIcon
           size="xl"
           onClick={() => {
-            dispatch(
-              updateInterests(
-                [...interests].sort((a, b) =>
-                  a.applicableDate > b.applicableDate ? 1 : -1,
-                ),
-              ),
-            );
+            dispatch(updateInterests([...interests].sort((a, b) => (a.applicableDate > b.applicableDate ? 1 : -1))));
           }}
         >
           <IconSort09 />
@@ -377,9 +332,7 @@ export const InterestEditor = ({
         <ActionIcon
           size="xl"
           onClick={() => {
-            dispatch(
-              saveInterests(account, [], startDate, endDate, graphEndDate),
-            );
+            dispatch(saveInterests(account, [], startDate, endDate, graphEndDate));
             resetSelected();
           }}
         >
@@ -389,15 +342,7 @@ export const InterestEditor = ({
           disabled={!allValid()}
           size="xl"
           onClick={() => {
-            dispatch(
-              saveInterests(
-                account,
-                interests,
-                startDate,
-                endDate,
-                graphEndDate,
-              ),
-            );
+            dispatch(saveInterests(account, interests, startDate, endDate, graphEndDate));
             resetSelected();
           }}
         >
