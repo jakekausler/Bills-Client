@@ -12,13 +12,15 @@ import {
   selectGraphEndDate,
   selectGraphType,
   selectGraphLoaded,
+  selectGraphStartDate,
 } from '../../features/graph/select';
-import { setGraphEndDate } from '../../features/graph/slice';
+import { setGraphStartDate, setGraphEndDate } from '../../features/graph/slice';
 
 export default function Account() {
   const showGraph = useSelector(selectShowGraph);
   const datasets = useSelector(selectGraphDatasets);
   const labels = useSelector(selectGraphLabels);
+  const startDate = useSelector(selectGraphStartDate);
   const endDate = useSelector(selectGraphEndDate);
   const type = useSelector(selectGraphType);
   const loaded = useSelector(selectGraphLoaded);
@@ -35,9 +37,11 @@ export default function Account() {
           <Graph
             datasets={datasets}
             labels={labels}
+            startDate={startDate}
             endDate={endDate}
             type={type}
             loaded={loaded}
+            setGraphStartDate={setGraphStartDate}
             setGraphEndDate={setGraphEndDate}
           />
         </div>

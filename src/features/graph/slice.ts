@@ -10,6 +10,7 @@ interface GraphState {
   loaded: boolean;
   error: string;
 
+  startDate: string;
   endDate: string;
 
   show: boolean;
@@ -22,6 +23,7 @@ const initialState: GraphState = {
   loaded: false,
   error: '',
 
+  startDate: toDateString(new Date()),
   endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 24))),
 
   show: true,
@@ -40,6 +42,9 @@ const graphSlice = createSlice({
     setGraphError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
+    setGraphStartDate: (state, action: PayloadAction<string>) => {
+      state.startDate = action.payload;
+    },
     setGraphEndDate: (state, action: PayloadAction<string>) => {
       state.endDate = action.payload;
     },
@@ -55,6 +60,13 @@ const graphSlice = createSlice({
   },
 });
 
-export const { setGraphData, setGraphError, setGraphEndDate, setShowGraph, toggleGraph, updateGraphLoaded } =
-  graphSlice.actions;
+export const {
+  setGraphData,
+  setGraphError,
+  setGraphStartDate,
+  setGraphEndDate,
+  setShowGraph,
+  toggleGraph,
+  updateGraphLoaded,
+} = graphSlice.actions;
 export default graphSlice.reducer;

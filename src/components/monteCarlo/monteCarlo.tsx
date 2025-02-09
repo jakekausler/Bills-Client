@@ -10,7 +10,7 @@ import {
   selectNSimulations,
 } from '../../features/monteCarlo/select';
 import { Graph } from '../graph/graph';
-import { setMonteCarloEndDate } from '../../features/monteCarlo/slice';
+import { setMonteCarloEndDate, setMonteCarloStartDate } from '../../features/monteCarlo/slice';
 import { AppDispatch } from '../../store';
 
 export default function MonteCarlo() {
@@ -26,9 +26,11 @@ export default function MonteCarlo() {
     <Graph
       datasets={datasets}
       labels={labels}
+      startDate={startDate}
       endDate={endDate}
       loaded={loaded}
       type="monteCarlo"
+      setGraphStartDate={setMonteCarloStartDate}
       setGraphEndDate={setMonteCarloEndDate}
     />
   );

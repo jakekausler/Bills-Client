@@ -4,6 +4,8 @@ export const selectGraphViewDatasets = (state: RootState) => state.graphView.dat
 
 export const selectGraphViewLabels = (state: RootState) => state.graphView.labels;
 
+export const selectGraphViewStartDate = (state: RootState) => state.graphView.startDate;
+
 export const selectGraphViewEndDate = (state: RootState) => state.graphView.endDate;
 
 export const selectGraphViewType = (state: RootState) => state.graphView.type;

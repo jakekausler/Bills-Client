@@ -11,6 +11,7 @@ interface GraphViewState {
   error: string;
   selectedAccounts: string[];
 
+  startDate: string;
   endDate: string;
 }
 
@@ -20,6 +21,7 @@ const initialState: GraphViewState = {
   type: 'activity',
   loaded: false,
   error: '',
+  startDate: toDateString(new Date()),
   endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 24))),
   selectedAccounts: [],
 };
@@ -37,6 +39,9 @@ const graphViewSlice = createSlice({
     setGraphViewError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
+    setGraphViewStartDate: (state, action: PayloadAction<string>) => {
+      state.startDate = action.payload;
+    },
     setGraphViewEndDate: (state, action: PayloadAction<string>) => {
       state.endDate = action.payload;
     },
@@ -49,6 +54,12 @@ const graphViewSlice = createSlice({
   },
 });
 
-export const { setGraphViewData, setGraphViewError, setGraphViewEndDate, setGraphViewLoaded, updateSelectedAccounts } =
-  graphViewSlice.actions;
+export const {
+  setGraphViewData,
+  setGraphViewError,
+  setGraphViewStartDate,
+  setGraphViewEndDate,
+  setGraphViewLoaded,
+  updateSelectedAccounts,
+} = graphViewSlice.actions;
 export default graphViewSlice.reducer;

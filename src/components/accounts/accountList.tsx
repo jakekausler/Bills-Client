@@ -26,7 +26,7 @@ import { loadGraphData } from '../../features/graph/actions';
 import { AccountListProps } from './types';
 import { selectStartDate } from '../../features/activities/select';
 import { selectEndDate } from '../../features/activities/select';
-import { selectGraphEndDate } from '../../features/graph/select';
+import { selectGraphStartDate, selectGraphEndDate } from '../../features/graph/select';
 import { IconEye, IconEyeOff, IconPlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { addAccount, editAccounts } from '../../features/accounts/actions';
@@ -51,10 +51,12 @@ export default function AccountList({ close }: AccountListProps) {
   const selectedAccount = useSelector(selectSelectedAccount, shallowEqual);
   const startDate = useSelector(selectStartDate, (a, b) => a === b);
   const endDate = useSelector(selectEndDate, (a, b) => a === b);
+  const graphStartDate = useSelector(selectGraphStartDate, (a, b) => a === b);
   const graphEndDate = useSelector(selectGraphEndDate, (a, b) => a === b);
 
   const startDateObj = useMemo(() => new Date(startDate), [startDate]);
   const endDateObj = useMemo(() => new Date(endDate), [endDate]);
+  const graphStartDateObj = useMemo(() => new Date(graphStartDate), [graphStartDate]);
   const graphEndDateObj = useMemo(() => new Date(graphEndDate), [graphEndDate]);
 
   const [addingAccountType, setAddingAccountType] = useState<string | null>(null);
@@ -82,9 +84,9 @@ export default function AccountList({ close }: AccountListProps) {
   useEffect(() => {
     if (selectedAccount) {
       dispatch(loadActivities(selectedAccount, startDateObj, endDateObj));
-      dispatch(loadGraphData(selectedAccount, graphEndDateObj));
+      dispatch(loadGraphData(selectedAccount, graphStartDateObj, graphEndDateObj));
     }
-  }, [selectedAccount, startDateObj, endDateObj, graphEndDateObj]);
+  }, [selectedAccount, startDateObj, endDateObj, graphStartDateObj, graphEndDateObj]);
 
   useEffect(() => {
     if (loaded && accounts.length > 0 && !selectedAccount) {

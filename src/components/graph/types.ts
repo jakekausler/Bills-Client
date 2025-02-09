@@ -7,8 +7,13 @@ export type GraphProps = {
   datasets: Dataset[];
   labels: string[];
   type: 'activity' | 'yearly' | 'monteCarlo';
+  startDate: string;
   endDate: string;
   loaded: boolean;
+  setGraphStartDate: ActionCreatorWithPayload<
+    string,
+    'graph/setGraphStartDate' | 'graphView/setGraphViewStartDate' | 'monteCarlo/setMonteCarloStartDate'
+  >;
   setGraphEndDate: ActionCreatorWithPayload<
     string,
     'graph/setGraphEndDate' | 'graphView/setGraphViewEndDate' | 'monteCarlo/setMonteCarloEndDate'

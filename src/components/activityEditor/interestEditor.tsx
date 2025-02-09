@@ -21,7 +21,7 @@ import { AppDispatch } from '../../store';
 import { updateInterests } from '../../features/activities/slice';
 import { saveInterests } from '../../features/activities/actions';
 import { selectAccountsLoaded, selectSelectedAccount } from '../../features/accounts/select';
-import { selectGraphEndDate } from '../../features/graph/select';
+import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 import { toDateString } from '../../utils/date';
@@ -38,6 +38,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
   const endDate = new Date(useSelector(selectEndDate));
+  const graphStartDate = new Date(useSelector(selectGraphStartDate));
   const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const interestsLoaded = useSelector(selectInterestsLoaded);
   const accountsLoaded = useSelector(selectAccountsLoaded);
@@ -145,7 +146,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
     if (!allValid(ints)) {
       return;
     }
-    dispatch(saveInterests(account, ints, startDate, endDate, graphEndDate));
+    dispatch(saveInterests(account, ints, startDate, endDate, graphStartDate, graphEndDate));
     resetSelected();
   };
 
@@ -332,7 +333,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
         <ActionIcon
           size="xl"
           onClick={() => {
-            dispatch(saveInterests(account, [], startDate, endDate, graphEndDate));
+            dispatch(saveInterests(account, [], startDate, endDate, graphStartDate, graphEndDate));
             resetSelected();
           }}
         >
@@ -342,7 +343,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
           disabled={!allValid()}
           size="xl"
           onClick={() => {
-            dispatch(saveInterests(account, interests, startDate, endDate, graphEndDate));
+            dispatch(saveInterests(account, interests, startDate, endDate, graphStartDate, graphEndDate));
             resetSelected();
           }}
         >

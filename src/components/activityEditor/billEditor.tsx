@@ -24,7 +24,7 @@ import {
 } from '@mantine/core';
 import { selectCategories, selectCategoriesLoaded } from '../../features/categories/select';
 import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
-import { selectGraphEndDate } from '../../features/graph/select';
+import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import { AppDispatch } from '../../store';
 import { updateBill } from '../../features/activities/slice';
 import { Account, Bill } from '../../types/types';
@@ -50,6 +50,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
   const endDate = new Date(useSelector(selectEndDate));
+  const graphStartDate = new Date(useSelector(selectGraphStartDate));
   const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const billLoaded = useSelector(selectSelectedBillLoaded);
   const accountsLoaded = useSelector(selectAccountsLoaded);
@@ -307,7 +308,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
       console.log(bill, 'not valid');
       return;
     }
-    dispatch(saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphEndDate));
+    dispatch(saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate));
     resetSelected();
   };
 
@@ -698,7 +699,9 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             <Button
               disabled={!allValid()}
               onClick={() => {
-                dispatch(saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphEndDate));
+                dispatch(
+                  saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate),
+                );
                 resetSelected();
               }}
             >
@@ -714,6 +717,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                     selectedBill.isTransfer,
                     startDate,
                     endDate,
+                    graphStartDate,
                     graphEndDate,
                   ),
                 );

@@ -78,6 +78,7 @@ export const saveActivity = (
   activity: Activity,
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
   billId: string | null,
   interestId: string | null | undefined,
@@ -108,7 +109,7 @@ export const saveActivity = (
       await fetchAddActivity(account.id, activity);
     }
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -123,12 +124,13 @@ export const removeActivity = (
   isTransfer: boolean,
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
     await fetchRemoveActivity(account.id, activityId, isTransfer);
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -144,12 +146,13 @@ export const changeAccountForActivity = (
   isTransfer: boolean,
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
     await fetchChangeAccountForActivity(account.id, activityId, newAccountId, isTransfer);
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -185,6 +188,7 @@ export const saveBill = (
   bill: Bill,
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
@@ -194,7 +198,7 @@ export const saveBill = (
       await fetchAddBill(account.id, bill);
     }
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -209,12 +213,13 @@ export const removeBill = (
   isTransfer: boolean,
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
     await fetchRemoveBill(account.id, billId, isTransfer);
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -230,12 +235,13 @@ export const changeAccountForBill = (
   isTransfer: boolean,
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
     await fetchChangeAccountForBill(account.id, billId, newAccountId, isTransfer);
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -257,12 +263,13 @@ export const saveInterests = (
   interests: Interest[],
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
     await fetchSaveInterests(account.id, interests);
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -291,12 +298,13 @@ export const skipBill = (
   isTransfer: boolean,
   startDate: Date,
   endDate: Date,
+  graphStartDate: Date,
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
     await fetchSkipBill(account.id, billId, isTransfer);
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());
@@ -305,11 +313,17 @@ export const skipBill = (
   };
 };
 
-export const skipInterest = (account: Account, startDate: Date, endDate: Date, graphEndDate: Date): AppThunk => {
+export const skipInterest = (
+  account: Account,
+  startDate: Date,
+  endDate: Date,
+  graphStartDate: Date,
+  graphEndDate: Date,
+): AppThunk => {
   return async (dispatch) => {
     await fetchSkipInterest(account.id);
     dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphEndDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());
     dispatch(loadCategories());
     dispatch(loadCalendar());

@@ -28,7 +28,7 @@ import { selectCategories, selectCategoriesLoaded } from '../../features/categor
 import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
 import { removeActivity, saveActivity } from '../../features/activities/actions';
 import { Activity } from '../../types/types';
-import { selectGraphEndDate } from '../../features/graph/select';
+import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import { IconVariable, IconVariableOff } from '@tabler/icons-react';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import CreatableSelect from '../helpers/creatableSelect';
@@ -73,6 +73,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
   const endDate = new Date(useSelector(selectEndDate));
+  const graphStartDate = new Date(useSelector(selectGraphStartDate));
   const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const selectedBillId = useSelector(selectSelectedActivityBillId);
   const selectedInterestId = useSelector(selectSelectedActivityInterestId);
@@ -204,7 +205,16 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
       amount: getAmount(activity || (selectedActivity as Activity)),
     };
     dispatch(
-      saveActivity(account, activityToSave, startDate, endDate, graphEndDate, selectedBillId, selectedInterestId),
+      saveActivity(
+        account,
+        activityToSave,
+        startDate,
+        endDate,
+        graphStartDate,
+        graphEndDate,
+        selectedBillId,
+        selectedInterestId,
+      ),
     );
     resetSelected();
   };
@@ -440,6 +450,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                     selectedActivity.isTransfer,
                     startDate,
                     endDate,
+                    graphStartDate,
                     graphEndDate,
                   ),
                 );

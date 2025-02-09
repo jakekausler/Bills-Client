@@ -49,7 +49,7 @@ import {
   IconTrash,
   IconCopy,
 } from '@tabler/icons-react';
-import { selectGraphEndDate } from '../../features/graph/select';
+import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 
 export default function Activities({ style }: ActivitiesProps) {
   const activities = useSelector(selectAllActivities) || [];
@@ -61,6 +61,7 @@ export default function Activities({ style }: ActivitiesProps) {
   const startDate = new Date(useSelector(selectStartDate));
   const endDate = new Date(useSelector(selectEndDate));
   const activitiesLoaded = useSelector(selectActivitiesLoaded);
+  const graphStartDate = new Date(useSelector(selectGraphStartDate));
   const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const accounts = useSelector(selectAllAccounts);
 
@@ -134,6 +135,7 @@ export default function Activities({ style }: ActivitiesProps) {
         activity.isTransfer,
         startDate,
         endDate,
+        graphStartDate,
         graphEndDate,
       ),
     );
@@ -142,7 +144,7 @@ export default function Activities({ style }: ActivitiesProps) {
 
   const skipInterest = () => {
     if (!accountId) return;
-    dispatch(skipInterestAction(account as Account, startDate, endDate, graphEndDate));
+    dispatch(skipInterestAction(account as Account, startDate, endDate, graphStartDate, graphEndDate));
     resetEditor();
   };
 
@@ -253,11 +255,14 @@ export default function Activities({ style }: ActivitiesProps) {
                                   activity.isTransfer,
                                   startDate,
                                   endDate,
+                                  graphStartDate,
                                   graphEndDate,
                                 ),
                               );
                             } else if (activity.interestId) {
-                              dispatch(saveInterests(account as Account, [], startDate, endDate, graphEndDate));
+                              dispatch(
+                                saveInterests(account as Account, [], startDate, endDate, graphStartDate, graphEndDate),
+                              );
                             } else {
                               dispatch(
                                 removeActivity(
@@ -266,6 +271,7 @@ export default function Activities({ style }: ActivitiesProps) {
                                   activity.isTransfer,
                                   startDate,
                                   endDate,
+                                  graphStartDate,
                                   graphEndDate,
                                 ),
                               );
@@ -411,6 +417,7 @@ export default function Activities({ style }: ActivitiesProps) {
                     changeAccountActivity.isTransfer as boolean,
                     startDate,
                     endDate,
+                    graphStartDate,
                     graphEndDate,
                   ),
                 );
@@ -423,6 +430,7 @@ export default function Activities({ style }: ActivitiesProps) {
                     changeAccountActivity.isTransfer as boolean,
                     startDate,
                     endDate,
+                    graphStartDate,
                     graphEndDate,
                   ),
                 );

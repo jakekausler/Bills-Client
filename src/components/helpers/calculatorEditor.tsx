@@ -274,6 +274,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
           onKeyDown={onKeyDown}
           onBlur={() => {
             restProps.onChange?.(Number(displayValue || 0));
+            setOpened(false);
           }}
         />
       </Popover.Target>

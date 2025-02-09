@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, LoadingOverlay } from '@mantine/core';
+import { Stack, LoadingOverlay, Group } from '@mantine/core';
 import { GraphProps } from './types';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
@@ -9,11 +9,20 @@ import { AppDispatch } from '../../store';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
-import dayjs from 'dayjs';
 
 Chart.register(...registerables);
 
-export function Graph({ style, datasets, labels, type, endDate, loaded, setGraphEndDate }: GraphProps) {
+export function Graph({
+  style,
+  datasets,
+  labels,
+  type,
+  startDate,
+  endDate,
+  loaded,
+  setGraphStartDate,
+  setGraphEndDate,
+}: GraphProps) {
   const dispatch = useDispatch<AppDispatch>();
 
   const [showLoading, setShowLoading] = useState(false);
@@ -38,16 +47,28 @@ export function Graph({ style, datasets, labels, type, endDate, loaded, setGraph
         loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
-      <EditableDateInput
-        value={endDate}
-        onBlur={(value) => {
-          if (!value) return;
-          dispatch(setGraphEndDate(value));
-        }}
-        label="Graph End Date"
-        placeholder="Select end date"
-        minDate={dayjs().add(1, 'day').toDate()}
-      />
+      <Group w="100%">
+        <EditableDateInput
+          style={{ flex: 1 }}
+          value={startDate}
+          onBlur={(value) => {
+            if (!value) return;
+            dispatch(setGraphStartDate(value));
+          }}
+          label="Graph Start Date"
+          placeholder="Select start date"
+        />
+        <EditableDateInput
+          style={{ flex: 1 }}
+          value={endDate}
+          onBlur={(value) => {
+            if (!value) return;
+            dispatch(setGraphEndDate(value));
+          }}
+          label="Graph End Date"
+          placeholder="Select end date"
+        />
+      </Group>
       <div style={{ flex: 1, minHeight: 0 }}>
         <Line
           data={{
