@@ -193,9 +193,10 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                 />
               </Table.Td>
               <Table.Td>
-                <Group>
+                <Group w="100%">
                   {interest.aprIsVariable ? (
                     <Select
+                      style={{ flex: 1 }}
                       size="xs"
                       data={amountVariables.map((name) => ({
                         value: name,
@@ -221,6 +222,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                     />
                   ) : (
                     <CalculatorEditor
+                      style={{ flex: 1 }}
                       size="xs"
                       value={Number(interest.apr)}
                       onChange={(apr: number) => {
@@ -242,6 +244,8 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                     />
                   )}
                   <ActionIcon
+                    size="sm"
+                    ml={-12}
                     onClick={() => {
                       dispatch(
                         updateInterests(
@@ -288,6 +292,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
               <Table.Td>
                 <ActionIcon
                   size="sm"
+                  mt={6}
                   onClick={() => {
                     dispatch(updateInterests(interests.filter((i) => i.id !== interest.id)));
                   }}

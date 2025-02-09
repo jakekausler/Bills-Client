@@ -234,6 +234,7 @@ export const EditableDateInput = ({
   minDate,
   size,
   style,
+  clearable,
 }: {
   label?: string;
   value: string | null;
@@ -242,6 +243,7 @@ export const EditableDateInput = ({
   minDate?: Date;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   style?: React.CSSProperties;
+  clearable?: boolean;
 }) => {
   const [editedDate, setEditedDate] = useState(value);
 
@@ -253,12 +255,15 @@ export const EditableDateInput = ({
 
   return (
     <DateInput
+      clearable={clearable}
       style={style}
       label={label}
       value={getValidDate(editedDate)}
       onBlur={(e) => {
         if (e.target.value) {
           onBlur(toDateString(new Date(e.target.value)));
+        } else {
+          onBlur(null);
         }
       }}
       onChange={(date) => {

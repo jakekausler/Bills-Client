@@ -29,7 +29,7 @@ import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '
 import { removeActivity, saveActivity } from '../../features/activities/actions';
 import { Activity } from '../../types/types';
 import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
-import { IconVariable, IconVariableOff } from '@tabler/icons-react';
+import { IconVariable, IconVariableOff, IconWifi0 } from '@tabler/icons-react';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import CreatableSelect from '../helpers/creatableSelect';
 import { useEffect, useState } from 'react';
@@ -246,6 +246,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
           <Group w="100%">
             {!selectedActivity.dateIsVariable && (
               <EditableDateInput
+                style={{ flex: 1 }}
                 label="Date"
                 value={selectedActivity.date}
                 onBlur={(value) => {
@@ -262,6 +263,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
             )}
             {selectedActivity.dateIsVariable && (
               <Select
+                style={{ flex: 1 }}
                 label="Date"
                 value={selectedActivity.dateVariable as string}
                 data={dateVariables.map((v) => ({ label: v, value: v }))}
@@ -278,6 +280,13 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               />
             )}
             <ActionIcon
+              mt={
+                (selectedActivity.dateIsVariable && !validate('dateVariable', selectedActivity.dateVariable)) ||
+                (!selectedActivity.dateIsVariable && !validate('date', selectedActivity.date))
+                  ? 22
+                  : 2
+              }
+              ml={-12}
               onClick={() => {
                 dispatch(
                   updateActivity({
@@ -366,7 +375,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
             </>
           )}
           <Group w="100%">
-            {((!selectedActivity.amountVariable ||
+            {((!selectedActivity.amountIsVariable ||
               selectedActivity.amountVariable === '{HALF}' ||
               selectedActivity.amountVariable === '{FULL}') && (
               <Group w="100%" style={{ flex: 1 }}>
@@ -392,6 +401,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               </Group>
             )) || (
               <Select
+                style={{ flex: 1 }}
                 label="Amount"
                 value={selectedActivity.amountVariable as string}
                 data={amountVariables.map((v) => ({ label: v, value: v }))}
@@ -408,6 +418,13 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               />
             )}
             <ActionIcon
+              mt={
+                (selectedActivity.amountIsVariable && !validate('amountVariable', selectedActivity.amountVariable)) ||
+                (!selectedActivity.amountIsVariable && !validate('amount', selectedActivity.amount))
+                  ? 22
+                  : 2
+              }
+              ml={-12}
               onClick={() => {
                 dispatch(
                   updateActivity({

@@ -323,97 +323,120 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         <>
           <FocusTrap.InitialFocus />
           <Group w="100%">
-            {!selectedBill.startDateIsVariable && (
-              <EditableDateInput
-                label="Start date"
-                value={selectedBill.startDate}
-                onBlur={(value) => {
-                  if (!value) return;
+            <Group w="100%" style={{ flex: 1 }}>
+              {!selectedBill.startDateIsVariable && (
+                <EditableDateInput
+                  style={{ flex: 1 }}
+                  label="Start date"
+                  value={selectedBill.startDate}
+                  onBlur={(value) => {
+                    if (!value) return;
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        startDate: value,
+                      }),
+                    );
+                  }}
+                  placeholder="Start date"
+                />
+              )}
+              {selectedBill.startDateIsVariable && (
+                <Select
+                  style={{ flex: 1 }}
+                  label="Start Date"
+                  value={selectedBill.startDateVariable as string}
+                  data={dateVariables.map((v) => ({ label: v, value: v }))}
+                  onChange={(v) => {
+                    if (!v) return;
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        startDateVariable: v,
+                      }),
+                    );
+                  }}
+                  error={validate('startDateVariable', selectedBill.startDateVariable)}
+                />
+              )}
+              <ActionIcon
+                mt={
+                  (selectedBill.startDateIsVariable &&
+                    !validate('startDateVariable', selectedBill.startDateVariable)) ||
+                  (!selectedBill.startDateIsVariable && !validate('startDate', selectedBill.startDate))
+                    ? 22
+                    : 2
+                }
+                ml={-12}
+                onClick={() => {
                   dispatch(
                     updateBill({
                       ...selectedBill,
-                      startDate: value,
+                      startDateIsVariable: !selectedBill.startDateIsVariable,
                     }),
                   );
                 }}
-                placeholder="Start date"
-              />
-            )}
-            {selectedBill.startDateIsVariable && (
-              <Select
-                label="Start Date"
-                value={selectedBill.startDateVariable as string}
-                data={dateVariables.map((v) => ({ label: v, value: v }))}
-                onChange={(v) => {
-                  if (!v) return;
+              >
+                {selectedBill.startDateIsVariable ? <IconVariable /> : <IconVariableOff />}
+              </ActionIcon>
+            </Group>
+            <Group w="100%" style={{ flex: 1 }}>
+              {!selectedBill.endDateIsVariable && (
+                <EditableDateInput
+                  style={{ flex: 1 }}
+                  label="End date"
+                  value={selectedBill.endDate}
+                  onBlur={(value) => {
+                    console.log(value);
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        endDate: value,
+                      }),
+                    );
+                  }}
+                  placeholder="End date"
+                  clearable
+                />
+              )}
+              {selectedBill.endDateIsVariable && (
+                <Select
+                  style={{ flex: 1 }}
+                  label="End Date"
+                  value={selectedBill.endDateVariable as string}
+                  data={dateVariables.map((v) => ({ label: v, value: v }))}
+                  onChange={(v) => {
+                    if (!v) return;
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        endDateVariable: v,
+                      }),
+                    );
+                  }}
+                  error={validate('endDateVariable', selectedBill.endDateVariable)}
+                />
+              )}
+              <ActionIcon
+                mt={
+                  (selectedBill.endDateIsVariable && !validate('endDateVariable', selectedBill.endDateVariable)) ||
+                  (!selectedBill.endDateIsVariable && !validate('endDate', selectedBill.endDate))
+                    ? 22
+                    : 2
+                }
+                ml={-12}
+                onClick={() => {
                   dispatch(
                     updateBill({
                       ...selectedBill,
-                      startDateVariable: v,
+                      endDateIsVariable: !selectedBill.endDateIsVariable,
                     }),
                   );
                 }}
-                error={validate('startDateVariable', selectedBill.startDateVariable)}
-              />
-            )}
-            <ActionIcon
-              onClick={() => {
-                dispatch(
-                  updateBill({
-                    ...selectedBill,
-                    startDateIsVariable: !selectedBill.startDateIsVariable,
-                  }),
-                );
-              }}
-            >
-              {selectedBill.startDateIsVariable ? <IconVariable /> : <IconVariableOff />}
-            </ActionIcon>
-          </Group>
-          <Group w="100%">
-            {!selectedBill.endDateIsVariable && (
-              <EditableDateInput
-                label="End date"
-                value={selectedBill.endDate}
-                onBlur={(value) => {
-                  dispatch(
-                    updateBill({
-                      ...selectedBill,
-                      endDate: value,
-                    }),
-                  );
-                }}
-                placeholder="End date"
-              />
-            )}
-            {selectedBill.endDateIsVariable && (
-              <Select
-                label="End Date"
-                value={selectedBill.endDateVariable as string}
-                data={dateVariables.map((v) => ({ label: v, value: v }))}
-                onChange={(v) => {
-                  if (!v) return;
-                  dispatch(
-                    updateBill({
-                      ...selectedBill,
-                      endDateVariable: v,
-                    }),
-                  );
-                }}
-                error={validate('endDateVariable', selectedBill.endDateVariable)}
-              />
-            )}
-            <ActionIcon
-              onClick={() => {
-                dispatch(
-                  updateBill({
-                    ...selectedBill,
-                    endDateIsVariable: !selectedBill.endDateIsVariable,
-                  }),
-                );
-              }}
-            >
-              {selectedBill.endDateIsVariable ? <IconVariable /> : <IconVariableOff />}
-            </ActionIcon>
+              >
+                {selectedBill.endDateIsVariable ? <IconVariable /> : <IconVariableOff />}
+              </ActionIcon>
+            </Group>
           </Group>
           <CreatableSelect
             label="Name"
@@ -533,6 +556,13 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               />
             )}
             <ActionIcon
+              mt={
+                (selectedBill.amountIsVariable && !validate('amountVariable', selectedBill.amountVariable)) ||
+                (!selectedBill.amountIsVariable && !validate('amount', selectedBill.amount))
+                  ? 22
+                  : 2
+              }
+              ml={-12}
               onClick={() => {
                 dispatch(
                   updateBill({
@@ -588,6 +618,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
           </Group>
           <Group w="100%">
             <TextInput
+              style={{ flex: 1 }}
               label="Annual start date"
               value={selectedBill.annualStartDate || ''}
               onChange={(e) => {
@@ -602,6 +633,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               placeholder="MM/DD"
             />
             <TextInput
+              style={{ flex: 1 }}
               label="Annual end date"
               value={selectedBill.annualEndDate || ''}
               onChange={(e) => {
@@ -617,7 +649,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             />
           </Group>
           <Group w="100%">
-            <Group style={{ flex: 1 }}>
+            <Group style={{ flex: 1 }} w="100%">
               {!selectedBill.increaseByIsVariable && (
                 <CalculatorEditor
                   style={{ flex: 1 }}
@@ -641,6 +673,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               )}
               {selectedBill.increaseByIsVariable && (
                 <Select
+                  style={{ flex: 1 }}
                   label="Increase By"
                   value={selectedBill.increaseByVariable as string}
                   data={amountVariables.map((v) => ({
@@ -660,6 +693,14 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 />
               )}
               <ActionIcon
+                mt={
+                  (selectedBill.increaseByIsVariable &&
+                    !validate('increaseByVariable', selectedBill.increaseByVariable)) ||
+                  (!selectedBill.increaseByIsVariable && !validate('increaseBy', selectedBill.increaseBy))
+                    ? 22
+                    : 2
+                }
+                ml={-12}
                 onClick={() => {
                   dispatch(
                     updateBill({
@@ -673,6 +714,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               </ActionIcon>
             </Group>
             <TextInput
+              style={{ flex: 1 }}
               label="Increase By Date"
               value={selectedBill.increaseByDate}
               onChange={(e) => {
