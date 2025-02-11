@@ -9,6 +9,7 @@ import calendarSlice from './features/calendar/slice';
 import flowSlice from './features/flow/slice';
 import graphViewSlice from './features/graphView/slice';
 import monteCarloSlice from './features/monteCarlo/slice';
+import moneyMovementSlice from './features/moneyMovement/slice';
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     flow: flowSlice,
     graphView: graphViewSlice,
     monteCarlo: monteCarloSlice,
+    moneyMovement: moneyMovementSlice,
   },
 });
 

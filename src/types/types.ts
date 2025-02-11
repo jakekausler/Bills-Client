@@ -167,3 +167,8 @@ export type FlowLink = {
   y0: number;
   y1: number;
 };
+
+export type MoneyMovementData = {
+  labels: string[];
+  datasets: Dataset[];
+};

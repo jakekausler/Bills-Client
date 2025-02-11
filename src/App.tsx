@@ -30,6 +30,8 @@ import MonteCarloAccountSelector from './components/monteCarlo/monteCarloAccount
 import { Login } from './components/login/login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useToken } from './hooks/useToken';
+import { MoneyMovement } from './components/moneyMovement/moneyMovement';
+import { loadMoneyMovementChart } from './features/moneyMovement/actions';
 
 type Page = {
   title: string;
@@ -84,6 +86,12 @@ const pages: Record<string, Page> = {
     icon: IconChartBar,
     hidden: true,
   },
+  moneyMovement: {
+    title: 'Money Movement',
+    component: MoneyMovement,
+    sidebar: () => null,
+    icon: IconChartBar,
+  },
 };
 
 function App() {
@@ -114,6 +122,7 @@ function AppContent() {
     dispatch(loadCalendar());
     dispatch(loadNames());
     dispatch(loadFlow());
+    dispatch(loadMoneyMovementChart());
   }, []);
 
   const PageComponent = pages[page as keyof typeof pages].component as PageComponentType;
