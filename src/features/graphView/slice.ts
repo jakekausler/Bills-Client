@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Dataset, GraphData } from '../../types/types';
 import { toDateString } from '../../utils/date';
+import dayjs from 'dayjs';
 
 interface GraphViewState {
   datasets: Dataset[];
@@ -21,8 +22,8 @@ const initialState: GraphViewState = {
   type: 'activity',
   loaded: false,
   error: '',
-  startDate: toDateString(new Date()),
-  endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 24))),
+  startDate: toDateString(dayjs(new Date()).startOf('year').toDate()),
+  endDate: toDateString(dayjs(new Date()).endOf('year').add(10, 'year').toDate()),
   selectedAccounts: [],
 };
 
