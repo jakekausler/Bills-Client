@@ -18,7 +18,7 @@ const initialState: MoneyMovementState = {
   error: '',
 
   startDate: toDateString(dayjs(new Date()).add(1, 'year').startOf('year').toDate()),
-  endDate: toDateString(dayjs(new Date()).add(60, 'year').endOf('year').toDate()),
+  endDate: toDateString(dayjs(new Date()).add(1, 'year').endOf('year').toDate()),
 };
 
 const moneyMovementSlice = createSlice({

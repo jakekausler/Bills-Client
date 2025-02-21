@@ -302,7 +302,6 @@ export default function AccountList({ close }: AccountListProps) {
                   {editingAccountsList
                     .sort((a, b) => compareTypes(a.type, b.type) || a.name.localeCompare(b.name))
                     .map((account) => {
-                      console.log(account);
                       return (
                         <Table.Tr key={account.id}>
                           <Table.Td>

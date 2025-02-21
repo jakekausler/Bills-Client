@@ -106,8 +106,6 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
 
       // If there's selected text, delete the selection
       if (selectionStart !== selectionEnd) {
-        console.log('selectionStart', selectionStart);
-        console.log('selectionEnd', selectionEnd);
         const newValue = prev.slice(0, selectionStart) + prev.slice(selectionEnd);
         setTimeout(() => {
           input.setSelectionRange(selectionStart, selectionStart);

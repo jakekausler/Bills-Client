@@ -25,6 +25,15 @@ export type Activity = BaseActivity & {
   interestId: string | null;
   firstInterest: boolean;
   balance: number;
+  cashBalance: number;
+  investmentValue: number;
+  investmentActivityType: 'buy' | 'sell' | 'dividend' | 'fee';
+  investmentActions: {
+    symbol: string;
+    shares: number;
+    pricePerShare: number;
+    totalPrice: number;
+  }[];
 };
 
 export type CategoryActivity = Activity & {

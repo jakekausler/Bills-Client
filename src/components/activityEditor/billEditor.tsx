@@ -305,7 +305,6 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         }
       : null;
     if (!allValid(bill)) {
-      console.log(bill, 'not valid');
       return;
     }
     dispatch(saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate));
@@ -387,7 +386,6 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                   label="End date"
                   value={selectedBill.endDate}
                   onBlur={(value) => {
-                    console.log(value);
                     dispatch(
                       updateBill({
                         ...selectedBill,
