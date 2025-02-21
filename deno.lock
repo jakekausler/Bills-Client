@@ -33,9 +33,11 @@
     "npm:chartjs-adapter-dayjs-4@^1.0.4": "1.0.4_chart.js@4.4.7_dayjs@1.11.13",
     "npm:chartjs-chart-sankey@0.14": "0.14.0_chart.js@4.4.7",
     "npm:clsx@^2.1.1": "2.1.1",
+    "npm:cross-env@^7.0.3": "7.0.3",
     "npm:d3-sankey@~0.12.3": "0.12.3",
     "npm:d3@^7.9.0": "7.9.0_d3-selection@3.0.0",
     "npm:dayjs@^1.11.13": "1.11.13",
+    "npm:dotenv@^16.4.7": "16.4.7",
     "npm:eslint-config-prettier@^10.0.1": "10.0.1_eslint@9.15.0",
     "npm:eslint-plugin-react-hooks@5": "5.0.0_eslint@9.15.0",
     "npm:eslint-plugin-react-refresh@~0.4.14": "0.4.14_eslint@9.15.0",
@@ -1152,6 +1154,12 @@
     "cookie@1.0.2": {
       "integrity": "sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA=="
     },
+    "cross-env@7.0.3": {
+      "integrity": "sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==",
+      "dependencies": [
+        "cross-spawn"
+      ]
+    },
     "cross-spawn@7.0.6": {
       "integrity": "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==",
       "dependencies": [
@@ -1441,6 +1449,9 @@
         "@babel/runtime",
         "csstype"
       ]
+    },
+    "dotenv@16.4.7": {
+      "integrity": "sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ=="
     },
     "electron-to-chromium@1.5.65": {
       "integrity": "sha512-PWVzBjghx7/wop6n22vS2MLU8tKGd4Q91aCEGhG/TYmW6PP5OcSXcdnxTe1NNt0T66N8D6jxh4kC8UsdzOGaIw=="
@@ -2659,9 +2670,11 @@
         "npm:chartjs-adapter-dayjs-4@^1.0.4",
         "npm:chartjs-chart-sankey@0.14",
         "npm:clsx@^2.1.1",
+        "npm:cross-env@^7.0.3",
         "npm:d3-sankey@~0.12.3",
         "npm:d3@^7.9.0",
         "npm:dayjs@^1.11.13",
+        "npm:dotenv@^16.4.7",
         "npm:eslint-config-prettier@^10.0.1",
         "npm:eslint-plugin-react-hooks@5",
         "npm:eslint-plugin-react-refresh@~0.4.14",
