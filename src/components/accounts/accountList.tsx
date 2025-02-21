@@ -125,7 +125,8 @@ export default function AccountList({ close }: AccountListProps) {
         rmdAccount: account.rmdAccount,
         minimumBalance: account.minimumBalance,
         minimumPullAmount: account.minimumPullAmount,
-        performsPullsAndPushes: account.performsPullsAndPushes,
+        performsPulls: account.performsPulls,
+        performsPushes: account.performsPushes,
         pushStart: account.pushStart,
         pushEnd: account.pushEnd,
         pushAccount: account.pushAccount,
@@ -222,7 +223,8 @@ export default function AccountList({ close }: AccountListProps) {
                       rmdAccount: null,
                       minimumBalance: null,
                       minimumPullAmount: null,
-                      performsPullsAndPushes: false,
+                      performsPulls: false,
+                      performsPushes: false,
                       pushStart: null,
                       pushEnd: null,
                       pushAccount: null,
@@ -285,7 +287,10 @@ export default function AccountList({ close }: AccountListProps) {
                       Minimum Pull Amount
                     </Table.Th>
                     <Table.Th ta="center" w={100}>
-                      Perform Pulls and Pushes
+                      Perform Pulls
+                    </Table.Th>
+                    <Table.Th ta="center" w={100}>
+                      Perform Pushes
                     </Table.Th>
                     <Table.Th ta="center" w={120}>
                       Push Start
@@ -507,11 +512,26 @@ export default function AccountList({ close }: AccountListProps) {
                             <Center>
                               <Switch
                                 disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                                checked={account.performsPullsAndPushes}
+                                checked={account.performsPulls}
                                 onChange={(e) =>
                                   setEditingAccountsList(
                                     editingAccountsList.map((a) =>
-                                      a.id === account.id ? { ...a, performsPullsAndPushes: e.target.checked } : a,
+                                      a.id === account.id ? { ...a, performsPulls: e.target.checked } : a,
+                                    ),
+                                  )
+                                }
+                              />
+                            </Center>
+                          </Table.Td>
+                          <Table.Td>
+                            <Center>
+                              <Switch
+                                disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+                                checked={account.performsPushes}
+                                onChange={(e) =>
+                                  setEditingAccountsList(
+                                    editingAccountsList.map((a) =>
+                                      a.id === account.id ? { ...a, performsPushes: e.target.checked } : a,
                                     ),
                                   )
                                 }
