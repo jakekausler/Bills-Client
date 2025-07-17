@@ -20,8 +20,8 @@ const initialState: MonteCarloState = {
   labels: [],
   loaded: false,
   error: '',
-  startDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() - 1))),
-  endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 24))),
+  startDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() - 1))),
+  endDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() + 24))),
   selectedAccounts: [],
   nSimulations: 3,
 };

@@ -2,7 +2,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import { createSlice } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { Flow } from '../../types/types';
+
+dayjs.extend(utc);
 
 interface FlowState {
   flow: Flow;
@@ -25,8 +28,8 @@ const initialState: FlowState = {
 
   selectedAccounts: [],
 
-  startDate: dayjs().startOf('month').format('YYYY-MM-DD'),
-  endDate: dayjs().endOf('month').format('YYYY-MM-DD'),
+  startDate: dayjs.utc().startOf('month').format('YYYY-MM-DD'),
+  endDate: dayjs.utc().endOf('month').format('YYYY-MM-DD'),
 };
 
 export const flowSlice = createSlice({

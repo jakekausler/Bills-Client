@@ -41,12 +41,12 @@ import { useState } from 'react';
 //     if (!value) return "";
 //     const date = new Date(`${value}T00:00:00`);
 //     if (isNaN(date.getTime())) return "";
-//     return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+//     return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
 //   });
 //   const inputRef = useRef<HTMLInputElement>(null);
 
 //   const updateDisplayValue = (date: Date) => {
-//     setDisplayValue(`${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`);
+//     setDisplayValue(`${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`);
 //   };
 
 //   const getPartValues = () => {
@@ -87,12 +87,12 @@ import { useState } from 'react';
 //       case "ArrowUp":
 //         e.preventDefault();
 //         if (selectedPart === "month") {
-//           const newMonth = date.getMonth() + 1;
+//           const newMonth = date.getUTCMonth() + 1;
 //           date.setMonth(newMonth === 12 ? 0 : newMonth);
 //         } else if (selectedPart === "day") {
-//           date.setDate(date.getDate() + 1);
-//           if (date.getDate() === 1) {
-//             date.setMonth(date.getMonth() + 1);
+//           date.setDate(date.getUTCDate() + 1);
+//           if (date.getUTCDate() === 1) {
+//             date.setMonth(date.getUTCMonth() + 1);
 //           }
 //         } else {
 //           date.setFullYear(date.getFullYear() + 1);
@@ -103,13 +103,13 @@ import { useState } from 'react';
 //       case "ArrowDown":
 //         e.preventDefault();
 //         if (selectedPart === "month") {
-//           const newMonth = date.getMonth() - 1;
+//           const newMonth = date.getUTCMonth() - 1;
 //           date.setMonth(newMonth === -1 ? 11 : newMonth);
 //         } else if (selectedPart === "day") {
-//           const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-//           date.setDate(date.getDate() - 1);
-//           if (date.getDate() === lastDay) {
-//             date.setMonth(date.getMonth() - 1);
+//           const lastDay = new Date(date.getFullYear(), date.getUTCMonth() + 1, 0).getUTCDate();
+//           date.setDate(date.getUTCDate() - 1);
+//           if (date.getUTCDate() === lastDay) {
+//             date.setMonth(date.getUTCMonth() - 1);
 //           }
 //         } else {
 //           date.setFullYear(date.getFullYear() - 1);
@@ -162,7 +162,7 @@ import { useState } from 'react';
 //             const newMonth = parts.month.length === 2 ? e.key : parts.month + e.key;
 //             parts.month = Math.min(parseInt(newMonth), 12).toString();
 //           } else if (selectedPart === "day") {
-//             const maxDays = new Date(parseInt(parts.year), parseInt(parts.month), 0).getDate();
+//             const maxDays = new Date(parseInt(parts.year), parseInt(parts.month), 0).getUTCDate();
 //             const newDay = parts.day.length === 2 ? e.key : parts.day + e.key;
 //             parts.day = Math.min(parseInt(newDay), maxDays).toString();
 //           } else {

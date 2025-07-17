@@ -2,6 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import { MoneyMovementData } from '../../types/types';
 import { toDateString } from '../../utils/date';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 interface MoneyMovementState {
   data: MoneyMovementData | null;
@@ -17,8 +20,8 @@ const initialState: MoneyMovementState = {
   loading: false,
   error: '',
 
-  startDate: toDateString(dayjs(new Date()).add(1, 'year').startOf('year').toDate()),
-  endDate: toDateString(dayjs(new Date()).add(1, 'year').endOf('year').toDate()),
+  startDate: toDateString(dayjs.utc(new Date()).add(1, 'year').startOf('year').toDate()),
+  endDate: toDateString(dayjs.utc(new Date()).add(1, 'year').endOf('year').toDate()),
 };
 
 const moneyMovementSlice = createSlice({

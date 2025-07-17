@@ -226,7 +226,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         return 'Please use 01, 02, 03, etc.';
       }
 
-      const daysInMonth = new Date(2024, month, 0).getDate();
+      const daysInMonth = new Date(2024, month, 0).getUTCDate();
       if (isNaN(day) || day < 1 || day > daysInMonth) {
         return 'Invalid day for month';
       }
@@ -264,7 +264,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         return 'Please use 01, 02, 03, etc.';
       }
 
-      const daysInMonth = new Date(2024, month, 0).getDate();
+      const daysInMonth = new Date(2024, month, 0).getUTCDate();
       if (isNaN(day) || day < 1 || day > daysInMonth) {
         return 'Invalid day for month';
       }

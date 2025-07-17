@@ -2,7 +2,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import { createSlice } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { CategoryActivity, CategoryBreakdown } from '../../types/types';
+
+dayjs.extend(utc);
 
 interface CategoriesState {
   categories: Record<string, string[]>;
@@ -38,8 +41,8 @@ const initialState: CategoriesState = {
   selectedCategoryActivity: [],
   selectedCategoryActivityLoaded: false,
 
-  breakdownStart: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
-  breakdownEnd: dayjs().format('YYYY-MM-DD'),
+  breakdownStart: dayjs.utc().subtract(1, 'month').format('YYYY-MM-DD'),
+  breakdownEnd: dayjs.utc().format('YYYY-MM-DD'),
 
   selectedAccounts: [],
 };

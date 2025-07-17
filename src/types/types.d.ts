@@ -109,14 +109,19 @@ export type Account = {
 };
 
 export type GraphData = {
-  datasets: Dataset[];
-  labels: string[];
-  type: 'activity' | 'yearly';
+  [simulation: string]: {
+    datasets: Dataset[];
+    labels: string[];
+    type: 'activity' | 'yearly';
+  };
 };
 
 export type Dataset = {
   label: string;
   data: number[];
+  borderColor: string;
+  borderDash: number[];
+  backgroundColor: string;
   activity: GraphActivity;
 };
 

@@ -23,6 +23,7 @@ import { saveInterests } from '../../features/activities/actions';
 import { selectAccountsLoaded, selectSelectedAccount } from '../../features/accounts/select';
 import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { v4 as uuidv4 } from 'uuid';
 import { toDateString } from '../../utils/date';
 import { selectCategoriesLoaded } from '../../features/categories/select';
@@ -32,6 +33,8 @@ import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { Interest } from '../../types/types';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
+
+dayjs.extend(utc);
 
 export const InterestEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const interests = useSelector(selectInterests) || [];
@@ -79,13 +82,13 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
     const date = new Date(lastInterest.applicableDate);
     switch (lastInterest.compounded) {
       case 'day':
-        return toDateString(dayjs(date).add(1, 'day').toDate());
+        return toDateString(dayjs.utc(date).add(1, 'day').toDate());
       case 'week':
-        return toDateString(dayjs(date).add(1, 'week').toDate());
+        return toDateString(dayjs.utc(date).add(1, 'week').toDate());
       case 'month':
-        return toDateString(dayjs(date).add(1, 'month').toDate());
+        return toDateString(dayjs.utc(date).add(1, 'month').toDate());
       case 'year':
-        return toDateString(dayjs(date).add(1, 'year').toDate());
+        return toDateString(dayjs.utc(date).add(1, 'year').toDate());
       default:
         return toDateString(new Date());
     }

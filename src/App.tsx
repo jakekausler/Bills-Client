@@ -95,7 +95,13 @@ const pages: Record<string, Page> = {
 };
 
 function App() {
-  const { token, setToken } = useToken();
+  const { token, setToken, validateToken } = useToken();
+
+  useEffect(() => {
+    if (token && token !== 'INVALID') {
+      validateToken();
+    }
+  }, [token]);
 
   if (!token || token === 'INVALID') {
     return <Login setToken={setToken} invalid={token === 'INVALID'} />;

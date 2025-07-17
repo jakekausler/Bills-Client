@@ -15,3 +15,5 @@ export const selectGraphViewLoaded = (state: RootState) => state.graphView.loade
 export const selectGraphViewError = (state: RootState) => state.graphView.error;
 
 export const selectSelectedAccounts = (state: RootState) => state.graphView.selectedAccounts;
+
+export const selectSelectedSimulations = (state: RootState) => state.graphView.selectedSimulations;

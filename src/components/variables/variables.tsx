@@ -167,13 +167,17 @@ export default function Variables() {
                                   ...s,
                                   variables: {
                                     ...s.variables,
-                                    [variable]: {
-                                      ...s.variables[variable],
-                                      value:
-                                        typeof event.target.value === 'number'
-                                          ? event.target.value
-                                          : parseFloat(event.target.value),
-                                    },
+                                    ...(s.selected
+                                      ? {
+                                          [variable]: {
+                                            ...s.variables[variable],
+                                            value:
+                                              typeof event.target.value === 'number'
+                                                ? event.target.value
+                                                : parseFloat(event.target.value),
+                                          },
+                                        }
+                                      : {}),
                                   },
                                 })),
                               ),
@@ -197,10 +201,14 @@ export default function Variables() {
                                   ...s,
                                   variables: {
                                     ...s.variables,
-                                    [variable]: {
-                                      ...s.variables[variable],
-                                      value: date,
-                                    },
+                                    ...(s.selected
+                                      ? {
+                                          [variable]: {
+                                            ...s.variables[variable],
+                                            value: date,
+                                          },
+                                        }
+                                      : {}),
                                   },
                                 })),
                               ),

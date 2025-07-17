@@ -24,7 +24,7 @@ const initialState: GraphState = {
   error: '',
 
   startDate: toDateString(new Date()),
-  endDate: toDateString(new Date(new Date().setMonth(new Date().getMonth() + 24))),
+  endDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() + 24))),
 
   show: true,
 };

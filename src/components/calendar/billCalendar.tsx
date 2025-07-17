@@ -7,6 +7,7 @@ import { loadCalendar } from '../../features/calendar/actions';
 import { AppDispatch } from '../../store';
 import { Calendar as BigCalendar, dayjsLocalizer, Views } from 'react-big-calendar';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import './calendar.css';
 import { CalendarEvent } from './calendarEvent';
 import { ActionIcon, Group, LoadingOverlay, Stack } from '@mantine/core';
@@ -16,6 +17,8 @@ import { updateEndDate } from '../../features/calendar/slice';
 import { updateStartDate } from '../../features/calendar/slice';
 import { CalendarBill } from '../../types/types';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+
+dayjs.extend(utc);
 
 export default function BillCalendar() {
   const startDate = useSelector(selectStartDate);
@@ -79,8 +82,8 @@ export default function BillCalendar() {
         <ActionIcon
           disabled={!loaded}
           onClick={() => {
-            dispatch(updateStartDate(dayjs(startDate).subtract(1, 'month').format('YYYY-MM-DD')));
-            dispatch(updateEndDate(dayjs(startDate).subtract(1, 'month').endOf('month').format('YYYY-MM-DD')));
+            dispatch(updateStartDate(dayjs.utc(startDate).subtract(1, 'month').format('YYYY-MM-DD')));
+            dispatch(updateEndDate(dayjs.utc(startDate).subtract(1, 'month').endOf('month').format('YYYY-MM-DD')));
             dispatch(loadCalendar());
           }}
         >
@@ -92,7 +95,7 @@ export default function BillCalendar() {
           onChange={(value) => {
             if (value) {
               dispatch(updateStartDate(toDateString(value)));
-              dispatch(updateEndDate(dayjs(value).endOf('month').format('YYYY-MM-DD')));
+              dispatch(updateEndDate(dayjs.utc(value).endOf('month').format('YYYY-MM-DD')));
               dispatch(loadCalendar());
             }
           }}
@@ -108,8 +111,8 @@ export default function BillCalendar() {
         <ActionIcon
           disabled={!loaded}
           onClick={() => {
-            dispatch(updateStartDate(dayjs(startDate).add(1, 'month').format('YYYY-MM-DD')));
-            dispatch(updateEndDate(dayjs(startDate).add(1, 'month').endOf('month').format('YYYY-MM-DD')));
+            dispatch(updateStartDate(dayjs.utc(startDate).add(1, 'month').format('YYYY-MM-DD')));
+            dispatch(updateEndDate(dayjs.utc(startDate).add(1, 'month').endOf('month').format('YYYY-MM-DD')));
             dispatch(loadCalendar());
           }}
         >

@@ -2,7 +2,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import { createSlice } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { CalendarBill } from '../../types/types';
+
+dayjs.extend(utc);
 
 interface CalendarState {
   bills: CalendarBill[];
@@ -22,8 +25,8 @@ const initialState: CalendarState = {
 
   selectedAccounts: [],
 
-  startDate: dayjs().startOf('month').format('YYYY-MM-DD'),
-  endDate: dayjs().endOf('month').format('YYYY-MM-DD'),
+  startDate: dayjs.utc().startOf('month').format('YYYY-MM-DD'),
+  endDate: dayjs.utc().endOf('month').format('YYYY-MM-DD'),
 };
 
 export const calendarSlice = createSlice({

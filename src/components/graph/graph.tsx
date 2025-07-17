@@ -73,8 +73,8 @@ export function Graph({
         <Line
           data={{
             datasets: datasets.map((dataset, index) => ({
-              borderColor: `hsl(${(index * 137.5 + 200) % 360}, 70%, 50%)`,
-              backgroundColor: `hsla(${(index * 137.5 + 200) % 360}, 70%, 50%, 0.5)`,
+              // borderColor: `hsl(${(index * 137.5 + 200) % 360}, 70%, 50%)`,
+              // backgroundColor: `hsla(${(index * 137.5 + 200) % 360}, 70%, 50%, 0.5)`,
               pointRadius: 0,
               borderWidth: 1,
               pointHoverRadius: 5,
