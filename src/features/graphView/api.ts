@@ -16,6 +16,6 @@ export const fetchGraphViewData = async (
     selectedSimulationString = `&selectedSimulations=${selectedSimulations.join(',')}`;
   }
   return await api.get(
-    `/api/accounts/graph?startDate=${startDate}&endDate=${endDate}${selectedAccountString}${selectedSimulationString}`,
+    `/api/accounts/graph?startDate=${startDate}&endDate=${endDate}${selectedAccountString}${selectedSimulationString}&combineGraphAccounts=true`,
   );
 };
