@@ -150,7 +150,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
     });
   };
 
-  const onBeforeInput = (event: React.CompositionEvent<HTMLInputElement>) => {
+  const onBeforeInput = (event: React.FormEvent<HTMLInputElement> & { data: string }) => {
     const key = event.data;
     const input = event.currentTarget;
     const selectionStart = input.selectionStart || 0;
