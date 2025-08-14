@@ -20,6 +20,7 @@ export function Graph({
   startDate,
   endDate,
   loaded,
+  hideLegend,
   setGraphStartDate,
   setGraphEndDate,
 }: GraphProps) {
@@ -47,28 +48,30 @@ export function Graph({
         loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
-      <Group w="100%">
-        <EditableDateInput
-          style={{ flex: 1 }}
-          value={startDate}
-          onBlur={(value) => {
-            if (!value) return;
-            dispatch(setGraphStartDate(value));
-          }}
-          label="Graph Start Date"
-          placeholder="Select start date"
-        />
-        <EditableDateInput
-          style={{ flex: 1 }}
-          value={endDate}
-          onBlur={(value) => {
-            if (!value) return;
-            dispatch(setGraphEndDate(value));
-          }}
-          label="Graph End Date"
-          placeholder="Select end date"
-        />
-      </Group>
+      {startDate && endDate && setGraphStartDate && setGraphEndDate && (
+        <Group w="100%">
+          <EditableDateInput
+            style={{ flex: 1 }}
+            value={startDate}
+            onBlur={(value) => {
+              if (!value) return;
+              dispatch(setGraphStartDate(value));
+            }}
+            label="Graph Start Date"
+            placeholder="Select start date"
+          />
+          <EditableDateInput
+            style={{ flex: 1 }}
+            value={endDate}
+            onBlur={(value) => {
+              if (!value) return;
+              dispatch(setGraphEndDate(value));
+            }}
+            label="Graph End Date"
+            placeholder="Select end date"
+          />
+        </Group>
+      )}
       <div style={{ flex: 1, minHeight: 0 }}>
         <Line
           data={{
@@ -108,6 +111,9 @@ export function Graph({
               },
             },
             plugins: {
+              legend: {
+                display: !hideLegend,
+              },
               tooltip: {
                 enabled: true,
                 displayColors: false,

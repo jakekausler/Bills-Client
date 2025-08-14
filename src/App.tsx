@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store';
-import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar } from '@tabler/icons-react';
+import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar, IconChartAreaFilled, IconChartLine, IconArrowsSplit2 } from '@tabler/icons-react';
 import { loadAccounts } from './features/accounts/actions';
 import AccountList from './components/accounts/accountList';
 import Account from './components/account/account';
@@ -26,7 +26,7 @@ import { loadFlow } from './features/flow/actions';
 import GraphView from './components/graphView/graphView';
 import GraphViewAccountSelector from './components/graphView/graphViewAccountSelector';
 import MonteCarlo from './components/monteCarlo/monteCarlo';
-import MonteCarloAccountSelector from './components/monteCarlo/monteCarloAccountSelector';
+import MonteCarloSimulationSelector from './components/monteCarlo/monteCarloSimulationSelector';
 import { Login } from './components/login/login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useToken } from './hooks/useToken';
@@ -77,20 +77,19 @@ const pages: Record<string, Page> = {
     title: 'Graph View',
     component: GraphView,
     sidebar: GraphViewAccountSelector,
-    icon: IconChartBar,
+    icon: IconChartLine,
   },
   monteCarlo: {
     title: 'Monte Carlo',
     component: MonteCarlo,
-    sidebar: MonteCarloAccountSelector,
-    icon: IconChartBar,
-    hidden: true,
+    sidebar: MonteCarloSimulationSelector,
+    icon: IconArrowsSplit2,
   },
   moneyMovement: {
     title: 'Money Movement',
     component: MoneyMovement,
     sidebar: () => null,
-    icon: IconChartBar,
+    icon: IconChartAreaFilled,
   },
 };
 

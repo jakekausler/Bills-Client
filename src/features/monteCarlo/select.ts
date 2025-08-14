@@ -17,3 +17,9 @@ export const selectMonteCarloSelectedAccounts = (state: RootState) => state.mont
 export const selectSelectedAccounts = (state: RootState) => state.monteCarlo.selectedAccounts;
 
 export const selectNSimulations = (state: RootState) => state.monteCarlo.nSimulations;
+
+export const selectSimulations = (state: RootState) => state.monteCarlo.simulations;
+
+export const selectSelectedSimulation = (state: RootState) => state.monteCarlo.selectedSimulation;
+
+export const selectSimulationsLoaded = (state: RootState) => state.monteCarlo.simulationsLoaded;

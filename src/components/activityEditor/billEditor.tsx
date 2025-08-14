@@ -65,13 +65,13 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === 'amount')
-        .map(([name, _]) => name)
+      .filter(([_, value]) => value.type === 'amount')
+      .map(([name, _]) => name)
     : [];
   const dateVariables = simulationVariables
     ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === 'date')
-        .map(([name, _]) => name)
+      .filter(([_, value]) => value.type === 'date')
+      .map(([name, _]) => name)
     : [];
 
   const [showLoading, setShowLoading] = useState(false);
@@ -289,8 +289,8 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
     }
     return bill || selectedBill
       ? Object.entries(bill || (selectedBill as Bill)).every(([key, value]) => {
-          return validate(key, value) === null;
-        })
+        return validate(key, value) === null;
+      })
       : false;
   };
 
@@ -300,9 +300,9 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
     }
     const bill = selectedBill
       ? {
-          ...selectedBill,
-          amount: amount || selectedBill.amount,
-        }
+        ...selectedBill,
+        amount: amount || selectedBill.amount,
+      }
       : null;
     if (!allValid(bill)) {
       return;
@@ -362,7 +362,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 mt={
                   (selectedBill.startDateIsVariable &&
                     !validate('startDateVariable', selectedBill.startDateVariable)) ||
-                  (!selectedBill.startDateIsVariable && !validate('startDate', selectedBill.startDate))
+                    (!selectedBill.startDateIsVariable && !validate('startDate', selectedBill.startDate))
                     ? 22
                     : 2
                 }
@@ -418,7 +418,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               <ActionIcon
                 mt={
                   (selectedBill.endDateIsVariable && !validate('endDateVariable', selectedBill.endDateVariable)) ||
-                  (!selectedBill.endDateIsVariable && !validate('endDate', selectedBill.endDate))
+                    (!selectedBill.endDateIsVariable && !validate('endDate', selectedBill.endDate))
                     ? 22
                     : 2
                 }
@@ -556,7 +556,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             <ActionIcon
               mt={
                 (selectedBill.amountIsVariable && !validate('amountVariable', selectedBill.amountVariable)) ||
-                (!selectedBill.amountIsVariable && !validate('amount', selectedBill.amount))
+                  (!selectedBill.amountIsVariable && !validate('amount', selectedBill.amount))
                   ? 22
                   : 2
               }
@@ -694,7 +694,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 mt={
                   (selectedBill.increaseByIsVariable &&
                     !validate('increaseByVariable', selectedBill.increaseByVariable)) ||
-                  (!selectedBill.increaseByIsVariable && !validate('increaseBy', selectedBill.increaseBy))
+                    (!selectedBill.increaseByIsVariable && !validate('increaseBy', selectedBill.increaseBy))
                     ? 22
                     : 2
                 }
