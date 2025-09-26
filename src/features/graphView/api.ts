@@ -5,6 +5,7 @@ export const fetchGraphViewData = async (
   selectedSimulations: string[],
   startDate: string,
   endDate: string,
+  combineAccounts: boolean,
 ) => {
   let selectedAccountString = '';
   if (accountIds.length > 0) {
@@ -16,6 +17,6 @@ export const fetchGraphViewData = async (
     selectedSimulationString = `&selectedSimulations=${selectedSimulations.join(',')}`;
   }
   return await api.get(
-    `/api/accounts/graph?startDate=${startDate}&endDate=${endDate}${selectedAccountString}${selectedSimulationString}&combineGraphAccounts=true`,
+    `/api/accounts/graph?startDate=${startDate}&endDate=${endDate}${selectedAccountString}${selectedSimulationString}&combineGraphAccounts=${combineAccounts}`,
   );
 };

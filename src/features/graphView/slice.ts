@@ -15,6 +15,7 @@ interface GraphViewState {
   error: string;
   selectedAccounts: string[];
   selectedSimulations: string[];
+  combineAccounts: boolean;
 
   startDate: string;
   endDate: string;
@@ -30,6 +31,7 @@ const initialState: GraphViewState = {
   endDate: toDateString(dayjs.utc(new Date()).endOf('year').add(10, 'year').toDate()),
   selectedAccounts: [],
   selectedSimulations: [],
+  combineAccounts: true,
 };
 
 const lineColors = [
@@ -94,6 +96,9 @@ const graphViewSlice = createSlice({
     updateSelectedSimulations: (state, action: PayloadAction<string[]>) => {
       state.selectedSimulations = action.payload;
     },
+    setCombineAccounts: (state, action: PayloadAction<boolean>) => {
+      state.combineAccounts = action.payload;
+    },
   },
 });
 
@@ -105,5 +110,6 @@ export const {
   setGraphViewLoaded,
   updateSelectedAccounts,
   updateSelectedSimulations,
+  setCombineAccounts,
 } = graphViewSlice.actions;
 export default graphViewSlice.reducer;
