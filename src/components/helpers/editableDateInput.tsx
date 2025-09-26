@@ -1,230 +1,10 @@
-import React from 'react';
-// import { TextInput } from "@mantine/core";
-// import { DateInput } from "@mantine/dates";
-// import { useEffect, useRef, useState } from "react";
-// import { toDateString } from "../../utils/date";
-
-import { DateInput } from '@mantine/dates';
+import React, { useEffect, useRef, useState } from 'react';
+import { TextInput, ActionIcon, Popover } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import { IconCalendar } from '@tabler/icons-react';
 import { toDateString } from '../../utils/date';
-import { useState } from 'react';
 
-// type DatePart = "month" | "day" | "year";
-
-// export const EditableDateInput = ({
-//   label,
-//   value,
-//   onBlur,
-//   placeholder,
-//   minDate,
-// }: {
-//   label: string;
-//   value: string | null;
-//   onBlur: (value: string | null) => void;
-//   placeholder: string;
-//   minDate?: Date;
-// }) => {
-//   const validDate = (date: string | null) => {
-//     if (!date) return null;
-//     const dateObj = new Date(`${date}T00:00:00`);
-//     if (minDate && dateObj < minDate) {
-//       return "Date is before minimum date";
-//     }
-//     if (isNaN(dateObj.getTime())) {
-//       return "Invalid date";
-//     }
-//     return null;
-//   };
-
-//   const [editedDate, setEditedDate] = useState(value);
-//   const [selectedPart, setSelectedPart] = useState<DatePart>("month");
-//   const [displayValue, setDisplayValue] = useState(() => {
-//     if (!value) return "";
-//     const date = new Date(`${value}T00:00:00`);
-//     if (isNaN(date.getTime())) return "";
-//     return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
-//   });
-//   const inputRef = useRef<HTMLInputElement>(null);
-
-//   const updateDisplayValue = (date: Date) => {
-//     setDisplayValue(`${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`);
-//   };
-
-//   const getPartValues = () => {
-//     const [month, day, year] = displayValue.split('/');
-//     return {
-//       month: month || '',
-//       day: day || '',
-//       year: year || ''
-//     };
-//   };
-
-//   const updateDateFromParts = (parts: { month: string, day: string, year: string }) => {
-//     const newDisplayValue = `${parts.month.padStart(2, '0')}/${parts.day.padStart(2, '0')}/${parts.year}`;
-//     setDisplayValue(newDisplayValue);
-
-//     const date = new Date(parseInt(parts.year), parseInt(parts.month) - 1, parseInt(parts.day));
-//     if (!isNaN(date.getTime())) {
-//       setEditedDate(toDateString(date));
-//     }
-//   };
-
-//   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-//     const date = new Date(`${editedDate}T00:00:00`);
-//     if (isNaN(date.getTime())) return;
-
-//     const parts = getPartValues();
-//     const cursorPos = inputRef.current?.selectionStart || 0;
-
-//     switch (e.key) {
-//       case "ArrowLeft":
-//         e.preventDefault();
-//         setSelectedPart(selectedPart === "month" ? "year" : selectedPart === "day" ? "month" : "day");
-//         break;
-//       case "ArrowRight":
-//         e.preventDefault();
-//         setSelectedPart(selectedPart === "month" ? "day" : selectedPart === "day" ? "year" : "month");
-//         break;
-//       case "ArrowUp":
-//         e.preventDefault();
-//         if (selectedPart === "month") {
-//           const newMonth = date.getUTCMonth() + 1;
-//           date.setMonth(newMonth === 12 ? 0 : newMonth);
-//         } else if (selectedPart === "day") {
-//           date.setDate(date.getUTCDate() + 1);
-//           if (date.getUTCDate() === 1) {
-//             date.setMonth(date.getUTCMonth() + 1);
-//           }
-//         } else {
-//           date.setFullYear(date.getFullYear() + 1);
-//         }
-//         setEditedDate(toDateString(date));
-//         updateDisplayValue(date);
-//         break;
-//       case "ArrowDown":
-//         e.preventDefault();
-//         if (selectedPart === "month") {
-//           const newMonth = date.getUTCMonth() - 1;
-//           date.setMonth(newMonth === -1 ? 11 : newMonth);
-//         } else if (selectedPart === "day") {
-//           const lastDay = new Date(date.getFullYear(), date.getUTCMonth() + 1, 0).getUTCDate();
-//           date.setDate(date.getUTCDate() - 1);
-//           if (date.getUTCDate() === lastDay) {
-//             date.setMonth(date.getUTCMonth() - 1);
-//           }
-//         } else {
-//           date.setFullYear(date.getFullYear() - 1);
-//         }
-//         setEditedDate(toDateString(date));
-//         updateDisplayValue(date);
-//         break;
-//       case "Enter":
-//         e.preventDefault();
-//         onBlur(editedDate);
-//         break;
-//       case "Escape":
-//         e.preventDefault();
-//         setDisplayValue(value || "");
-//         break;
-//       case "Backspace":
-//         e.preventDefault();
-//         if (selectedPart === "month") {
-//           parts.month = parts.month.slice(0, -1);
-//           if (parts.month === '') parts.month = '1';
-//         } else if (selectedPart === "day") {
-//           parts.day = parts.day.slice(0, -1);
-//           if (parts.day === '') parts.day = '1';
-//         } else {
-//           parts.year = parts.year.slice(0, -1);
-//           if (parts.year.length < 4) parts.year = parts.year.padStart(4, '2');
-//         }
-//         updateDateFromParts(parts);
-//         break;
-//       case "Delete":
-//         e.preventDefault();
-//         if (selectedPart === "month") {
-//           parts.month = parts.month.slice(1);
-//           if (parts.month === '') parts.month = '1';
-//         } else if (selectedPart === "day") {
-//           parts.day = parts.day.slice(1);
-//           if (parts.day === '') parts.day = '1';
-//         } else {
-//           parts.year = parts.year.slice(1);
-//           if (parts.year.length < 4) parts.year = parts.year.padStart(4, '2');
-//         }
-//         updateDateFromParts(parts);
-//         break;
-//       case "Tab":
-//         break;
-//       default:
-//         if (/^\d$/.test(e.key)) {
-//           e.preventDefault();
-//           if (selectedPart === "month") {
-//             const newMonth = parts.month.length === 2 ? e.key : parts.month + e.key;
-//             parts.month = Math.min(parseInt(newMonth), 12).toString();
-//           } else if (selectedPart === "day") {
-//             const maxDays = new Date(parseInt(parts.year), parseInt(parts.month), 0).getUTCDate();
-//             const newDay = parts.day.length === 2 ? e.key : parts.day + e.key;
-//             parts.day = Math.min(parseInt(newDay), maxDays).toString();
-//           } else {
-//             if (parts.year.length === 4) {
-//               parts.year = e.key;
-//             } else {
-//               parts.year += e.key;
-//             }
-//             parts.year = parts.year.padStart(4, '2');
-//           }
-//           updateDateFromParts(parts);
-//         }
-//         break;
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (inputRef.current) {
-//       const input = inputRef.current;
-//       const start = selectedPart === "month" ? 0 : selectedPart === "day" ? 3 : 6;
-//       const end = selectedPart === "month" ? 2 : selectedPart === "day" ? 5 : 10;
-//       input.setSelectionRange(start, end);
-//     }
-//   }, [selectedPart, displayValue]);
-
-//   return (
-//     <TextInput
-//       ref={inputRef}
-//       label={label}
-//       error={validDate(editedDate)}
-//       value={displayValue}
-//       onChange={(e) => {
-//         setDisplayValue(e.target.value);
-//         const [month, day, year] = e.target.value.split('/');
-//         const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-//         if (!isNaN(date.getTime())) {
-//           setEditedDate(toDateString(date));
-//         }
-//       }}
-//       placeholder={placeholder}
-//       onBlur={() => {
-//         if (validDate(editedDate) === null) {
-//           onBlur(editedDate);
-//         }
-//       }}
-//       onKeyDown={handleKeyDown}
-//       rightSection={
-//         <DateInput
-//           value={new Date(`${editedDate}T00:00:00`).getTime() ? new Date(`${editedDate}T00:00:00`) : null}
-//           onChange={(date) => {
-//             if (date) {
-//               setEditedDate(toDateString(date));
-//               updateDisplayValue(date);
-//             }
-//           }}
-//           valueFormat="MM/DD/YYYY"
-//           style={{ display: 'none' }}
-//         />
-//       }
-//     />
-//   );
-// };
+type DatePart = "month" | "day" | "year";
 
 export const EditableDateInput = ({
   label,
@@ -246,38 +26,321 @@ export const EditableDateInput = ({
   clearable?: boolean;
 }) => {
   const [editedDate, setEditedDate] = useState(value);
+  const [selectedPart, setSelectedPart] = useState<DatePart>("month");
+  const [displayValue, setDisplayValue] = useState(() => {
+    if (!value) return "";
+    const date = new Date(`${value}T00:00:00`);
+    if (isNaN(date.getTime())) return "";
+    return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+  });
+  const [showCalendar, setShowCalendar] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const getValidDate = (dateStr: string | null) => {
-    if (!dateStr) return null;
-    const date = new Date(`${dateStr}T00:00:00`);
-    return isNaN(date.getTime()) ? null : date;
+  const validDate = (date: string | null) => {
+    if (!date) return null;
+    const dateObj = new Date(`${date}T00:00:00`);
+    if (minDate && dateObj < minDate) {
+      return "Date is before minimum date";
+    }
+    if (isNaN(dateObj.getTime())) {
+      return "Invalid date";
+    }
+    return null;
   };
 
-  return (
-    <DateInput
-      clearable={clearable}
-      style={style}
-      label={label}
-      value={getValidDate(editedDate)}
-      onBlur={(e) => {
-        if (e.target.value) {
-          onBlur(toDateString(new Date(e.target.value)));
+  const updateDisplayValue = (date: Date) => {
+    setDisplayValue(`${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`);
+  };
+
+  const getPartValues = () => {
+    const [month, day, year] = displayValue.split('/');
+    return {
+      month: month || '',
+      day: day || '',
+      year: year || ''
+    };
+  };
+
+  const updateDateFromParts = (parts: { month: string, day: string, year: string }) => {
+    const newDisplayValue = `${parts.month.padStart(2, '0')}/${parts.day.padStart(2, '0')}/${parts.year}`;
+    setDisplayValue(newDisplayValue);
+
+    const date = new Date(parseInt(parts.year), parseInt(parts.month) - 1, parseInt(parts.day));
+    if (!isNaN(date.getTime())) {
+      setEditedDate(toDateString(date));
+    }
+  };
+
+  const getCurrentDateFromValue = () => {
+    if (!editedDate) {
+      const today = new Date();
+      return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    }
+    return new Date(`${editedDate}T00:00:00`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const cursorPos = inputRef.current?.selectionStart || 0;
+
+    // Determine selected part based on cursor position
+    let currentPart: DatePart = "month";
+    if (cursorPos >= 6) currentPart = "year";
+    else if (cursorPos >= 3) currentPart = "day";
+
+    setSelectedPart(currentPart);
+
+    switch (e.key) {
+      case "ArrowLeft":
+        e.preventDefault();
+        const leftPart = currentPart === "month" ? "year" : currentPart === "day" ? "month" : "day";
+        setSelectedPart(leftPart);
+        setTimeout(() => {
+          const start = leftPart === "month" ? 0 : leftPart === "day" ? 3 : 6;
+          const end = leftPart === "month" ? 2 : leftPart === "day" ? 5 : 10;
+          inputRef.current?.setSelectionRange(start, end);
+        }, 0);
+        break;
+      case "ArrowRight":
+        e.preventDefault();
+        const rightPart = currentPart === "month" ? "day" : currentPart === "day" ? "year" : "month";
+        setSelectedPart(rightPart);
+        setTimeout(() => {
+          const start = rightPart === "month" ? 0 : rightPart === "day" ? 3 : 6;
+          const end = rightPart === "month" ? 2 : rightPart === "day" ? 5 : 10;
+          inputRef.current?.setSelectionRange(start, end);
+        }, 0);
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        const upDate = getCurrentDateFromValue();
+        if (currentPart === "month") {
+          const newMonth = upDate.getMonth() + 1;
+          upDate.setMonth(newMonth === 12 ? 0 : newMonth);
+          if (newMonth === 12) upDate.setFullYear(upDate.getFullYear() + 1);
+        } else if (currentPart === "day") {
+          upDate.setDate(upDate.getDate() + 1);
         } else {
-          onBlur(null);
+          upDate.setFullYear(upDate.getFullYear() + 1);
         }
-      }}
-      onChange={(date) => {
-        if (date) {
+        setEditedDate(toDateString(upDate));
+        updateDisplayValue(upDate);
+        setTimeout(() => {
+          const start = currentPart === "month" ? 0 : currentPart === "day" ? 3 : 6;
+          const end = currentPart === "month" ? 2 : currentPart === "day" ? 5 : 10;
+          inputRef.current?.setSelectionRange(start, end);
+        }, 0);
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        const downDate = getCurrentDateFromValue();
+        if (currentPart === "month") {
+          const newMonth = downDate.getMonth() - 1;
+          downDate.setMonth(newMonth === -1 ? 11 : newMonth);
+          if (newMonth === -1) downDate.setFullYear(downDate.getFullYear() - 1);
+        } else if (currentPart === "day") {
+          downDate.setDate(downDate.getDate() - 1);
+        } else {
+          downDate.setFullYear(downDate.getFullYear() - 1);
+        }
+        setEditedDate(toDateString(downDate));
+        updateDisplayValue(downDate);
+        setTimeout(() => {
+          const start = currentPart === "month" ? 0 : currentPart === "day" ? 3 : 6;
+          const end = currentPart === "month" ? 2 : currentPart === "day" ? 5 : 10;
+          inputRef.current?.setSelectionRange(start, end);
+        }, 0);
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (validDate(editedDate) === null) {
+          onBlur(editedDate);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setEditedDate(value);
+        setDisplayValue(() => {
+          if (!value) return "";
+          const date = new Date(`${value}T00:00:00`);
+          if (isNaN(date.getTime())) return "";
+          return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+        });
+        break;
+      case "Tab":
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setDisplayValue(newValue);
+
+    const [month, day, year] = newValue.split('/');
+    if (month && day && year && year.length === 4) {
+      const monthNum = parseInt(month);
+      const dayNum = parseInt(day);
+      const yearNum = parseInt(year);
+
+      // Validate ranges
+      if (monthNum >= 1 && monthNum <= 12 && dayNum >= 1 && dayNum <= 31 && yearNum > 1900) {
+        const date = new Date(yearNum, monthNum - 1, dayNum);
+        if (!isNaN(date.getTime()) && date.getMonth() === monthNum - 1) {
           setEditedDate(toDateString(date));
-        } else {
-          setEditedDate(null);
         }
-      }}
-      valueFormat="MM/DD/YYYY"
-      placeholder={placeholder}
-      minDate={minDate}
-      size={size}
-      highlightToday={true}
-    />
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    setShowCalendar(false);
+    if (validDate(editedDate) === null) {
+      onBlur(editedDate);
+    } else {
+      setEditedDate(value);
+      setDisplayValue(() => {
+        if (!value) return "";
+        const date = new Date(`${value}T00:00:00`);
+        if (isNaN(date.getTime())) return "";
+        return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+      });
+    }
+  };
+
+  const handleClear = () => {
+    setEditedDate(null);
+    setDisplayValue("");
+    onBlur(null);
+  };
+
+  const handleClick = () => {
+    setTimeout(() => {
+      const cursorPos = inputRef.current?.selectionStart || 0;
+      let clickedPart: DatePart = "month";
+      if (cursorPos >= 6) clickedPart = "year";
+      else if (cursorPos >= 3) clickedPart = "day";
+
+      setSelectedPart(clickedPart);
+
+      const start = clickedPart === "month" ? 0 : clickedPart === "day" ? 3 : 6;
+      const end = clickedPart === "month" ? 2 : clickedPart === "day" ? 5 : 10;
+      inputRef.current?.setSelectionRange(start, end);
+    }, 0);
+  };
+
+  const handleFocus = () => {
+    setSelectedPart("month");
+    setShowCalendar(true);
+    setTimeout(() => {
+      inputRef.current?.setSelectionRange(0, 2);
+    }, 0);
+  };
+
+  const handleCalendarChange = (date: Date | null) => {
+    if (date) {
+      const dateStr = toDateString(date);
+      setEditedDate(dateStr);
+      updateDisplayValue(date);
+      onBlur(dateStr);
+    }
+    setShowCalendar(false);
+    inputRef.current?.focus();
+  };
+
+  const getValidDateForCalendar = () => {
+    if (!editedDate) {
+      // If no date, try to parse from display value
+      const [month, day, year] = displayValue.split('/');
+      if (month && day && year && year.length === 4) {
+        const monthNum = parseInt(month);
+        const dayNum = parseInt(day);
+        const yearNum = parseInt(year);
+
+        if (monthNum >= 1 && monthNum <= 12 && dayNum >= 1 && dayNum <= 31 && yearNum > 1900) {
+          const date = new Date(yearNum, monthNum - 1, dayNum);
+          if (!isNaN(date.getTime()) && date.getMonth() === monthNum - 1) {
+            return date;
+          }
+        }
+      }
+      return new Date(); // Default to today if no valid date
+    }
+
+    const date = new Date(`${editedDate}T00:00:00`);
+    return isNaN(date.getTime()) ? new Date() : date;
+  };
+
+  useEffect(() => {
+    setEditedDate(value);
+    setDisplayValue(() => {
+      if (!value) return "";
+      const date = new Date(`${value}T00:00:00`);
+      if (isNaN(date.getTime())) return "";
+      return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+    });
+  }, [value]);
+
+  // Force re-render of calendar when display value changes
+  const [calendarKey, setCalendarKey] = useState(0);
+  useEffect(() => {
+    setCalendarKey(prev => prev + 1);
+  }, [displayValue, editedDate]);
+
+  return (
+    <Popover
+      opened={showCalendar}
+      onClose={() => setShowCalendar(false)}
+      position="bottom-start"
+      withArrow
+      shadow="md"
+      offset={5}
+    >
+      <Popover.Target>
+        <TextInput
+          ref={inputRef}
+          label={label}
+          error={validDate(editedDate)}
+          value={displayValue}
+          onChange={handleChange}
+          placeholder={placeholder}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          onClick={handleClick}
+          onFocus={handleFocus}
+          size={size}
+          style={style}
+          rightSection={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              {clearable && displayValue && (
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+                >
+                  ×
+                </button>
+              )}
+              <ActionIcon
+                variant="subtle"
+                size="sm"
+                onClick={() => setShowCalendar(!showCalendar)}
+              >
+                <IconCalendar size={16} />
+              </ActionIcon>
+            </div>
+          }
+        />
+      </Popover.Target>
+      <Popover.Dropdown data-calendar>
+        <DatePicker
+          key={calendarKey}
+          value={getValidDateForCalendar()}
+          date={getValidDateForCalendar()}
+          onChange={handleCalendarChange}
+          minDate={minDate}
+        />
+      </Popover.Dropdown>
+    </Popover>
   );
 };
