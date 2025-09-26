@@ -33,7 +33,7 @@ const graphSlice = createSlice({
   name: 'graph',
   initialState,
   reducers: {
-    setGraphData: (state, action: PayloadAction<GraphData>) => {
+    setGraphData: (state, action: PayloadAction<{ datasets: Dataset[]; labels: string[]; type: 'activity' | 'yearly' }>) => {
       state.datasets = action.payload.datasets;
       state.labels = action.payload.labels;
       state.type = action.payload.type;
