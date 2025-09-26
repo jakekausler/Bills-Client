@@ -61,15 +61,15 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
       if (selectionStart !== selectionEnd) {
         const newValue = prev.slice(0, selectionStart) + number + prev.slice(selectionEnd);
         setTimeout(() => {
-          input?.setSelectionRange(selectionStart + 1, selectionStart + 1);
+          input?.setSelectionRange(selectionStart + number.length, selectionStart + number.length);
         }, 0);
         return newValue;
       }
 
-      // Otherwise append the number
-      const newValue = prev + number;
+      // Insert the number at cursor position
+      const newValue = prev.slice(0, selectionStart) + number + prev.slice(selectionStart);
       setTimeout(() => {
-        input?.setSelectionRange(selectionStart + 1, selectionStart + 1);
+        input?.setSelectionRange(selectionStart + number.length, selectionStart + number.length);
       }, 0);
       return newValue;
     });
@@ -179,35 +179,60 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
       return;
     }
 
-    // Handle numbers
-    if (key.match(/^\d*\.?\d*$/)) {
-      event.preventDefault();
-      handleNumber(key);
+    // Handle numbers - only prevent default for calculator button input
+    // Let normal typing through to trigger onChange/onInput
+    if (key.match(/^[0-9.]$/)) {
+      // Only handle via calculator if we're adding at the end or it's an operation context
+      const input = event.currentTarget;
+      const selectionStart = input.selectionStart || 0;
+      const selectionEnd = input.selectionEnd || 0;
+      const isAtEnd = selectionStart === input.value.length && selectionEnd === input.value.length;
+
+      if (isAtEnd || isEmpty || isZero || isFullySelected) {
+        event.preventDefault();
+        handleNumber(key);
+        return;
+      }
+      // Otherwise let normal typing happen
       return;
     }
 
-    event.preventDefault();
-    return;
+    // Only prevent default for non-standard input
+    if (!key.match(/^[0-9.\-]$/)) {
+      event.preventDefault();
+    }
   };
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const key = event.key;
 
     if (key === 'Enter') {
+      event.preventDefault();
+
+      // Check if displayValue is just a minus sign - flip the sign of the original value
+      if (displayValue === '-') {
+        const flippedValue = -(restProps.value || 0);
+        restProps.onChange?.(flippedValue);
+        // Reset calculator state completely
+        setDisplayValue(null);
+        setFirstOperand(null);
+        setCurrentOperation(null);
+        return;
+      }
+
       // Only handle Enter if we're in the middle of a calculation
       if (
         firstOperand !== null &&
         currentOperation !== null &&
         (displayValue !== null || restProps.value !== undefined)
       ) {
-        event.preventDefault();
         handleEqual();
         return;
       }
       // Otherwise, update the value and then call handleEnter
-      event.preventDefault();
-      restProps.onChange?.(Number(displayValue || restProps.value));
-      handleEnter?.(Number(displayValue || restProps.value));
+      const currentValue = Number(displayValue ?? restProps.value);
+      restProps.onChange?.(currentValue);
+      handleEnter?.(currentValue);
     }
 
     if (key === 'Tab') {
@@ -216,14 +241,31 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
     }
 
     if (key === 'Backspace') {
-      event.preventDefault();
-      handleBackspace(event);
+      // Only use custom handling if we're in calculator mode or at special positions
+      const input = event.currentTarget;
+      const selectionStart = input.selectionStart || 0;
+      const selectionEnd = input.selectionEnd || 0;
+      const hasSelection = selectionStart !== selectionEnd;
+      const isAtEnd = selectionStart === input.value.length;
+
+      // Use custom handling for calculator operations or when deleting at the end
+      if ((displayValue !== null && currentOperation !== null) || (isAtEnd && !hasSelection)) {
+        event.preventDefault();
+        handleBackspace(event);
+        return;
+      }
+      // Otherwise let normal deletion happen
       return;
     }
 
     if (key === 'Delete') {
-      event.preventDefault();
-      handleDelete(event);
+      // Only use custom handling if we're in calculator mode
+      if (displayValue !== null && currentOperation !== null) {
+        event.preventDefault();
+        handleDelete(event);
+        return;
+      }
+      // Otherwise let normal deletion happen
       return;
     }
 
@@ -260,9 +302,10 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
           {...restProps}
           onChange={(event) => {
             const value = event.target.value;
+            setDisplayValue(value);
             restProps.onChange?.(value === '' ? 0 : Number(value));
           }}
-          value={displayValue ?? ''}
+          value={displayValue ?? restProps.value?.toString() ?? ''}
           rightSection={
             <ActionIcon onClick={() => setOpened((o) => !o)}>
               <IconCalculator size="1.1rem" />
@@ -270,8 +313,13 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
           }
           onBeforeInput={onBeforeInput}
           onKeyDown={onKeyDown}
+          onInput={(event) => {
+            // Sync displayValue with actual input value when it changes
+            const value = (event.target as HTMLInputElement).value;
+            setDisplayValue(value);
+          }}
           onBlur={() => {
-            restProps.onChange?.(Number(displayValue || 0));
+            restProps.onChange?.(Number(displayValue ?? restProps.value ?? 0));
             setOpened(false);
           }}
         />
