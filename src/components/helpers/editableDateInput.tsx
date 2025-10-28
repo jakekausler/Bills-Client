@@ -34,6 +34,7 @@ export const EditableDateInput = ({
     return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
   });
   const [showCalendar, setShowCalendar] = useState(false);
+  const [calendarDate, setCalendarDate] = useState<Date | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validDate = (date: string | null) => {
@@ -231,6 +232,7 @@ export const EditableDateInput = ({
 
   const handleFocus = () => {
     setSelectedPart("month");
+    setCalendarDate(getValidDateForCalendar());
     setShowCalendar(true);
     setTimeout(() => {
       inputRef.current?.setSelectionRange(0, 2);
@@ -281,11 +283,12 @@ export const EditableDateInput = ({
     });
   }, [value]);
 
-  // Force re-render of calendar when display value changes
-  const [calendarKey, setCalendarKey] = useState(0);
+  // Update calendar date when text input changes
   useEffect(() => {
-    setCalendarKey(prev => prev + 1);
-  }, [displayValue, editedDate]);
+    if (showCalendar) {
+      setCalendarDate(getValidDateForCalendar());
+    }
+  }, [displayValue, editedDate, showCalendar]);
 
   return (
     <Popover
@@ -334,9 +337,9 @@ export const EditableDateInput = ({
       </Popover.Target>
       <Popover.Dropdown data-calendar>
         <DatePicker
-          key={calendarKey}
           value={getValidDateForCalendar()}
-          date={getValidDateForCalendar()}
+          date={calendarDate}
+          onDateChange={setCalendarDate}
           onChange={handleCalendarChange}
           minDate={minDate}
         />
