@@ -17,6 +17,14 @@ export type BaseActivity = {
   isTransfer: boolean;
   from: string | null;
   to: string | null;
+
+  // Healthcare fields
+  isHealthcare?: boolean;
+  healthcarePerson?: string | null;
+  copayAmount?: number | null;
+  coinsurancePercent?: number | null;
+  countsTowardDeductible?: boolean;
+  countsTowardOutOfPocket?: boolean;
 };
 
 export type Activity = BaseActivity & {
@@ -71,6 +79,14 @@ export type Bill = {
   increaseByIsVariable: boolean;
   increaseByVariable: string | null;
   increaseByDate: string;
+
+  // Healthcare fields
+  isHealthcare?: boolean;
+  healthcarePerson?: string | null;
+  copayAmount?: number | null;
+  coinsurancePercent?: number | null;
+  countsTowardDeductible?: boolean;
+  countsTowardOutOfPocket?: boolean;
 };
 
 export type Interest = {
@@ -135,6 +151,55 @@ export type Simulation = {
   variables: Record<string, { type: string; value: number | string }>;
   enabled: boolean;
   selected: boolean;
+};
+
+export type HealthcareConfig = {
+  id: string;
+  name: string;
+  personName: string;
+  startDate: string;
+  endDate: string | null;
+  individualDeductible: number;
+  individualOutOfPocketMax: number;
+  familyDeductible: number;
+  familyOutOfPocketMax: number;
+  hsaAccountId: string | null;
+  hsaReimbursementEnabled: boolean;
+  resetMonth: number;
+  resetDay: number;
+};
+
+export type DeductibleProgress = {
+  configId: string;
+  configName: string;
+  planYear: number;
+  individualDeductibleSpent: number;
+  individualDeductibleRemaining: number;
+  individualDeductibleMet: boolean;
+  familyDeductibleSpent: number;
+  familyDeductibleRemaining: number;
+  familyDeductibleMet: boolean;
+  individualOOPSpent: number;
+  individualOOPRemaining: number;
+  individualOOPMet: boolean;
+  familyOOPSpent: number;
+  familyOOPRemaining: number;
+  familyOOPMet: boolean;
+};
+
+export type HealthcareExpense = {
+  id: string;
+  date: string;
+  name: string;
+  person: string;
+  billAmount: number;
+  patientCost: number;
+  copay: number | null;
+  coinsurance: number | null;
+  hsaReimbursed: number;
+  accountName: string;
+  isBill: boolean;
+  billId?: string | null;
 };
 
 export type UsedVariableMap = Record<string, UsedVariable[]>;
