@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store';
-import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar, IconChartAreaFilled, IconChartLine, IconArrowsSplit2 } from '@tabler/icons-react';
+import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar, IconChartAreaFilled, IconChartLine, IconArrowsSplit2, IconHeartbeat } from '@tabler/icons-react';
 import { loadAccounts } from './features/accounts/actions';
 import AccountList from './components/accounts/accountList';
 import Account from './components/account/account';
@@ -32,6 +32,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useToken } from './hooks/useToken';
 import { MoneyMovement } from './components/moneyMovement/moneyMovement';
 import { loadMoneyMovementChart } from './features/moneyMovement/actions';
+import Healthcare from './components/healthcare/healthcare';
+import HealthcareSidebar from './components/healthcare/healthcareSidebar';
+import { loadHealthcareConfigs } from './features/healthcare/actions';
 
 type Page = {
   title: string;
@@ -65,6 +68,12 @@ const pages: Record<string, Page> = {
     component: Categories,
     sidebar: CategoriesAccountSelector,
     icon: IconChartPie,
+  },
+  healthcare: {
+    title: 'Healthcare',
+    component: Healthcare,
+    sidebar: HealthcareSidebar,
+    icon: IconHeartbeat,
   },
   flow: {
     title: 'Flow',
@@ -128,6 +137,7 @@ function AppContent() {
     dispatch(loadNames());
     dispatch(loadFlow());
     dispatch(loadMoneyMovementChart());
+    dispatch(loadHealthcareConfigs());
   }, []);
 
   const PageComponent = pages[page as keyof typeof pages].component as PageComponentType;
