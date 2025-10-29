@@ -10,6 +10,7 @@ import flowSlice from './features/flow/slice';
 import graphViewSlice from './features/graphView/slice';
 import monteCarloSlice from './features/monteCarlo/slice';
 import moneyMovementSlice from './features/moneyMovement/slice';
+import healthcareReducer from './features/healthcare/slice';
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     graphView: graphViewSlice,
     monteCarlo: monteCarloSlice,
     moneyMovement: moneyMovementSlice,
+    healthcare: healthcareReducer,
   },
 });
 
