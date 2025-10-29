@@ -1,0 +1,171 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Card,
+  Title,
+  Table,
+  Select,
+  Group,
+  Text,
+  Loader,
+  Alert,
+  Badge,
+  Stack,
+} from '@mantine/core';
+import { DateInput } from '@mantine/dates';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { getHealthcareExpenses } from '../../features/healthcare/api';
+import { HealthcareExpense } from '../../types/types';
+
+export default function HealthcareExpenses() {
+  const selectedSimulation = useSelector(
+    (state: RootState) =>
+      state.simulations.simulations.find((s) => s.selected)?.name || 'Default'
+  );
+  const configs = useSelector((state: RootState) => state.healthcare.configs);
+
+  const [expenses, setExpenses] = useState<HealthcareExpense[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filterPerson, setFilterPerson] = useState<string | null>(null);
+  const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
+  const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const startDateStr = filterStartDate?.toISOString().split('T')[0];
+        const endDateStr = filterEndDate?.toISOString().split('T')[0];
+        const data = await getHealthcareExpenses(selectedSimulation, startDateStr, endDateStr);
+        setExpenses(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load expenses');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExpenses();
+  }, [selectedSimulation, filterStartDate, filterEndDate]);
+
+  const uniquePeople = [...new Set(configs.map((c) => c.personName))];
+  const peopleOptions = uniquePeople.map((p) => ({ value: p, label: p }));
+
+  const filteredExpenses = filterPerson
+    ? expenses.filter((e) => e.person === filterPerson)
+    : expenses;
+
+  if (loading) {
+    return (
+      <Card shadow="sm" p="lg">
+        <Group justify="center" py="xl">
+          <Loader size="sm" />
+          <Text c="dimmed">Loading healthcare expenses...</Text>
+        </Group>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card shadow="sm" p="lg">
+        <Alert icon={<IconAlertCircle size={16} />} title="Error" color="red">
+          {error}
+        </Alert>
+      </Card>
+    );
+  }
+
+  return (
+    <Card shadow="sm" p="lg">
+      <Stack gap="md">
+        <Group justify="space-between">
+          <Title order={3}>Healthcare Expenses</Title>
+          <Group>
+            <Select
+              placeholder="Filter by person"
+              data={peopleOptions}
+              value={filterPerson}
+              onChange={setFilterPerson}
+              clearable
+              searchable
+              style={{ width: 150 }}
+            />
+            <DateInput
+              placeholder="Start date"
+              value={filterStartDate}
+              onChange={setFilterStartDate}
+              clearable
+              style={{ width: 150 }}
+            />
+            <DateInput
+              placeholder="End date"
+              value={filterEndDate}
+              onChange={setFilterEndDate}
+              clearable
+              style={{ width: 150 }}
+            />
+          </Group>
+        </Group>
+
+        {filteredExpenses.length === 0 ? (
+          <Text c="dimmed" ta="center" py="xl">
+            No healthcare expenses found for this period.
+          </Text>
+        ) : (
+          <Table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Person</th>
+                <th>Bill Amount</th>
+                <th>Patient Cost</th>
+                <th>Copay</th>
+                <th>Coinsurance</th>
+                <th>HSA Reimbursed</th>
+                <th>Account</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredExpenses.map((expense) => (
+                <tr
+                  key={expense.id}
+                  style={{
+                    backgroundColor: expense.hsaReimbursed > 0 ? '#e7f5ff' : undefined,
+                  }}
+                >
+                  <td>{expense.date}</td>
+                  <td>
+                    {expense.name}
+                    {expense.patientCost === 0 && (
+                      <Badge size="xs" color="green" ml="xs">
+                        Fully Covered
+                      </Badge>
+                    )}
+                  </td>
+                  <td>{expense.person}</td>
+                  <td>${expense.billAmount.toFixed(2)}</td>
+                  <td>${expense.patientCost.toFixed(2)}</td>
+                  <td>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</td>
+                  <td>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</td>
+                  <td>
+                    {expense.hsaReimbursed > 0 ? `$${expense.hsaReimbursed.toFixed(2)}` : '-'}
+                  </td>
+                  <td>{expense.accountName}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+
+        <Text size="xs" c="dimmed" ta="right">
+          Showing {filteredExpenses.length} expense{filteredExpenses.length !== 1 ? 's' : ''}
+        </Text>
+      </Stack>
+    </Card>
+  );
+}
