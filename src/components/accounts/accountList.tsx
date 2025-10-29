@@ -36,7 +36,7 @@ import { CheckboxIcon } from '../helpers/checkboxIcon';
 import { DateInput } from '@mantine/dates';
 import { toDateString } from '../../utils/date';
 
-const types = ['Checking', 'Savings', 'Credit', 'Loan', 'Investment', 'Other'];
+const types = ['Checking', 'Savings', 'Credit', 'Loan', 'Investment', 'HSA', 'Other'];
 
 const compareTypes = (a: string, b: string) => {
   return types.indexOf(a) - types.indexOf(b);
