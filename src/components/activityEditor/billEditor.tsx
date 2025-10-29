@@ -473,6 +473,107 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             error={validate('category', selectedBill.category)}
           />
           <Checkbox
+            label="Healthcare Expense"
+            checked={selectedBill.isHealthcare ?? false}
+            onChange={(event) => {
+              dispatch(
+                updateBill({
+                  ...selectedBill,
+                  isHealthcare: event.currentTarget.checked,
+                }),
+              );
+            }}
+          />
+          {selectedBill.isHealthcare && (
+            <Stack
+              gap="sm"
+              p="md"
+              style={{ backgroundColor: '#f8f9fa', borderRadius: 4 }}
+            >
+              <TextInput
+                label="Person Name"
+                value={selectedBill.healthcarePerson || ''}
+                onChange={(e) => {
+                  dispatch(
+                    updateBill({
+                      ...selectedBill,
+                      healthcarePerson: e.target.value || null,
+                    }),
+                  );
+                }}
+                placeholder="e.g., John, Jane"
+                description="Which family member is this expense for?"
+                required
+              />
+
+              <Group grow>
+                <NumberInput
+                  label="Copay Amount"
+                  value={selectedBill.copayAmount ?? ''}
+                  onChange={(v) => {
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        copayAmount: v !== '' && typeof v === 'number' ? v : null,
+                      }),
+                    );
+                  }}
+                  placeholder="Leave empty if using deductible/coinsurance"
+                  description="Fixed copay (e.g., $25 for doctor visit)"
+                  prefix="$"
+                  min={0}
+                  decimalScale={2}
+                />
+
+                <NumberInput
+                  label="Coinsurance Percent"
+                  value={selectedBill.coinsurancePercent ?? ''}
+                  onChange={(v) => {
+                    dispatch(
+                      updateBill({
+                        ...selectedBill,
+                        coinsurancePercent: v !== '' && typeof v === 'number' ? v : null,
+                      }),
+                    );
+                  }}
+                  placeholder="Used after deductible is met"
+                  description="Percentage you pay (e.g., 20 for 20%)"
+                  suffix="%"
+                  min={0}
+                  max={100}
+                />
+              </Group>
+
+              <Checkbox
+                label="Counts toward deductible"
+                checked={selectedBill.countsTowardDeductible ?? true}
+                onChange={(e) => {
+                  dispatch(
+                    updateBill({
+                      ...selectedBill,
+                      countsTowardDeductible: e.currentTarget.checked,
+                    }),
+                  );
+                }}
+                description="Usually yes, except for some preventive care or copays"
+              />
+
+              <Checkbox
+                label="Counts toward out-of-pocket maximum"
+                checked={selectedBill.countsTowardOutOfPocket ?? true}
+                onChange={(e) => {
+                  dispatch(
+                    updateBill({
+                      ...selectedBill,
+                      countsTowardOutOfPocket: e.currentTarget.checked,
+                    }),
+                  );
+                }}
+                description="Usually yes for all patient costs"
+              />
+            </Stack>
+          )}
+          <Checkbox
             label="Is this a transfer?"
             checked={selectedBill.isTransfer}
             onChange={(event) => {

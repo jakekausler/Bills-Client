@@ -17,9 +17,11 @@ import {
   FocusTrap,
   Group,
   LoadingOverlay,
+  NumberInput,
   Select,
   Stack,
   Text,
+  TextInput,
   useMantineTheme,
 } from '@mantine/core';
 import { AppDispatch } from '../../store';
@@ -335,6 +337,107 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
             searchable
             error={validate('category', selectedActivity.category)}
           />
+          <Checkbox
+            label="Healthcare Expense"
+            checked={selectedActivity.isHealthcare ?? false}
+            onChange={(event) => {
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  isHealthcare: event.currentTarget.checked,
+                }),
+              );
+            }}
+          />
+          {selectedActivity.isHealthcare && (
+            <Stack
+              gap="sm"
+              p="md"
+              style={{ backgroundColor: '#f8f9fa', borderRadius: 4 }}
+            >
+              <TextInput
+                label="Person Name"
+                value={selectedActivity.healthcarePerson || ''}
+                onChange={(e) => {
+                  dispatch(
+                    updateActivity({
+                      ...selectedActivity,
+                      healthcarePerson: e.target.value || null,
+                    }),
+                  );
+                }}
+                placeholder="e.g., John, Jane"
+                description="Which family member is this expense for?"
+                required
+              />
+
+              <Group grow>
+                <NumberInput
+                  label="Copay Amount"
+                  value={selectedActivity.copayAmount ?? ''}
+                  onChange={(v) => {
+                    dispatch(
+                      updateActivity({
+                        ...selectedActivity,
+                        copayAmount: v !== '' && typeof v === 'number' ? v : null,
+                      }),
+                    );
+                  }}
+                  placeholder="Leave empty if using deductible/coinsurance"
+                  description="Fixed copay (e.g., $25 for doctor visit)"
+                  prefix="$"
+                  min={0}
+                  decimalScale={2}
+                />
+
+                <NumberInput
+                  label="Coinsurance Percent"
+                  value={selectedActivity.coinsurancePercent ?? ''}
+                  onChange={(v) => {
+                    dispatch(
+                      updateActivity({
+                        ...selectedActivity,
+                        coinsurancePercent: v !== '' && typeof v === 'number' ? v : null,
+                      }),
+                    );
+                  }}
+                  placeholder="Used after deductible is met"
+                  description="Percentage you pay (e.g., 20 for 20%)"
+                  suffix="%"
+                  min={0}
+                  max={100}
+                />
+              </Group>
+
+              <Checkbox
+                label="Counts toward deductible"
+                checked={selectedActivity.countsTowardDeductible ?? true}
+                onChange={(e) => {
+                  dispatch(
+                    updateActivity({
+                      ...selectedActivity,
+                      countsTowardDeductible: e.currentTarget.checked,
+                    }),
+                  );
+                }}
+                description="Usually yes, except for some preventive care or copays"
+              />
+
+              <Checkbox
+                label="Counts toward out-of-pocket maximum"
+                checked={selectedActivity.countsTowardOutOfPocket ?? true}
+                onChange={(e) => {
+                  dispatch(
+                    updateActivity({
+                      ...selectedActivity,
+                      countsTowardOutOfPocket: e.currentTarget.checked,
+                    }),
+                  );
+                }}
+                description="Usually yes for all patient costs"
+              />
+            </Stack>
+          )}
           <Checkbox
             label="Is this a transfer?"
             checked={selectedActivity.isTransfer}
