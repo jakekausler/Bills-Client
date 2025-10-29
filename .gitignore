@@ -1,4 +1,4 @@
 node_modules/
 deno.lock
 .env
-dist/
+dist/tsconfig.tsbuildinfo
