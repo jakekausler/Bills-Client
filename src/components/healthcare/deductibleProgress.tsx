@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Title, Stack, Progress, Text, Group, Loader, Alert } from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Card, Title, Stack, Progress, Text, Group, Loader, Alert, Button } from '@mantine/core';
+import { IconAlertCircle, IconRefresh } from '@tabler/icons-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getDeductibleProgress } from '../../features/healthcare/api';
+import { selectHealthcareConfigs } from '../../features/healthcare/select';
 import { DeductibleProgress as DeductibleProgressType } from '../../types/types';
 
 export default function DeductibleProgress() {
@@ -11,32 +12,41 @@ export default function DeductibleProgress() {
     (state: RootState) =>
       state.simulations.simulations.find((s) => s.selected)?.name || 'Default'
   );
+  const configs = useSelector(selectHealthcareConfigs);
   const [progressData, setProgressData] = useState<Record<string, DeductibleProgressType>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProgress = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getDeductibleProgress(selectedSimulation);
-        setProgressData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load progress');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProgress();
+  const fetchProgress = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Pass end of current calendar year to get progress for the active plan year
+      // For mid-year resets (e.g., July 1), this ensures we see the current plan year
+      const currentYearEnd = new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
+      const data = await getDeductibleProgress(selectedSimulation, currentYearEnd);
+      setProgressData(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load progress');
+    } finally {
+      setLoading(false);
+    }
   }, [selectedSimulation]);
+
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress, configs]);
 
   const getColor = (spent: number, total: number) => {
     const percent = (spent / total) * 100;
     if (percent < 25) return 'red';
     if (percent < 75) return 'yellow';
     return 'green';
+  };
+
+  const getPercent = (spent: number, total: number) => {
+    if (total === 0) return '0';
+    return ((spent / total) * 100).toFixed(1);
   };
 
   if (loading) {
@@ -50,11 +60,31 @@ export default function DeductibleProgress() {
     );
   }
 
+  const handleRetry = () => {
+    fetchProgress();
+  };
+
   if (error) {
     return (
       <Card shadow="sm" p="lg">
-        <Alert icon={<IconAlertCircle size={16} />} title="Error" color="red">
+        <Alert
+          icon={<IconAlertCircle size={16} />}
+          title="Error"
+          color="red"
+          withCloseButton
+          onClose={() => setError(null)}
+        >
           {error}
+          <Group mt="md">
+            <Button
+              size="xs"
+              leftSection={<IconRefresh size={14} />}
+              onClick={handleRetry}
+              variant="light"
+            >
+              Retry
+            </Button>
+          </Group>
         </Alert>
       </Card>
     );
@@ -94,6 +124,10 @@ export default function DeductibleProgress() {
                     <Text size="sm" fw={500}>
                       ${progress.individualDeductibleSpent} / $
                       {progress.individualDeductibleSpent + progress.individualDeductibleRemaining}
+                      {' '}({getPercent(
+                        progress.individualDeductibleSpent,
+                        progress.individualDeductibleSpent + progress.individualDeductibleRemaining
+                      )}%)
                       {progress.individualDeductibleMet && ' ✓'}
                     </Text>
                   </Group>
@@ -118,6 +152,10 @@ export default function DeductibleProgress() {
                     <Text size="sm" fw={500}>
                       ${progress.familyDeductibleSpent} / $
                       {progress.familyDeductibleSpent + progress.familyDeductibleRemaining}
+                      {' '}({getPercent(
+                        progress.familyDeductibleSpent,
+                        progress.familyDeductibleSpent + progress.familyDeductibleRemaining
+                      )}%)
                       {progress.familyDeductibleMet && ' ✓'}
                     </Text>
                   </Group>
@@ -141,6 +179,10 @@ export default function DeductibleProgress() {
                     <Text size="sm" fw={500}>
                       ${progress.individualOOPSpent} / $
                       {progress.individualOOPSpent + progress.individualOOPRemaining}
+                      {' '}({getPercent(
+                        progress.individualOOPSpent,
+                        progress.individualOOPSpent + progress.individualOOPRemaining
+                      )}%)
                       {progress.individualOOPMet && ' ✓'}
                     </Text>
                   </Group>
@@ -164,6 +206,10 @@ export default function DeductibleProgress() {
                     <Text size="sm" fw={500}>
                       ${progress.familyOOPSpent} / $
                       {progress.familyOOPSpent + progress.familyOOPRemaining}
+                      {' '}({getPercent(
+                        progress.familyOOPSpent,
+                        progress.familyOOPSpent + progress.familyOOPRemaining
+                      )}%)
                       {progress.familyOOPMet && ' ✓'}
                     </Text>
                   </Group>

@@ -7,8 +7,12 @@ import {
   Group,
   ActionIcon,
   Text,
+  Loader,
+  Alert,
+  Modal,
+  Stack,
 } from '@mantine/core';
-import { IconPlus, IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconPlus, IconEdit, IconTrash, IconAlertCircle } from '@tabler/icons-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { selectHealthcareConfigs, selectHealthcareLoading } from '../../features/healthcare/select';
@@ -22,6 +26,9 @@ export default function ConfigList() {
   const loading = useSelector(selectHealthcareLoading);
   const [formOpened, setFormOpened] = useState(false);
   const [editingConfig, setEditingConfig] = useState<HealthcareConfig | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+  const [configToDelete, setConfigToDelete] = useState<HealthcareConfig | null>(null);
 
   const handleAdd = () => {
     setEditingConfig(null);
@@ -34,9 +41,33 @@ export default function ConfigList() {
   };
 
   const handleDelete = (config: HealthcareConfig) => {
-    if (window.confirm(`Are you sure you want to delete "${config.name}"? This action cannot be undone.`)) {
-      dispatch(deleteHealthcareConfig(config.id));
+    setConfigToDelete(config);
+    setDeleteModalOpened(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!configToDelete) return;
+
+    try {
+      setError(null);
+      await dispatch(deleteHealthcareConfig(configToDelete.id));
+      setDeleteModalOpened(false);
+      setConfigToDelete(null);
+    } catch (err) {
+      console.error('Failed to delete config:', err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : `Failed to delete healthcare configuration "${configToDelete.name}". Please try again.`
+      );
+      setDeleteModalOpened(false);
+      setConfigToDelete(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModalOpened(false);
+    setConfigToDelete(null);
   };
 
   const handleFormClose = () => {
@@ -54,7 +85,25 @@ export default function ConfigList() {
           </Button>
         </Group>
 
-        {configs.length === 0 ? (
+        {error && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            title="Error"
+            color="red"
+            mb="md"
+            withCloseButton
+            onClose={() => setError(null)}
+          >
+            {error}
+          </Alert>
+        )}
+
+        {loading ? (
+          <Group justify="center" py="xl">
+            <Loader size="sm" />
+            <Text c="dimmed">Loading healthcare configurations...</Text>
+          </Group>
+        ) : configs.length === 0 ? (
           <Text c="dimmed" ta="center" py="xl">
             No healthcare configurations yet. Click "Add Config" to create one.
           </Text>
@@ -104,6 +153,30 @@ export default function ConfigList() {
       </Card>
 
       <ConfigForm opened={formOpened} onClose={handleFormClose} config={editingConfig} />
+
+      <Modal
+        opened={deleteModalOpened}
+        onClose={cancelDelete}
+        title="Delete Healthcare Configuration"
+        centered
+      >
+        <Stack gap="md">
+          <Text>
+            Are you sure you want to delete <strong>"{configToDelete?.name}"</strong>?
+          </Text>
+          <Text size="sm" c="dimmed">
+            This action cannot be undone. All associated data will be permanently removed.
+          </Text>
+          <Group justify="flex-end" mt="md">
+            <Button variant="default" onClick={cancelDelete}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={confirmDelete}>
+              Delete
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </>
   );
 }

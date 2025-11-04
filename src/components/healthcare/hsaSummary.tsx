@@ -1,8 +1,7 @@
 import React from 'react';
-import { Card, Title, Stack, Group, Text, Button, Divider } from '@mantine/core';
+import { Card, Title, Stack, Group, Text, Divider } from '@mantine/core';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { Link } from 'react-router-dom';
 
 export default function HsaSummary() {
   const accounts = useSelector((state: RootState) => state.accounts.accounts);
@@ -20,11 +19,8 @@ export default function HsaSummary() {
             No HSA accounts configured.
           </Text>
           <Text c="dimmed" size="xs" ta="center">
-            Create an HSA account to enable automatic reimbursements.
+            Create an HSA account in the Accounts page to enable automatic reimbursements.
           </Text>
-          <Button component={Link} to="/accounts" variant="light" fullWidth>
-            Go to Accounts
-          </Button>
         </Stack>
       ) : (
         <Stack gap="md">
@@ -37,14 +33,6 @@ export default function HsaSummary() {
                     Balance: ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </Text>
                 </div>
-                <Button
-                  variant="subtle"
-                  component={Link}
-                  to={`/accounts?account=${account.id}`}
-                  size="xs"
-                >
-                  Details
-                </Button>
               </Group>
             </div>
           ))}

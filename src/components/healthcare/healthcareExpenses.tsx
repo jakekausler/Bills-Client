@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   Title,
@@ -10,9 +10,10 @@ import {
   Alert,
   Badge,
   Stack,
+  Button,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconAlertCircle } from '@tabler/icons-react';
+import { IconAlertCircle, IconRefresh } from '@tabler/icons-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getHealthcareExpenses } from '../../features/healthcare/api';
@@ -32,26 +33,26 @@ export default function HealthcareExpenses() {
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
 
-  useEffect(() => {
-    const fetchExpenses = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const startDateStr = filterStartDate?.toISOString().split('T')[0];
-        const endDateStr = filterEndDate?.toISOString().split('T')[0];
-        const data = await getHealthcareExpenses(selectedSimulation, startDateStr, endDateStr);
-        setExpenses(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load expenses');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExpenses();
+  const fetchExpenses = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const startDateStr = filterStartDate?.toISOString().split('T')[0];
+      const endDateStr = filterEndDate?.toISOString().split('T')[0];
+      const data = await getHealthcareExpenses(selectedSimulation, startDateStr, endDateStr);
+      setExpenses(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load expenses');
+    } finally {
+      setLoading(false);
+    }
   }, [selectedSimulation, filterStartDate, filterEndDate]);
 
-  const uniquePeople = [...new Set(configs.map((c) => c.personName))];
+  useEffect(() => {
+    fetchExpenses();
+  }, [fetchExpenses]);
+
+  const uniquePeople = [...new Set(expenses.map((e) => e.person))];
   const peopleOptions = uniquePeople.map((p) => ({ value: p, label: p }));
 
   const filteredExpenses = filterPerson
@@ -69,11 +70,31 @@ export default function HealthcareExpenses() {
     );
   }
 
+  const handleRetry = () => {
+    fetchExpenses();
+  };
+
   if (error) {
     return (
       <Card shadow="sm" p="lg">
-        <Alert icon={<IconAlertCircle size={16} />} title="Error" color="red">
+        <Alert
+          icon={<IconAlertCircle size={16} />}
+          title="Error"
+          color="red"
+          withCloseButton
+          onClose={() => setError(null)}
+        >
           {error}
+          <Group mt="md">
+            <Button
+              size="xs"
+              leftSection={<IconRefresh size={14} />}
+              onClick={handleRetry}
+              variant="light"
+            >
+              Retry
+            </Button>
+          </Group>
         </Alert>
       </Card>
     );

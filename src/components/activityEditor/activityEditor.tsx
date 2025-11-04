@@ -185,6 +185,25 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
         return 'Invalid name';
       }
     }
+    if (name === 'healthcarePerson') {
+      if (selectedActivity.isHealthcare && (!value || (value as string).trim() === '')) {
+        return 'Person name is required for healthcare expenses';
+      }
+    }
+    if (name === 'isHealthcare') {
+      // When healthcare is checked, validate that person name is not empty
+      if (value === true && (!selectedActivity.healthcarePerson || selectedActivity.healthcarePerson.trim() === '')) {
+        return 'Person name is required for healthcare expenses';
+      }
+    }
+    if (name === 'coinsurancePercent') {
+      if (value !== null && value !== undefined && value !== '') {
+        const numValue = Number(value);
+        if (!isNaN(numValue) && (numValue < 0 || numValue > 100)) {
+          return 'Coinsurance must be between 0% and 100%';
+        }
+      }
+    }
     return null;
   };
 
@@ -348,12 +367,13 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                 }),
               );
             }}
+            error={validate('isHealthcare', selectedActivity.isHealthcare)}
           />
           {selectedActivity.isHealthcare && (
             <Stack
               gap="sm"
               p="md"
-              style={{ backgroundColor: '#f8f9fa', borderRadius: 4 }}
+              style={{ backgroundColor: theme.colors.dark[6], borderRadius: 4 }}
             >
               <TextInput
                 label="Person Name"
@@ -369,6 +389,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                 placeholder="e.g., John, Jane"
                 description="Which family member is this expense for?"
                 required
+                error={validate('healthcarePerson', selectedActivity.healthcarePerson)}
               />
 
               <Group grow>
@@ -383,8 +404,8 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                       }),
                     );
                   }}
-                  placeholder="Leave empty if using deductible/coinsurance"
-                  description="Fixed copay (e.g., $25 for doctor visit)"
+                  placeholder="25.00"
+                  description="Fixed copay (e.g., $25 for doctor visit). Leave empty if using deductible/coinsurance."
                   prefix="$"
                   min={0}
                   decimalScale={2}
@@ -401,11 +422,11 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                       }),
                     );
                   }}
-                  placeholder="Used after deductible is met"
-                  description="Percentage you pay (e.g., 20 for 20%)"
+                  placeholder="20"
+                  description="Percentage you pay (e.g., 20 for 20%). Used after deductible is met."
                   suffix="%"
                   min={0}
-                  max={100}
+                  error={validate('coinsurancePercent', selectedActivity.coinsurancePercent)}
                 />
               </Group>
 

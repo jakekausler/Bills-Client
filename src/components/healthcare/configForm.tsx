@@ -10,8 +10,10 @@ import {
   Tabs,
   Stack,
   Text,
+  Alert,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { createHealthcareConfig, updateHealthcareConfig } from '../../features/healthcare/actions';
@@ -56,6 +58,7 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
   const [hsaReimbursementEnabled, setHsaReimbursementEnabled] = useState(true);
   const [resetMonth, setResetMonth] = useState('0');
   const [resetDay, setResetDay] = useState<number | ''>(1);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (config) {
@@ -89,10 +92,14 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
     setHsaReimbursementEnabled(true);
     setResetMonth('0');
     setResetDay(1);
+    setError(null);
   };
 
   const handleSave = async () => {
     if (!startDate || !name || !personName) return;
+
+    // Clear any previous errors
+    setError(null);
 
     const configData: Omit<HealthcareConfig, 'id'> = {
       name,
@@ -118,6 +125,11 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
       onClose();
     } catch (error) {
       console.error('Failed to save config:', error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : `Failed to ${isEdit ? 'update' : 'create'} healthcare configuration. Please try again.`
+      );
     }
   };
 
@@ -132,6 +144,19 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
       title={isEdit ? 'Edit Healthcare Configuration' : 'New Healthcare Configuration'}
       size="lg"
     >
+      {error && (
+        <Alert
+          icon={<IconAlertCircle size={16} />}
+          title="Error"
+          color="red"
+          mb="md"
+          withCloseButton
+          onClose={() => setError(null)}
+        >
+          {error}
+        </Alert>
+      )}
+
       <Tabs defaultValue="basic">
         <Tabs.List>
           <Tabs.Tab value="basic">Basic Info</Tabs.Tab>

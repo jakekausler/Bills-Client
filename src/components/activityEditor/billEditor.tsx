@@ -279,6 +279,34 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         return 'Invalid flagColor';
       }
     }
+    if (name === 'healthcarePerson') {
+      if (selectedBill.isHealthcare && (!value || value.trim() === '')) {
+        return 'Person name is required for healthcare expenses';
+      }
+    }
+    if (name === 'isHealthcare') {
+      // When healthcare is checked, validate that person name is not empty
+      if (value === true && (!selectedBill.healthcarePerson || selectedBill.healthcarePerson.trim() === '')) {
+        return 'Person name is required for healthcare expenses';
+      }
+    }
+    if (name === 'coinsurancePercent') {
+      if (value !== null && value !== undefined && value !== '') {
+        const numValue = Number(value);
+        if (!isNaN(numValue) && (numValue < 0 || numValue > 100)) {
+          return 'Coinsurance must be between 0% and 100%';
+        }
+      }
+    }
+    if (name === 'amount') {
+      // Healthcare bills must have a non-zero amount
+      if (selectedBill?.isHealthcare && !selectedBill?.amountIsVariable) {
+        const numValue = Number(value);
+        if (numValue === 0) {
+          return 'Healthcare bills require a non-zero amount. Enter the total bill from your provider.';
+        }
+      }
+    }
 
     return null;
   };
@@ -483,12 +511,13 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 }),
               );
             }}
+            error={validate('isHealthcare', selectedBill.isHealthcare)}
           />
           {selectedBill.isHealthcare && (
             <Stack
               gap="sm"
               p="md"
-              style={{ backgroundColor: '#f8f9fa', borderRadius: 4 }}
+              style={{ backgroundColor: theme.colors.dark[6], borderRadius: 4 }}
             >
               <TextInput
                 label="Person Name"
@@ -504,6 +533,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 placeholder="e.g., John, Jane"
                 description="Which family member is this expense for?"
                 required
+                error={validate('healthcarePerson', selectedBill.healthcarePerson)}
               />
 
               <Group grow>
@@ -518,8 +548,8 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                       }),
                     );
                   }}
-                  placeholder="Leave empty if using deductible/coinsurance"
-                  description="Fixed copay (e.g., $25 for doctor visit)"
+                  placeholder="25.00"
+                  description="Fixed copay (e.g., $25 for doctor visit). Leave empty if using deductible/coinsurance."
                   prefix="$"
                   min={0}
                   decimalScale={2}
@@ -536,11 +566,11 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                       }),
                     );
                   }}
-                  placeholder="Used after deductible is met"
-                  description="Percentage you pay (e.g., 20 for 20%)"
+                  placeholder="20"
+                  description="Percentage you pay (e.g., 20 for 20%). Used after deductible is met."
                   suffix="%"
                   min={0}
-                  max={100}
+                  error={validate('coinsurancePercent', selectedBill.coinsurancePercent)}
                 />
               </Group>
 
