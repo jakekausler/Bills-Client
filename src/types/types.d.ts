@@ -156,7 +156,7 @@ export type Simulation = {
 export type HealthcareConfig = {
   id: string;
   name: string;
-  personName: string;
+  coveredPersons: string[];  // e.g., ["Jake", "Jane"]
   startDate: string;
   endDate: string | null;
   individualDeductible: number;
@@ -173,18 +173,30 @@ export type DeductibleProgress = {
   configId: string;
   configName: string;
   planYear: number;
-  individualDeductibleSpent: number;
-  individualDeductibleRemaining: number;
-  individualDeductibleMet: boolean;
+  coveredPersons: string[];
+
+  // Family-level aggregates
   familyDeductibleSpent: number;
   familyDeductibleRemaining: number;
   familyDeductibleMet: boolean;
-  individualOOPSpent: number;
-  individualOOPRemaining: number;
-  individualOOPMet: boolean;
   familyOOPSpent: number;
   familyOOPRemaining: number;
   familyOOPMet: boolean;
+
+  // Per-person breakdown
+  individualProgress: {
+    personName: string;
+    deductibleSpent: number;
+    deductibleMet: boolean;
+    oopSpent: number;
+    oopMet: boolean;
+  }[];
+
+  // Thresholds for display
+  individualDeductibleLimit: number;
+  familyDeductibleLimit: number;
+  individualOOPLimit: number;
+  familyOOPLimit: number;
 };
 
 export type HealthcareExpense = {
@@ -200,6 +212,10 @@ export type HealthcareExpense = {
   accountName: string;
   isBill: boolean;
   billId?: string | null;
+  individualDeductibleRemaining: number;
+  familyDeductibleRemaining: number;
+  individualOOPRemaining: number;
+  familyOOPRemaining: number;
 };
 
 export type UsedVariableMap = Record<string, UsedVariable[]>;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Title, Stack, Progress, Text, Group, Loader, Alert, Button } from '@mantine/core';
-import { IconAlertCircle, IconRefresh } from '@tabler/icons-react';
+import { Card, Title, Stack, Progress, Text, Group, Loader, Alert, Button, Collapse, Badge } from '@mantine/core';
+import { IconAlertCircle, IconRefresh, IconChevronDown, IconChevronUp, IconCheck } from '@tabler/icons-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getDeductibleProgress } from '../../features/healthcare/api';
@@ -13,9 +13,10 @@ export default function DeductibleProgress() {
       state.simulations.simulations.find((s) => s.selected)?.name || 'Default'
   );
   const configs = useSelector(selectHealthcareConfigs);
-  const [progressData, setProgressData] = useState<Record<string, DeductibleProgressType>>({});
+  const [progressData, setProgressData] = useState<DeductibleProgressType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedConfigs, setExpandedConfigs] = useState<Set<string>>(new Set());
 
   const fetchProgress = useCallback(async () => {
     try {
@@ -25,7 +26,7 @@ export default function DeductibleProgress() {
       // For mid-year resets (e.g., July 1), this ensures we see the current plan year
       const currentYearEnd = new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
       const data = await getDeductibleProgress(selectedSimulation, currentYearEnd);
-      setProgressData(data);
+      setProgressData(Object.values(data));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load progress');
     } finally {
@@ -90,9 +91,19 @@ export default function DeductibleProgress() {
     );
   }
 
-  const people = Object.keys(progressData);
+  const toggleExpanded = (configId: string) => {
+    setExpandedConfigs((prev) => {
+      const next = new Set(prev);
+      if (next.has(configId)) {
+        next.delete(configId);
+      } else {
+        next.add(configId);
+      }
+      return next;
+    });
+  };
 
-  if (people.length === 0) {
+  if (progressData.length === 0) {
     return (
       <Card shadow="sm" p="lg">
         <Text c="dimmed" ta="center" py="xl">
@@ -105,128 +116,130 @@ export default function DeductibleProgress() {
   return (
     <Card shadow="sm" p="lg">
       <Title order={3} mb="md">
-        Deductible Progress - {progressData[people[0]]?.planYear}
+        Deductible Progress - {progressData[0]?.planYear}
       </Title>
 
       <Stack gap="lg">
-        {people.map((person) => {
-          const progress = progressData[person];
+        {progressData.map((progress) => {
+          const isExpanded = expandedConfigs.has(progress.configId);
           return (
-            <Card key={person} withBorder p="md">
-              <Text fw={700} mb="sm">
-                {person} - {progress.configName}
-              </Text>
+            <Card key={progress.configId} withBorder p="md">
+              {/* Header with config name and covered persons */}
+              <Group justify="space-between" mb="md">
+                <div>
+                  <Text fw={700} size="lg">
+                    {progress.configName} {progress.planYear}
+                  </Text>
+                  <Group gap="xs" mt={4}>
+                    <Text size="sm" c="dimmed">
+                      Covered:
+                    </Text>
+                    {progress.coveredPersons.map((person) => (
+                      <Badge key={person} variant="light" size="sm">
+                        {person}
+                      </Badge>
+                    ))}
+                  </Group>
+                </div>
+              </Group>
 
-              <Stack gap="sm">
+              {/* Family-level progress bars */}
+              <Stack gap="sm" mb="md">
                 <div>
                   <Group justify="space-between" mb={4}>
-                    <Text size="sm">Individual Deductible</Text>
+                    <Group gap="xs">
+                      <Text size="sm" fw={500}>Family Deductible</Text>
+                      {progress.familyDeductibleMet && (
+                        <IconCheck size={16} color="green" />
+                      )}
+                    </Group>
                     <Text size="sm" fw={500}>
-                      ${progress.individualDeductibleSpent} / $
-                      {progress.individualDeductibleSpent + progress.individualDeductibleRemaining}
-                      {' '}({getPercent(
-                        progress.individualDeductibleSpent,
-                        progress.individualDeductibleSpent + progress.individualDeductibleRemaining
-                      )}%)
-                      {progress.individualDeductibleMet && ' ✓'}
+                      ${progress.familyDeductibleSpent.toLocaleString()} / $
+                      {progress.familyDeductibleLimit.toLocaleString()}
+                      {' '}({getPercent(progress.familyDeductibleSpent, progress.familyDeductibleLimit)}%)
                     </Text>
                   </Group>
                   <Progress
                     value={
-                      (progress.individualDeductibleSpent /
-                        (progress.individualDeductibleSpent +
-                          progress.individualDeductibleRemaining)) *
-                      100
+                      (progress.familyDeductibleSpent / progress.familyDeductibleLimit) * 100
                     }
-                    color={getColor(
-                      progress.individualDeductibleSpent,
-                      progress.individualDeductibleSpent + progress.individualDeductibleRemaining
-                    )}
+                    color={getColor(progress.familyDeductibleSpent, progress.familyDeductibleLimit)}
                     size="lg"
                   />
                 </div>
 
                 <div>
                   <Group justify="space-between" mb={4}>
-                    <Text size="sm">Family Deductible</Text>
+                    <Group gap="xs">
+                      <Text size="sm" fw={500}>Family Out-of-Pocket Max</Text>
+                      {progress.familyOOPMet && (
+                        <IconCheck size={16} color="green" />
+                      )}
+                    </Group>
                     <Text size="sm" fw={500}>
-                      ${progress.familyDeductibleSpent} / $
-                      {progress.familyDeductibleSpent + progress.familyDeductibleRemaining}
-                      {' '}({getPercent(
-                        progress.familyDeductibleSpent,
-                        progress.familyDeductibleSpent + progress.familyDeductibleRemaining
-                      )}%)
-                      {progress.familyDeductibleMet && ' ✓'}
+                      ${progress.familyOOPSpent.toLocaleString()} / $
+                      {progress.familyOOPLimit.toLocaleString()}
+                      {' '}({getPercent(progress.familyOOPSpent, progress.familyOOPLimit)}%)
                     </Text>
                   </Group>
                   <Progress
                     value={
-                      (progress.familyDeductibleSpent /
-                        (progress.familyDeductibleSpent + progress.familyDeductibleRemaining)) *
-                      100
+                      (progress.familyOOPSpent / progress.familyOOPLimit) * 100
                     }
-                    color={getColor(
-                      progress.familyDeductibleSpent,
-                      progress.familyDeductibleSpent + progress.familyDeductibleRemaining
-                    )}
-                    size="lg"
-                  />
-                </div>
-
-                <div>
-                  <Group justify="space-between" mb={4}>
-                    <Text size="sm">Individual Out-of-Pocket Max</Text>
-                    <Text size="sm" fw={500}>
-                      ${progress.individualOOPSpent} / $
-                      {progress.individualOOPSpent + progress.individualOOPRemaining}
-                      {' '}({getPercent(
-                        progress.individualOOPSpent,
-                        progress.individualOOPSpent + progress.individualOOPRemaining
-                      )}%)
-                      {progress.individualOOPMet && ' ✓'}
-                    </Text>
-                  </Group>
-                  <Progress
-                    value={
-                      (progress.individualOOPSpent /
-                        (progress.individualOOPSpent + progress.individualOOPRemaining)) *
-                      100
-                    }
-                    color={getColor(
-                      progress.individualOOPSpent,
-                      progress.individualOOPSpent + progress.individualOOPRemaining
-                    )}
-                    size="lg"
-                  />
-                </div>
-
-                <div>
-                  <Group justify="space-between" mb={4}>
-                    <Text size="sm">Family Out-of-Pocket Max</Text>
-                    <Text size="sm" fw={500}>
-                      ${progress.familyOOPSpent} / $
-                      {progress.familyOOPSpent + progress.familyOOPRemaining}
-                      {' '}({getPercent(
-                        progress.familyOOPSpent,
-                        progress.familyOOPSpent + progress.familyOOPRemaining
-                      )}%)
-                      {progress.familyOOPMet && ' ✓'}
-                    </Text>
-                  </Group>
-                  <Progress
-                    value={
-                      (progress.familyOOPSpent /
-                        (progress.familyOOPSpent + progress.familyOOPRemaining)) *
-                      100
-                    }
-                    color={getColor(
-                      progress.familyOOPSpent,
-                      progress.familyOOPSpent + progress.familyOOPRemaining
-                    )}
+                    color={getColor(progress.familyOOPSpent, progress.familyOOPLimit)}
                     size="lg"
                   />
                 </div>
               </Stack>
+
+              {/* Individual breakdown toggle */}
+              <Button
+                variant="subtle"
+                size="xs"
+                onClick={() => toggleExpanded(progress.configId)}
+                rightSection={isExpanded ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
+                fullWidth
+              >
+                Individual Breakdown
+              </Button>
+
+              <Collapse in={isExpanded}>
+                <Stack gap="md" mt="md" pl="md">
+                  {progress.individualProgress.map((person) => (
+                    <div key={person.personName}>
+                      <Text fw={600} mb="xs">
+                        {person.personName}
+                      </Text>
+                      <Stack gap="sm">
+                        <Group justify="space-between">
+                          <Group gap="xs">
+                            <Text size="sm">Deductible</Text>
+                            {person.deductibleMet && (
+                              <IconCheck size={14} color="green" />
+                            )}
+                          </Group>
+                          <Text size="sm">
+                            ${person.deductibleSpent.toLocaleString()} / $
+                            {progress.individualDeductibleLimit.toLocaleString()}
+                          </Text>
+                        </Group>
+                        <Group justify="space-between">
+                          <Group gap="xs">
+                            <Text size="sm">Out-of-Pocket</Text>
+                            {person.oopMet && (
+                              <IconCheck size={14} color="green" />
+                            )}
+                          </Group>
+                          <Text size="sm">
+                            ${person.oopSpent.toLocaleString()} / $
+                            {progress.individualOOPLimit.toLocaleString()}
+                          </Text>
+                        </Group>
+                      </Stack>
+                    </div>
+                  ))}
+                </Stack>
+              </Collapse>
             </Card>
           );
         })}

@@ -108,47 +108,57 @@ export default function ConfigList() {
             No healthcare configurations yet. Click "Add Config" to create one.
           </Text>
         ) : (
-          <Table>
-            <thead>
-              <tr>
-                <th>Person</th>
-                <th>Plan Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Deductible (Ind/Fam)</th>
-                <th>OOP Max (Ind/Fam)</th>
-                <th>HSA</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {configs.map((config) => (
-                <tr key={config.id}>
-                  <td>{config.personName}</td>
-                  <td>{config.name}</td>
-                  <td>{config.startDate}</td>
-                  <td>{config.endDate || 'Ongoing'}</td>
-                  <td>
-                    ${config.individualDeductible} / ${config.familyDeductible}
-                  </td>
-                  <td>
-                    ${config.individualOutOfPocketMax} / ${config.familyOutOfPocketMax}
-                  </td>
-                  <td>{config.hsaReimbursementEnabled ? 'Enabled' : 'Disabled'}</td>
-                  <td>
-                    <Group gap="xs">
-                      <ActionIcon color="blue" onClick={() => handleEdit(config)}>
-                        <IconEdit size={16} />
-                      </ActionIcon>
-                      <ActionIcon color="red" onClick={() => handleDelete(config)}>
-                        <IconTrash size={16} />
-                      </ActionIcon>
-                    </Group>
-                  </td>
+          <div style={{ overflowX: 'auto' }}>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Covered Persons</th>
+                  <th>Plan Name</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Deductible (Ind/Fam)</th>
+                  <th>OOP Max (Ind/Fam)</th>
+                  <th>HSA</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {configs.map((config) => {
+                  // Format covered persons list with overflow handling
+                  const displayPersons = config.coveredPersons?.slice(0, 3).join(', ') ?? '';
+                  const overflow = config.coveredPersons && config.coveredPersons.length > 3
+                    ? ` +${config.coveredPersons.length - 3}`
+                    : '';
+
+                  return (
+                  <tr key={config.id}>
+                    <td title={config.coveredPersons?.join(', ') ?? ''}>{displayPersons}{overflow}</td>
+                    <td>{config.name}</td>
+                    <td>{config.startDate}</td>
+                    <td>{config.endDate || 'Ongoing'}</td>
+                    <td>
+                      ${config.individualDeductible} / ${config.familyDeductible}
+                    </td>
+                    <td>
+                      ${config.individualOutOfPocketMax} / ${config.familyOutOfPocketMax}
+                    </td>
+                    <td>{config.hsaReimbursementEnabled ? 'Enabled' : 'Disabled'}</td>
+                    <td>
+                      <Group gap="xs">
+                        <ActionIcon color="blue" onClick={() => handleEdit(config)}>
+                          <IconEdit size={16} />
+                        </ActionIcon>
+                        <ActionIcon color="red" onClick={() => handleDelete(config)}>
+                          <IconTrash size={16} />
+                        </ActionIcon>
+                      </Group>
+                    </td>
+                  </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
         )}
       </Card>
 

@@ -21,10 +21,10 @@ export default function Healthcare() {
         <Title order={1}>Healthcare Management</Title>
 
         <Grid gutter="md">
-          <Grid.Col span={8}>
+          <Grid.Col span={{ base: 12, md: 8 }}>
             <ConfigList />
           </Grid.Col>
-          <Grid.Col span={4}>
+          <Grid.Col span={{ base: 12, md: 4 }}>
             <HsaSummary />
           </Grid.Col>
         </Grid>

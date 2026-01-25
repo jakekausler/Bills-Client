@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Modal,
   TextInput,
@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
   Alert,
+  MultiSelect,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { IconAlertCircle } from '@tabler/icons-react';
@@ -43,11 +44,13 @@ const MONTHS = [
 export default function ConfigForm({ opened, onClose, config }: ConfigFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const accounts = useSelector((state: RootState) => state.accounts.accounts);
+  const activities = useSelector((state: RootState) => state.activities.activities);
+  const calendarBills = useSelector((state: RootState) => state.calendar.bills);
 
   const isEdit = config !== null;
 
   const [name, setName] = useState('');
-  const [personName, setPersonName] = useState('');
+  const [coveredPersons, setCoveredPersons] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [individualDeductible, setIndividualDeductible] = useState<number | ''>('');
@@ -60,10 +63,31 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
   const [resetDay, setResetDay] = useState<number | ''>(1);
   const [error, setError] = useState<string | null>(null);
 
+  // Collect existing person names from healthcare bills and activities
+  const existingPersons = useMemo(() => {
+    const persons = new Set<string>();
+
+    // Collect from activities
+    activities.forEach((activity) => {
+      if (activity.isHealthcare && activity.healthcarePerson) {
+        persons.add(activity.healthcarePerson);
+      }
+    });
+
+    // Collect from calendar bills
+    calendarBills.forEach((bill) => {
+      if (bill.isHealthcare && bill.healthcarePerson) {
+        persons.add(bill.healthcarePerson);
+      }
+    });
+
+    return Array.from(persons).sort();
+  }, [activities, calendarBills]);
+
   useEffect(() => {
     if (config) {
       setName(config.name);
-      setPersonName(config.personName);
+      setCoveredPersons(config.coveredPersons || []);
       setStartDate(new Date(config.startDate));
       setEndDate(config.endDate ? new Date(config.endDate) : null);
       setIndividualDeductible(config.individualDeductible);
@@ -81,7 +105,7 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
 
   const resetForm = () => {
     setName('');
-    setPersonName('');
+    setCoveredPersons([]);
     setStartDate(null);
     setEndDate(null);
     setIndividualDeductible('');
@@ -96,14 +120,14 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
   };
 
   const handleSave = async () => {
-    if (!startDate || !name || !personName) return;
+    if (!startDate || !name || coveredPersons.length === 0) return;
 
     // Clear any previous errors
     setError(null);
 
     const configData: Omit<HealthcareConfig, 'id'> = {
       name,
-      personName,
+      coveredPersons,
       startDate: startDate.toISOString().split('T')[0],
       endDate: endDate ? endDate.toISOString().split('T')[0] : null,
       individualDeductible: Number(individualDeductible),
@@ -174,11 +198,22 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
               onChange={(e) => setName(e.target.value)}
               required
             />
-            <TextInput
-              label="Person Name"
-              placeholder="e.g., John, Jane"
-              value={personName}
-              onChange={(e) => setPersonName(e.target.value)}
+            <MultiSelect
+              label="Covered Persons"
+              placeholder="Select or add person names"
+              data={existingPersons}
+              value={coveredPersons}
+              onChange={setCoveredPersons}
+              searchable
+              creatable
+              getCreateLabel={(query) => `+ Add "${query}"`}
+              onCreate={(query) => {
+                const trimmedQuery = query.trim();
+                if (trimmedQuery && !existingPersons.includes(trimmedQuery)) {
+                  return { value: trimmedQuery, label: trimmedQuery };
+                }
+                return null;
+              }}
               required
             />
             <DateInput
@@ -294,7 +329,7 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={handleSave} disabled={!name || !personName || !startDate}>
+        <Button onClick={handleSave} disabled={!name || coveredPersons.length === 0 || !startDate}>
           {isEdit ? 'Update' : 'Create'}
         </Button>
       </Group>

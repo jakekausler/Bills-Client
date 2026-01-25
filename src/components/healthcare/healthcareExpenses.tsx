@@ -30,8 +30,12 @@ export default function HealthcareExpenses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filterPerson, setFilterPerson] = useState<string | null>(null);
-  const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
-  const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
+  const [filterStartDate, setFilterStartDate] = useState<Date | null>(
+    new Date(new Date().getFullYear(), 0, 1)
+  );
+  const [filterEndDate, setFilterEndDate] = useState<Date | null>(
+    new Date(new Date().getFullYear(), 11, 31)
+  );
 
   const fetchExpenses = useCallback(async () => {
     try {
@@ -137,50 +141,60 @@ export default function HealthcareExpenses() {
             No healthcare expenses found for this period.
           </Text>
         ) : (
-          <Table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Person</th>
-                <th>Bill Amount</th>
-                <th>Patient Cost</th>
-                <th>Copay</th>
-                <th>Coinsurance</th>
-                <th>HSA Reimbursed</th>
-                <th>Account</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredExpenses.map((expense) => (
-                <tr
-                  key={expense.id}
-                  style={{
-                    backgroundColor: expense.hsaReimbursed > 0 ? '#e7f5ff' : undefined,
-                  }}
-                >
-                  <td>{expense.date}</td>
-                  <td>
-                    {expense.name}
-                    {expense.patientCost === 0 && (
-                      <Badge size="xs" color="green" ml="xs">
-                        Fully Covered
-                      </Badge>
-                    )}
-                  </td>
-                  <td>{expense.person}</td>
-                  <td>${expense.billAmount.toFixed(2)}</td>
-                  <td>${expense.patientCost.toFixed(2)}</td>
-                  <td>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</td>
-                  <td>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</td>
-                  <td>
-                    {expense.hsaReimbursed > 0 ? `$${expense.hsaReimbursed.toFixed(2)}` : '-'}
-                  </td>
-                  <td>{expense.accountName}</td>
+          <div style={{ overflowX: 'auto' }}>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Person</th>
+                  <th>Bill Amount</th>
+                  <th>Patient Cost</th>
+                  <th>Copay</th>
+                  <th>Coinsurance</th>
+                  <th>HSA Reimbursed</th>
+                  <th>Account</th>
+                  <th>Ind. Ded. Left</th>
+                  <th>Fam. Ded. Left</th>
+                  <th>Ind. OOP Left</th>
+                  <th>Fam. OOP Left</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {filteredExpenses.map((expense) => (
+                  <tr
+                    key={expense.id}
+                    style={{
+                      backgroundColor: expense.hsaReimbursed > 0 ? '#e7f5ff' : undefined,
+                    }}
+                  >
+                    <td>{expense.date}</td>
+                    <td>
+                      {expense.name}
+                      {expense.patientCost === 0 && (
+                        <Badge size="xs" color="green" ml="xs">
+                          Fully Covered
+                        </Badge>
+                      )}
+                    </td>
+                    <td>{expense.person}</td>
+                    <td>${expense.billAmount.toFixed(2)}</td>
+                    <td>${expense.patientCost.toFixed(2)}</td>
+                    <td>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</td>
+                    <td>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</td>
+                    <td>
+                      {expense.hsaReimbursed > 0 ? `$${expense.hsaReimbursed.toFixed(2)}` : '-'}
+                    </td>
+                    <td>{expense.accountName}</td>
+                    <td>${expense.individualDeductibleRemaining.toFixed(2)}</td>
+                    <td>${expense.familyDeductibleRemaining.toFixed(2)}</td>
+                    <td>${expense.individualOOPRemaining.toFixed(2)}</td>
+                    <td>${expense.familyOOPRemaining.toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         )}
 
         <Text size="xs" c="dimmed" ta="right">
