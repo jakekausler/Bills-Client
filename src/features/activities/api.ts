@@ -84,7 +84,12 @@ export const fetchInterests = async (accountId: string) => {
 };
 
 export const fetchSaveInterests = async (accountId: string, interests: Interest[]) => {
-  return await api.post(`/api/accounts/${accountId}/interests`, interests);
+  try {
+    return await api.post(`/api/accounts/${accountId}/interests`, interests);
+  } catch (error) {
+    console.error('[fetchSaveInterests] Failed to save interests:', error);
+    throw error;
+  }
 };
 
 export const fetchInterestActivity = async (accountId: string, interestId: string, startDate: Date, endDate: Date) => {

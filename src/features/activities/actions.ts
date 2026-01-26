@@ -267,14 +267,19 @@ export const saveInterests = (
   graphEndDate: Date,
 ): AppThunk => {
   return async (dispatch) => {
-    await fetchSaveInterests(account.id, interests);
-    dispatch(loadActivities(account, startDate, endDate));
-    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-    dispatch(loadNames());
-    dispatch(loadCategories());
-    dispatch(loadCalendar());
-    dispatch(loadAccounts());
-    dispatch(loadFlow());
+    try {
+      await fetchSaveInterests(account.id, interests);
+      dispatch(loadActivities(account, startDate, endDate));
+      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
+      dispatch(loadNames());
+      dispatch(loadCategories());
+      dispatch(loadCalendar());
+      dispatch(loadAccounts());
+      dispatch(loadFlow());
+    } catch (error) {
+      console.error('[saveInterests] Failed to save interests:', error);
+      throw error;
+    }
   };
 };
 
