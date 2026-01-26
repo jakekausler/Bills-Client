@@ -205,15 +205,6 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
               value={coveredPersons}
               onChange={setCoveredPersons}
               searchable
-              creatable
-              getCreateLabel={(query) => `+ Add "${query}"`}
-              onCreate={(query) => {
-                const trimmedQuery = query.trim();
-                if (trimmedQuery && !existingPersons.includes(trimmedQuery)) {
-                  return { value: trimmedQuery, label: trimmedQuery };
-                }
-                return null;
-              }}
               required
             />
             <DateInput

@@ -12,14 +12,18 @@ import {
   Stack,
   Button,
 } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
 import { IconAlertCircle, IconRefresh } from '@tabler/icons-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getHealthcareExpenses } from '../../features/healthcare/api';
 import { HealthcareExpense } from '../../types/types';
 
-export default function HealthcareExpenses() {
+interface HealthcareExpensesProps {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+export default function HealthcareExpenses({ startDate, endDate }: HealthcareExpensesProps) {
   const selectedSimulation = useSelector(
     (state: RootState) =>
       state.simulations.simulations.find((s) => s.selected)?.name || 'Default'
@@ -30,19 +34,13 @@ export default function HealthcareExpenses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filterPerson, setFilterPerson] = useState<string | null>(null);
-  const [filterStartDate, setFilterStartDate] = useState<Date | null>(
-    new Date(new Date().getFullYear(), 0, 1)
-  );
-  const [filterEndDate, setFilterEndDate] = useState<Date | null>(
-    new Date(new Date().getFullYear(), 11, 31)
-  );
 
   const fetchExpenses = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const startDateStr = filterStartDate?.toISOString().split('T')[0];
-      const endDateStr = filterEndDate?.toISOString().split('T')[0];
+      const startDateStr = startDate?.toISOString().split('T')[0];
+      const endDateStr = endDate?.toISOString().split('T')[0];
       const data = await getHealthcareExpenses(selectedSimulation, startDateStr, endDateStr);
       setExpenses(data);
     } catch (err) {
@@ -50,7 +48,7 @@ export default function HealthcareExpenses() {
     } finally {
       setLoading(false);
     }
-  }, [selectedSimulation, filterStartDate, filterEndDate]);
+  }, [selectedSimulation, startDate, endDate]);
 
   useEffect(() => {
     fetchExpenses();
@@ -109,31 +107,15 @@ export default function HealthcareExpenses() {
       <Stack gap="md">
         <Group justify="space-between">
           <Title order={3}>Healthcare Expenses</Title>
-          <Group>
-            <Select
-              placeholder="Filter by person"
-              data={peopleOptions}
-              value={filterPerson}
-              onChange={setFilterPerson}
-              clearable
-              searchable
-              style={{ width: 150 }}
-            />
-            <DateInput
-              placeholder="Start date"
-              value={filterStartDate}
-              onChange={setFilterStartDate}
-              clearable
-              style={{ width: 150 }}
-            />
-            <DateInput
-              placeholder="End date"
-              value={filterEndDate}
-              onChange={setFilterEndDate}
-              clearable
-              style={{ width: 150 }}
-            />
-          </Group>
+          <Select
+            placeholder="Filter by person"
+            data={peopleOptions}
+            value={filterPerson}
+            onChange={setFilterPerson}
+            clearable
+            searchable
+            style={{ width: 200 }}
+          />
         </Group>
 
         {filteredExpenses.length === 0 ? (
@@ -142,22 +124,22 @@ export default function HealthcareExpenses() {
           </Text>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <Table>
+            <Table horizontalSpacing="md" verticalSpacing="sm" striped highlightOnHover>
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Name</th>
-                  <th>Person</th>
-                  <th>Bill Amount</th>
-                  <th>Patient Cost</th>
-                  <th>Copay</th>
-                  <th>Coinsurance</th>
-                  <th>HSA Reimbursed</th>
-                  <th>Account</th>
-                  <th>Ind. Ded. Left</th>
-                  <th>Fam. Ded. Left</th>
-                  <th>Ind. OOP Left</th>
-                  <th>Fam. OOP Left</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Date</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Name</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Person</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Bill Amount</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Patient Cost</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Copay</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Coinsurance</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>HSA Reimbursed</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Account</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Ind. Ded. Left</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Fam. Ded. Left</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Ind. OOP Left</th>
+                  <th style={{ whiteSpace: 'nowrap' }}>Fam. OOP Left</th>
                 </tr>
               </thead>
               <tbody>
@@ -168,8 +150,8 @@ export default function HealthcareExpenses() {
                       backgroundColor: expense.hsaReimbursed > 0 ? '#e7f5ff' : undefined,
                     }}
                   >
-                    <td>{expense.date}</td>
-                    <td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{expense.date}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>
                       {expense.name}
                       {expense.patientCost === 0 && (
                         <Badge size="xs" color="green" ml="xs">
@@ -177,19 +159,19 @@ export default function HealthcareExpenses() {
                         </Badge>
                       )}
                     </td>
-                    <td>{expense.person}</td>
-                    <td>${expense.billAmount.toFixed(2)}</td>
-                    <td>${expense.patientCost.toFixed(2)}</td>
-                    <td>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</td>
-                    <td>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</td>
-                    <td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{expense.person}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>${expense.billAmount.toFixed(2)}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>${expense.patientCost.toFixed(2)}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>
                       {expense.hsaReimbursed > 0 ? `$${expense.hsaReimbursed.toFixed(2)}` : '-'}
                     </td>
-                    <td>{expense.accountName}</td>
-                    <td>${expense.individualDeductibleRemaining.toFixed(2)}</td>
-                    <td>${expense.familyDeductibleRemaining.toFixed(2)}</td>
-                    <td>${expense.individualOOPRemaining.toFixed(2)}</td>
-                    <td>${expense.familyOOPRemaining.toFixed(2)}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{expense.accountName}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>${expense.individualDeductibleRemaining.toFixed(2)}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>${expense.familyDeductibleRemaining.toFixed(2)}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>${expense.individualOOPRemaining.toFixed(2)}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>${expense.familyOOPRemaining.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>

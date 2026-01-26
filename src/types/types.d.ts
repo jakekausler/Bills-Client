@@ -199,6 +199,13 @@ export type DeductibleProgress = {
   familyOOPLimit: number;
 };
 
+export type ProgressHistoryDataPoint = {
+  date: string;
+  personName: string | null; // null = family level, "Jake"/"Kendall" = individual
+  deductibleSpent: number;
+  oopSpent: number;
+};
+
 export type HealthcareExpense = {
   id: string;
   date: string;

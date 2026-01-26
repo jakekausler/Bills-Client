@@ -1,0 +1,12 @@
+export const selectMonteCarloDatasets = (state) => state.monteCarlo.datasets;
+export const selectMonteCarloLabels = (state) => state.monteCarlo.labels;
+export const selectMonteCarloStartDate = (state) => state.monteCarlo.startDate;
+export const selectMonteCarloEndDate = (state) => state.monteCarlo.endDate;
+export const selectMonteCarloLoaded = (state) => state.monteCarlo.loaded;
+export const selectMonteCarloError = (state) => state.monteCarlo.error;
+export const selectMonteCarloSelectedAccounts = (state) => state.monteCarlo.selectedAccounts;
+export const selectSelectedAccounts = (state) => state.monteCarlo.selectedAccounts;
+export const selectNSimulations = (state) => state.monteCarlo.nSimulations;
+export const selectSimulations = (state) => state.monteCarlo.simulations;
+export const selectSelectedSimulation = (state) => state.monteCarlo.selectedSimulation;
+export const selectSimulationsLoaded = (state) => state.monteCarlo.simulationsLoaded;

@@ -3,17 +3,24 @@ import { Card, Title, Stack, Progress, Text, Group, Loader, Alert, Button, Colla
 import { IconAlertCircle, IconRefresh, IconChevronDown, IconChevronUp, IconCheck } from '@tabler/icons-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { getDeductibleProgress } from '../../features/healthcare/api';
+import { getDeductibleProgress, getHealthcareProgressHistory } from '../../features/healthcare/api';
 import { selectHealthcareConfigs } from '../../features/healthcare/select';
-import { DeductibleProgress as DeductibleProgressType } from '../../types/types';
+import { DeductibleProgress as DeductibleProgressType, ProgressHistoryDataPoint } from '../../types/types';
+import ProgressMiniGraph from './ProgressMiniGraph';
 
-export default function DeductibleProgress() {
+interface DeductibleProgressProps {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+export default function DeductibleProgress({ startDate, endDate }: DeductibleProgressProps) {
   const selectedSimulation = useSelector(
     (state: RootState) =>
       state.simulations.simulations.find((s) => s.selected)?.name || 'Default'
   );
   const configs = useSelector(selectHealthcareConfigs);
   const [progressData, setProgressData] = useState<DeductibleProgressType[]>([]);
+  const [historyData, setHistoryData] = useState<Record<string, ProgressHistoryDataPoint[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedConfigs, setExpandedConfigs] = useState<Set<string>>(new Set());
@@ -22,17 +29,91 @@ export default function DeductibleProgress() {
     try {
       setLoading(true);
       setError(null);
-      // Pass end of current calendar year to get progress for the active plan year
-      // For mid-year resets (e.g., July 1), this ensures we see the current plan year
-      const currentYearEnd = new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
-      const data = await getDeductibleProgress(selectedSimulation, currentYearEnd);
-      setProgressData(Object.values(data));
+      // Use the provided endDate, or fall back to end of current calendar year
+      const effectiveEndDate = endDate
+        ? endDate.toISOString().split('T')[0]
+        : new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
+      const data = await getDeductibleProgress(selectedSimulation, effectiveEndDate);
+      const progressArray = Object.values(data);
+      setProgressData(progressArray);
+
+      // Fetch history for each config using the provided date range
+      const historyMap: Record<string, ProgressHistoryDataPoint[]> = {};
+      for (const progress of progressArray) {
+        const config = configs.find((c) => c.id === progress.configId);
+        if (!config) continue;
+
+        // Use provided dates or fall back to plan year dates
+        let historyStartDate: string;
+        let historyEndDate: string;
+
+        if (startDate && endDate) {
+          historyStartDate = startDate.toISOString().split('T')[0];
+          historyEndDate = endDate.toISOString().split('T')[0];
+        } else {
+          // Calculate plan year start/end dates as fallback
+          historyStartDate = `${progress.planYear}-${String(config.resetMonth).padStart(2, '0')}-${String(config.resetDay).padStart(2, '0')}`;
+          historyEndDate = `${progress.planYear + 1}-${String(config.resetMonth).padStart(2, '0')}-${String(config.resetDay - 1).padStart(2, '0')}`;
+        }
+
+        const history = await getHealthcareProgressHistory(
+          selectedSimulation,
+          progress.configId,
+          historyStartDate,
+          historyEndDate
+        );
+        historyMap[progress.configId] = history;
+      }
+      setHistoryData(historyMap);
+
+      // Update progressData with final values from history data
+      const updatedProgressData = progressArray.map(progress => {
+        const history = historyMap[progress.configId] || [];
+
+        // Get final family values (personName === null)
+        const familyHistory = history.filter(h => h.personName === null);
+        const lastFamilyPoint = familyHistory[familyHistory.length - 1];
+
+        // Get final individual values
+        const updatedIndividualProgress = progress.individualProgress.map(person => {
+          const personHistory = history.filter(h => h.personName === person.personName);
+          const lastPersonPoint = personHistory[personHistory.length - 1];
+
+          if (lastPersonPoint) {
+            return {
+              ...person,
+              deductibleSpent: lastPersonPoint.deductibleSpent,
+              deductibleMet: lastPersonPoint.deductibleSpent >= progress.individualDeductibleLimit,
+              oopSpent: lastPersonPoint.oopSpent,
+              oopMet: lastPersonPoint.oopSpent >= progress.individualOOPLimit,
+            };
+          }
+          return person;
+        });
+
+        if (lastFamilyPoint) {
+          return {
+            ...progress,
+            familyDeductibleSpent: lastFamilyPoint.deductibleSpent,
+            familyDeductibleMet: lastFamilyPoint.deductibleSpent >= progress.familyDeductibleLimit,
+            familyDeductibleRemaining: Math.max(0, progress.familyDeductibleLimit - lastFamilyPoint.deductibleSpent),
+            familyOOPSpent: lastFamilyPoint.oopSpent,
+            familyOOPMet: lastFamilyPoint.oopSpent >= progress.familyOOPLimit,
+            familyOOPRemaining: Math.max(0, progress.familyOOPLimit - lastFamilyPoint.oopSpent),
+            individualProgress: updatedIndividualProgress,
+          };
+        }
+
+        return { ...progress, individualProgress: updatedIndividualProgress };
+      });
+
+      setProgressData(updatedProgressData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load progress');
     } finally {
       setLoading(false);
     }
-  }, [selectedSimulation]);
+  }, [selectedSimulation, configs, startDate, endDate]);
 
   useEffect(() => {
     fetchProgress();
@@ -122,6 +203,16 @@ export default function DeductibleProgress() {
       <Stack gap="lg">
         {progressData.map((progress) => {
           const isExpanded = expandedConfigs.has(progress.configId);
+          const history = historyData[progress.configId] || [];
+
+          // Filter history data for family and per-person
+          const familyDeductibleHistory = history
+            .filter(h => h.personName === null)
+            .map(h => ({ date: h.date, value: h.deductibleSpent }));
+          const familyOOPHistory = history
+            .filter(h => h.personName === null)
+            .map(h => ({ date: h.date, value: h.oopSpent }));
+
           return (
             <Card key={progress.configId} withBorder p="md">
               {/* Header with config name and covered persons */}
@@ -143,7 +234,7 @@ export default function DeductibleProgress() {
                 </div>
               </Group>
 
-              {/* Family-level progress bars */}
+              {/* Family-level progress bars with inline graphs */}
               <Stack gap="sm" mb="md">
                 <div>
                   <Group justify="space-between" mb={4}>
@@ -165,6 +256,11 @@ export default function DeductibleProgress() {
                     }
                     color={getColor(progress.familyDeductibleSpent, progress.familyDeductibleLimit)}
                     size="lg"
+                  />
+                  <ProgressMiniGraph
+                    data={familyDeductibleHistory}
+                    limit={progress.familyDeductibleLimit}
+                    color="blue"
                   />
                 </div>
 
@@ -189,6 +285,11 @@ export default function DeductibleProgress() {
                     color={getColor(progress.familyOOPSpent, progress.familyOOPLimit)}
                     size="lg"
                   />
+                  <ProgressMiniGraph
+                    data={familyOOPHistory}
+                    limit={progress.familyOOPLimit}
+                    color="orange"
+                  />
                 </div>
               </Stack>
 
@@ -205,39 +306,65 @@ export default function DeductibleProgress() {
 
               <Collapse in={isExpanded}>
                 <Stack gap="md" mt="md" pl="md">
-                  {progress.individualProgress.map((person) => (
-                    <div key={person.personName}>
-                      <Text fw={600} mb="xs">
-                        {person.personName}
-                      </Text>
-                      <Stack gap="sm">
-                        <Group justify="space-between">
-                          <Group gap="xs">
-                            <Text size="sm">Deductible</Text>
-                            {person.deductibleMet && (
-                              <IconCheck size={14} color="green" />
-                            )}
-                          </Group>
-                          <Text size="sm">
-                            ${person.deductibleSpent.toLocaleString()} / $
-                            {progress.individualDeductibleLimit.toLocaleString()}
-                          </Text>
-                        </Group>
-                        <Group justify="space-between">
-                          <Group gap="xs">
-                            <Text size="sm">Out-of-Pocket</Text>
-                            {person.oopMet && (
-                              <IconCheck size={14} color="green" />
-                            )}
-                          </Group>
-                          <Text size="sm">
-                            ${person.oopSpent.toLocaleString()} / $
-                            {progress.individualOOPLimit.toLocaleString()}
-                          </Text>
-                        </Group>
-                      </Stack>
-                    </div>
-                  ))}
+                  {progress.individualProgress.map((person) => {
+                    // Filter history for this person
+                    const personDeductibleHistory = history
+                      .filter(h => h.personName === person.personName)
+                      .map(h => ({ date: h.date, value: h.deductibleSpent }));
+                    const personOOPHistory = history
+                      .filter(h => h.personName === person.personName)
+                      .map(h => ({ date: h.date, value: h.oopSpent }));
+
+                    return (
+                      <div key={person.personName}>
+                        <Text fw={600} mb="xs">
+                          {person.personName}
+                        </Text>
+                        <Stack gap="sm">
+                          <div>
+                            <Group justify="space-between" mb={4}>
+                              <Group gap="xs">
+                                <Text size="sm">Deductible</Text>
+                                {person.deductibleMet && (
+                                  <IconCheck size={14} color="green" />
+                                )}
+                              </Group>
+                              <Text size="sm">
+                                ${person.deductibleSpent.toLocaleString()} / $
+                                {progress.individualDeductibleLimit.toLocaleString()}
+                              </Text>
+                            </Group>
+                            <ProgressMiniGraph
+                              data={personDeductibleHistory}
+                              limit={progress.individualDeductibleLimit}
+                              color="cyan"
+                              height={100}
+                            />
+                          </div>
+                          <div>
+                            <Group justify="space-between" mb={4}>
+                              <Group gap="xs">
+                                <Text size="sm">Out-of-Pocket</Text>
+                                {person.oopMet && (
+                                  <IconCheck size={14} color="green" />
+                                )}
+                              </Group>
+                              <Text size="sm">
+                                ${person.oopSpent.toLocaleString()} / $
+                                {progress.individualOOPLimit.toLocaleString()}
+                              </Text>
+                            </Group>
+                            <ProgressMiniGraph
+                              data={personOOPHistory}
+                              limit={progress.individualOOPLimit}
+                              color="grape"
+                              height={100}
+                            />
+                          </div>
+                        </Stack>
+                      </div>
+                    );
+                  })}
                 </Stack>
               </Collapse>
             </Card>

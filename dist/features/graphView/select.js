@@ -1,0 +1,10 @@
+export const selectGraphViewDatasets = (state) => state.graphView.datasets;
+export const selectGraphViewLabels = (state) => state.graphView.labels;
+export const selectGraphViewStartDate = (state) => state.graphView.startDate;
+export const selectGraphViewEndDate = (state) => state.graphView.endDate;
+export const selectGraphViewType = (state) => state.graphView.type;
+export const selectGraphViewLoaded = (state) => state.graphView.loaded;
+export const selectGraphViewError = (state) => state.graphView.error;
+export const selectSelectedAccounts = (state) => state.graphView.selectedAccounts;
+export const selectSelectedSimulations = (state) => state.graphView.selectedSimulations;
+export const selectCombineAccounts = (state) => state.graphView.combineAccounts;

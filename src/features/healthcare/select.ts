@@ -7,7 +7,7 @@ export const selectHealthcareLoading = (state: RootState) => state.healthcare.lo
 export const selectHealthcareError = (state: RootState) => state.healthcare.error;
 
 export const selectConfigsByPerson = (person: string) => (state: RootState) =>
-  state.healthcare.configs.filter((c) => c.personName === person);
+  state.healthcare.configs.filter((c) => c.coveredPersons?.includes(person));
 
 export const selectActiveConfigs = (date: string) => (state: RootState) =>
   state.healthcare.configs.filter((c) => {

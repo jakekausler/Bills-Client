@@ -34,7 +34,7 @@ export const EditableDateInput = ({
     return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
   });
   const [showCalendar, setShowCalendar] = useState(false);
-  const [calendarDate, setCalendarDate] = useState<Date | null>(null);
+  const [calendarDate, setCalendarDate] = useState<Date | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validDate = (date: string | null) => {

@@ -126,7 +126,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
 
   const theme = useMantineTheme();
 
-  const validate = (name: string, value: string | number | boolean | null) => {
+  const validate = (name: string, value: string | number | boolean | null | undefined) => {
     if (name === 'dateVariable') {
       if (selectedActivity.dateIsVariable) {
         if (!dateVariables.includes(value as string)) {

@@ -1,5 +1,5 @@
 import { api, fetchWithAuth } from '../../utils/api';
-import { HealthcareConfig, DeductibleProgress, HealthcareExpense } from '../../types/types';
+import { HealthcareConfig, DeductibleProgress, HealthcareExpense, ProgressHistoryDataPoint } from '../../types/types';
 
 // Healthcare Configs CRUD
 export async function getHealthcareConfigs(): Promise<HealthcareConfig[]> {
@@ -43,4 +43,20 @@ export async function getHealthcareExpenses(
   if (startDate) params.append('startDate', startDate);
   if (endDate) params.append('endDate', endDate);
   return await fetchWithAuth(`/api/healthcare/expenses?${params}`);
+}
+
+// Progress history for graphs (backend-driven, no Redux caching)
+export async function getHealthcareProgressHistory(
+  simulation: string,
+  configId: string,
+  startDate: string,
+  endDate: string
+): Promise<ProgressHistoryDataPoint[]> {
+  const params = new URLSearchParams({
+    simulation,
+    configId,
+    startDate,
+    endDate,
+  });
+  return await fetchWithAuth(`/api/healthcare/progress-history?${params}`);
 }
