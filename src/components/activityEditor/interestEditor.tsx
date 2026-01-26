@@ -100,7 +100,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
     return lastInterest.compounded;
   };
 
-  const validate = (index: number, name: string, value: any) => {
+  const validate = (interest: Interest, name: string, value: any) => {
     if (name === 'applicableDate') {
       const date = new Date(value);
       if (date.toString() === 'Invalid Date') {
@@ -113,7 +113,14 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
       }
     }
     if (name === 'aprVariable') {
-      if (!amountVariables.includes(value as string)) {
+      // Only validate if using a variable
+      if (interest.aprIsVariable && !amountVariables.includes(value as string)) {
+        return 'Invalid variable';
+      }
+    }
+    if (name === 'applicableDateVariable') {
+      // Only validate if using a variable (dateVariables not currently implemented)
+      if (interest.applicableDateIsVariable && value !== null) {
         return 'Invalid variable';
       }
     }
@@ -126,11 +133,17 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
   };
 
   const allValid = (ints?: Interest[]) => {
-    return (ints || interests).every((interest, index) => {
-      return Object.entries(interest).every(([key, value]) => {
-        return validate(index, key, value) === null;
+    const interestsToValidate = ints || interests;
+
+    const result = interestsToValidate.every((interest) => {
+      const interestValid = Object.entries(interest).every(([key, value]) => {
+        const validationResult = validate(interest, key, value);
+        return validationResult === null;
       });
+      return interestValid;
     });
+
+    return result;
   };
 
   const handleEnter = (index: number, apr?: number) => {
@@ -221,7 +234,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                           ),
                         );
                       }}
-                      error={validate(index, 'aprVariable', interest.aprVariable) || undefined}
+                      error={validate(interest, 'aprVariable', interest.aprVariable) || undefined}
                     />
                   ) : (
                     <CalculatorEditor
@@ -242,7 +255,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                           ),
                         );
                       }}
-                      error={validate(index, 'apr', interest.apr) || undefined}
+                      error={validate(interest, 'apr', interest.apr) || undefined}
                       handleEnter={(apr) => handleEnter(index, apr)}
                     />
                   )}
@@ -289,7 +302,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                       ),
                     );
                   }}
-                  error={validate(index, 'compounded', interest.compounded)}
+                  error={validate(interest, 'compounded', interest.compounded)}
                 />
               </Table.Td>
               <Table.Td>
@@ -320,9 +333,9 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                   apr: 0,
                   compounded: getNextCompounded(),
                   aprIsVariable: false,
-                  aprVariable: '',
+                  aprVariable: null,
                   applicableDateIsVariable: false,
-                  applicableDateVariable: '',
+                  applicableDateVariable: null,
                 },
               ]),
             );
