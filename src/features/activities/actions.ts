@@ -33,6 +33,7 @@ import {
   fetchSaveInterests,
   fetchSkipBill,
   fetchSkipInterest,
+  fetchSkipSpendingTracker,
 } from './api';
 import { Account, Activity, Bill, Interest } from '../../types/types';
 import { loadGraphData } from '../graph/actions';
@@ -93,6 +94,9 @@ export const saveActivity = (
         // Enter as a new activity
         activity.id = undefined;
         fetchAddActivity(account.id, activity);
+      } else if (activity.id?.startsWith('SPENDING-TRACKER-')) {
+        // Do nothing, we shouldn't be able to edit spending tracker
+        return;
       } else if (activity.id === 'TAX') {
         // Do nothing, we shouldn't be able to edit tax
         return;
@@ -327,6 +331,26 @@ export const skipInterest = (
 ): AppThunk => {
   return async (dispatch) => {
     await fetchSkipInterest(account.id);
+    dispatch(loadActivities(account, startDate, endDate));
+    dispatch(loadGraphData(account, graphStartDate, graphEndDate));
+    dispatch(loadNames());
+    dispatch(loadCategories());
+    dispatch(loadCalendar());
+    dispatch(loadAccounts());
+    dispatch(loadFlow());
+  };
+};
+
+export const skipSpendingTracker = (
+  account: Account,
+  categoryId: string,
+  startDate: Date,
+  endDate: Date,
+  graphStartDate: Date,
+  graphEndDate: Date,
+): AppThunk => {
+  return async (dispatch) => {
+    await fetchSkipSpendingTracker(categoryId);
     dispatch(loadActivities(account, startDate, endDate));
     dispatch(loadGraphData(account, graphStartDate, graphEndDate));
     dispatch(loadNames());

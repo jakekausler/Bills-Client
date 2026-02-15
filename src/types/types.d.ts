@@ -35,6 +35,8 @@ export type Activity = BaseActivity & {
   firstBill: boolean;
   interestId: string | null;
   firstInterest: boolean;
+  spendingTrackerId: string | null;
+  firstSpendingTracker: boolean;
   balance: number;
   cashBalance: number;
   investmentValue: number;
@@ -190,6 +192,7 @@ export type SpendingTrackerCategory = {
   increaseByIsVariable: boolean;
   increaseByVariable: string | null;
   increaseByDate: string;
+  startDate: string | null;
   thresholdChanges: {
     date: string;
     dateIsVariable: boolean;

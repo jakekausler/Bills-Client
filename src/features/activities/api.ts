@@ -113,3 +113,7 @@ export const fetchSkipBill = async (accountId: string, billId: string, isTransfe
 export const fetchSkipInterest = async (accountId: string) => {
   return await api.post(`/api/accounts/${accountId}/interests?skip=true`);
 };
+
+export const fetchSkipSpendingTracker = async (categoryId: string) => {
+  return await api.post(`/api/spending-tracker/${categoryId}?skip=true`);
+};
