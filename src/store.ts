@@ -11,6 +11,7 @@ import graphViewSlice from './features/graphView/slice';
 import monteCarloSlice from './features/monteCarlo/slice';
 import moneyMovementSlice from './features/moneyMovement/slice';
 import healthcareReducer from './features/healthcare/slice';
+import spendingTrackerReducer from './features/spendingTracker/slice';
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
     monteCarlo: monteCarloSlice,
     moneyMovement: moneyMovementSlice,
     healthcare: healthcareReducer,
+    spendingTracker: spendingTrackerReducer,
   },
 });
 

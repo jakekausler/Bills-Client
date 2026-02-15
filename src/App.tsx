@@ -35,6 +35,7 @@ import { loadMoneyMovementChart } from './features/moneyMovement/actions';
 import Healthcare from './components/healthcare/healthcare';
 import HealthcareSidebar from './components/healthcare/healthcareSidebar';
 import { loadHealthcareConfigs } from './features/healthcare/actions';
+import { loadSpendingTrackerCategories } from './features/spendingTracker/actions';
 
 type Page = {
   title: string;
@@ -138,6 +139,7 @@ function AppContent() {
     dispatch(loadFlow());
     dispatch(loadMoneyMovementChart());
     dispatch(loadHealthcareConfigs());
+    dispatch(loadSpendingTrackerCategories());
   }, []);
 
   const PageComponent = pages[page as keyof typeof pages].component as PageComponentType;

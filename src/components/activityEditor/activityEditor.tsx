@@ -33,6 +33,7 @@ import { Activity } from '../../types/types';
 import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import { IconVariable, IconVariableOff, IconWifi0 } from '@tabler/icons-react';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
+import { selectSpendingTrackerCategoryOptions } from '../../features/spendingTracker/select';
 import CreatableSelect from '../helpers/creatableSelect';
 import { useEffect, useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
@@ -89,6 +90,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
 
   const [categoryTouched, setCategoryTouched] = useState(false);
 
+  const spendingCategoryOptions = useSelector(selectSpendingTrackerCategoryOptions);
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
@@ -458,6 +460,21 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                 description="Usually yes for all patient costs"
               />
             </Stack>
+          )}
+          {!selectedBillId && !selectedInterestId && (
+            <Select
+              label="Spending Category"
+              data={spendingCategoryOptions}
+              value={selectedActivity.spendingCategory || ''}
+              onChange={(value) => {
+                dispatch(
+                  updateActivity({
+                    ...selectedActivity,
+                    spendingCategory: value === '' ? null : value,
+                  }),
+                );
+              }}
+            />
           )}
           <Checkbox
             label="Is this a transfer?"

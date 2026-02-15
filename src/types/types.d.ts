@@ -25,6 +25,9 @@ export type BaseActivity = {
   coinsurancePercent?: number | null;
   countsTowardDeductible?: boolean;
   countsTowardOutOfPocket?: boolean;
+
+  // Spending tracker fields
+  spendingCategory?: string | null;
 };
 
 export type Activity = BaseActivity & {
@@ -87,6 +90,9 @@ export type Bill = {
   coinsurancePercent?: number | null;
   countsTowardDeductible?: boolean;
   countsTowardOutOfPocket?: boolean;
+
+  // Spending tracker fields
+  spendingCategory?: string | null;
 };
 
 export type Interest = {
@@ -167,6 +173,32 @@ export type HealthcareConfig = {
   hsaReimbursementEnabled: boolean;
   resetMonth: number;
   resetDay: number;
+};
+
+export type SpendingTrackerCategory = {
+  id: string;
+  name: string;
+  threshold: number;
+  thresholdIsVariable: boolean;
+  thresholdVariable: string | null;
+  interval: 'weekly' | 'monthly' | 'yearly';
+  intervalStart: string;
+  accountId: string;
+  carryOver: boolean;
+  carryUnder: boolean;
+  increaseBy: number;
+  increaseByIsVariable: boolean;
+  increaseByVariable: string | null;
+  increaseByDate: string;
+  thresholdChanges: {
+    date: string;
+    dateIsVariable: boolean;
+    dateVariable: string | null;
+    newThreshold: number;
+    newThresholdIsVariable: boolean;
+    newThresholdVariable: string | null;
+    resetCarry: boolean;
+  }[];
 };
 
 export type DeductibleProgress = {

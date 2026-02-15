@@ -27,6 +27,7 @@ import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '
 import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import { AppDispatch } from '../../store';
 import { updateBill } from '../../features/activities/slice';
+import { selectSpendingTrackerCategoryOptions } from '../../features/spendingTracker/select';
 import { Account, Bill } from '../../types/types';
 import { removeBill, saveBill } from '../../features/activities/actions';
 import { IconVariable, IconVariableOff } from '@tabler/icons-react';
@@ -62,6 +63,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
   const [categoryTouched, setCategoryTouched] = useState(false);
   const names = useSelector(selectNames);
 
+  const spendingCategoryOptions = useSelector(selectSpendingTrackerCategoryOptions);
   const simulationVariables = useSelector(selectSelectedSimulationVariables);
   const amountVariables = simulationVariables
     ? Object.entries(simulationVariables)
@@ -603,6 +605,19 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               />
             </Stack>
           )}
+          <Select
+            label="Spending Category"
+            data={spendingCategoryOptions}
+            value={selectedBill.spendingCategory || ''}
+            onChange={(value) => {
+              dispatch(
+                updateBill({
+                  ...selectedBill,
+                  spendingCategory: value === '' ? null : value,
+                }),
+              );
+            }}
+          />
           <Checkbox
             label="Is this a transfer?"
             checked={selectedBill.isTransfer}
