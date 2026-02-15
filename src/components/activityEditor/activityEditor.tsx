@@ -461,21 +461,19 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               />
             </Stack>
           )}
-          {!selectedBillId && !selectedInterestId && (
-            <Select
-              label="Spending Category"
-              data={spendingCategoryOptions}
-              value={selectedActivity.spendingCategory || ''}
-              onChange={(value) => {
-                dispatch(
-                  updateActivity({
-                    ...selectedActivity,
-                    spendingCategory: value === '' ? null : value,
-                  }),
-                );
-              }}
-            />
-          )}
+          <Select
+            label="Spending Category"
+            data={spendingCategoryOptions}
+            value={selectedActivity.spendingCategory || ''}
+            onChange={(value) => {
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  spendingCategory: value === '' ? null : value,
+                }),
+              );
+            }}
+          />
           <Checkbox
             label="Is this a transfer?"
             checked={selectedActivity.isTransfer}
