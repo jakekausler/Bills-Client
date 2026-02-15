@@ -461,27 +461,31 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               />
             </Stack>
           )}
-          <Select
-            label="Spending Category"
-            data={spendingCategoryOptions}
-            value={selectedActivity.spendingCategory || ''}
-            onChange={(value) => {
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  spendingCategory: value === '' ? null : value,
-                }),
-              );
-            }}
-          />
+          {!selectedActivity.isTransfer && (
+            <Select
+              label="Spending Category"
+              data={spendingCategoryOptions}
+              value={selectedActivity.spendingCategory || ''}
+              onChange={(value) => {
+                dispatch(
+                  updateActivity({
+                    ...selectedActivity,
+                    spendingCategory: value === '' ? null : value,
+                  }),
+                );
+              }}
+            />
+          )}
           <Checkbox
             label="Is this a transfer?"
             checked={selectedActivity.isTransfer}
             onChange={(event) => {
+              const checked = event.currentTarget.checked;
               dispatch(
                 updateActivity({
                   ...selectedActivity,
-                  isTransfer: event.currentTarget.checked,
+                  isTransfer: checked,
+                  ...(checked ? { spendingCategory: null } : {}),
                 }),
               );
             }}

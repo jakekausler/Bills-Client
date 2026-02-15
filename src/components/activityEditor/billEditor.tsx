@@ -605,27 +605,31 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               />
             </Stack>
           )}
-          <Select
-            label="Spending Category"
-            data={spendingCategoryOptions}
-            value={selectedBill.spendingCategory || ''}
-            onChange={(value) => {
-              dispatch(
-                updateBill({
-                  ...selectedBill,
-                  spendingCategory: value === '' ? null : value,
-                }),
-              );
-            }}
-          />
+          {!selectedBill.isTransfer && (
+            <Select
+              label="Spending Category"
+              data={spendingCategoryOptions}
+              value={selectedBill.spendingCategory || ''}
+              onChange={(value) => {
+                dispatch(
+                  updateBill({
+                    ...selectedBill,
+                    spendingCategory: value === '' ? null : value,
+                  }),
+                );
+              }}
+            />
+          )}
           <Checkbox
             label="Is this a transfer?"
             checked={selectedBill.isTransfer}
             onChange={(event) => {
+              const checked = event.currentTarget.checked;
               dispatch(
                 updateBill({
                   ...selectedBill,
-                  isTransfer: event.currentTarget.checked,
+                  isTransfer: checked,
+                  ...(checked ? { spendingCategory: null } : {}),
                 }),
               );
             }}
