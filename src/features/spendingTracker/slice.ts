@@ -22,6 +22,7 @@ const spendingTrackerSlice = createSlice({
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
+      state.loading = false;
     },
     setCategories: (state, action: PayloadAction<SpendingTrackerCategory[]>) => {
       state.categories = action.payload;
