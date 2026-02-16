@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store';
-import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar, IconChartAreaFilled, IconChartLine, IconArrowsSplit2, IconHeartbeat } from '@tabler/icons-react';
+import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar, IconChartAreaFilled, IconChartLine, IconArrowsSplit2, IconHeartbeat, IconTargetArrow } from '@tabler/icons-react';
 import { loadAccounts } from './features/accounts/actions';
 import AccountList from './components/accounts/accountList';
 import Account from './components/account/account';
@@ -35,6 +35,7 @@ import { loadMoneyMovementChart } from './features/moneyMovement/actions';
 import Healthcare from './components/healthcare/healthcare';
 import HealthcareSidebar from './components/healthcare/healthcareSidebar';
 import { loadHealthcareConfigs } from './features/healthcare/actions';
+import SpendingTracker from './components/spendingTracker/spendingTracker';
 import { loadSpendingTrackerCategories } from './features/spendingTracker/actions';
 
 type Page = {
@@ -100,6 +101,12 @@ const pages: Record<string, Page> = {
     component: MoneyMovement,
     sidebar: () => null,
     icon: IconChartAreaFilled,
+  },
+  spendingTracker: {
+    title: 'Spending Tracker',
+    component: SpendingTracker,
+    sidebar: () => null,
+    icon: IconTargetArrow,
   },
 };
 

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dataset } from '../../types/types';
-import { GraphData } from '../../types/types';
 import { toDateString } from '../../utils/date';
 
 interface GraphState {
