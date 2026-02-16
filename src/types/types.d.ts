@@ -310,3 +310,21 @@ export type MoneyMovementData = {
   labels: string[];
   datasets: Dataset[];
 };
+
+export type ChartDataPoint = {
+  periodStart: string;
+  periodEnd: string;
+  totalSpent: number;
+  baseThreshold: number;
+  effectiveThreshold: number;
+  remainder: number;
+  carryAfter: number;
+  isCurrent: boolean;
+};
+
+export type ChartDataResponse = {
+  periods: ChartDataPoint[];
+  nextPeriodThreshold: number;
+  cumulativeSpent: number;
+  cumulativeThreshold: number;
+};

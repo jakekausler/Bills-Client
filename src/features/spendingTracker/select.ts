@@ -22,3 +22,11 @@ export const selectSelectedCategory = createSelector(
     return categories.find((c) => c.id === selectedId) ?? null;
   },
 );
+
+export const selectChartData = (state: RootState) => state.spendingTracker.chartData;
+export const selectChartLoading = (state: RootState) => state.spendingTracker.chartLoading;
+export const selectDateRangeMode = (state: RootState) => state.spendingTracker.dateRangeMode;
+export const selectCustomStartDate = (state: RootState) => state.spendingTracker.customStartDate;
+export const selectCustomEndDate = (state: RootState) => state.spendingTracker.customEndDate;
+export const selectSmartCount = (state: RootState) => state.spendingTracker.smartCount;
+export const selectSmartInterval = (state: RootState) => state.spendingTracker.smartInterval;

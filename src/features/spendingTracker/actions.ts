@@ -6,12 +6,15 @@ import {
   addCategory,
   updateCategoryInState,
   removeCategory,
+  setChartData,
+  setChartLoading,
 } from './slice';
 import {
   getSpendingTrackerCategories,
   createSpendingTrackerCategory,
   updateSpendingTrackerCategory,
   deleteSpendingTrackerCategory,
+  getSpendingTrackerChartData,
 } from './api';
 import { SpendingTrackerCategory } from '../../types/types';
 
@@ -68,3 +71,19 @@ export const deleteCategory = (id: string) => async (dispatch: AppDispatch) => {
     throw error;
   }
 };
+
+export const loadChartData =
+  (categoryId: string, startDate: string, endDate: string) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setChartLoading(true));
+      dispatch(setChartData(null));
+      const chartData = await getSpendingTrackerChartData(categoryId, startDate, endDate);
+      dispatch(setChartData(chartData));
+      dispatch(setChartLoading(false));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load spending tracker chart data';
+      dispatch(setError(message));
+      dispatch(setChartLoading(false));
+      throw error;
+    }
+  };

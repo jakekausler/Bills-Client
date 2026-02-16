@@ -1,5 +1,5 @@
 import { api } from '../../utils/api';
-import { SpendingTrackerCategory } from '../../types/types';
+import { ChartDataResponse, SpendingTrackerCategory } from '../../types/types';
 
 export async function getSpendingTrackerCategories(): Promise<SpendingTrackerCategory[]> {
   return await api.get('/api/spending-tracker');
@@ -22,4 +22,12 @@ export async function updateSpendingTrackerCategory(
 
 export async function deleteSpendingTrackerCategory(id: string): Promise<void> {
   return await api.delete(`/api/spending-tracker/${id}`);
+}
+
+export async function getSpendingTrackerChartData(
+  id: string,
+  startDate: string,
+  endDate: string,
+): Promise<ChartDataResponse> {
+  return await api.get(`/api/spending-tracker/${id}/chart-data?startDate=${startDate}&endDate=${endDate}`);
 }

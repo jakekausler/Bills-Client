@@ -1,11 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SpendingTrackerCategory } from '../../types/types';
+import { ChartDataResponse, SpendingTrackerCategory } from '../../types/types';
 
 type SpendingTrackerState = {
   categories: SpendingTrackerCategory[];
   selectedCategoryId: string | null;
   loading: boolean;
   error: string | null;
+  chartData: ChartDataResponse | null;
+  chartLoading: boolean;
+  dateRangeMode: 'custom' | 'smart';
+  customStartDate: string | null;
+  customEndDate: string | null;
+  smartCount: number;
+  smartInterval: 'weeks' | 'months' | 'years';
 };
 
 const initialState: SpendingTrackerState = {
@@ -13,6 +20,13 @@ const initialState: SpendingTrackerState = {
   selectedCategoryId: null,
   loading: false,
   error: null,
+  chartData: null,
+  chartLoading: false,
+  dateRangeMode: 'smart',
+  customStartDate: null,
+  customEndDate: null,
+  smartCount: 12,
+  smartInterval: 'weeks',
 };
 
 const spendingTrackerSlice = createSlice({
@@ -59,6 +73,27 @@ const spendingTrackerSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setChartData: (state, action: PayloadAction<ChartDataResponse | null>) => {
+      state.chartData = action.payload;
+    },
+    setChartLoading: (state, action: PayloadAction<boolean>) => {
+      state.chartLoading = action.payload;
+    },
+    setDateRangeMode: (state, action: PayloadAction<'custom' | 'smart'>) => {
+      state.dateRangeMode = action.payload;
+    },
+    setCustomStartDate: (state, action: PayloadAction<string | null>) => {
+      state.customStartDate = action.payload;
+    },
+    setCustomEndDate: (state, action: PayloadAction<string | null>) => {
+      state.customEndDate = action.payload;
+    },
+    setSmartCount: (state, action: PayloadAction<number>) => {
+      state.smartCount = action.payload;
+    },
+    setSmartInterval: (state, action: PayloadAction<'weeks' | 'months' | 'years'>) => {
+      state.smartInterval = action.payload;
+    },
   },
 });
 
@@ -72,6 +107,13 @@ export const {
   removeCategory,
   setSelectedCategoryId,
   clearError,
+  setChartData,
+  setChartLoading,
+  setDateRangeMode,
+  setCustomStartDate,
+  setCustomEndDate,
+  setSmartCount,
+  setSmartInterval,
 } = spendingTrackerSlice.actions;
 
 export default spendingTrackerSlice.reducer;
