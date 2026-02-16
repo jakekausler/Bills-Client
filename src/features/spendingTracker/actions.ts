@@ -8,6 +8,7 @@ import {
   removeCategory,
   setChartData,
   setChartLoading,
+  clearError,
 } from './slice';
 import {
   getSpendingTrackerCategories,
@@ -77,6 +78,7 @@ export const loadChartData =
     try {
       dispatch(setChartLoading(true));
       dispatch(setChartData(null));
+      dispatch(clearError());
       const chartData = await getSpendingTrackerChartData(categoryId, startDate, endDate);
       dispatch(setChartData(chartData));
       dispatch(setChartLoading(false));

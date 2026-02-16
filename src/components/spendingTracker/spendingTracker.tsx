@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Button,
-  Card,
   Container,
   Group,
   Loader,
@@ -13,6 +12,7 @@ import {
 } from '@mantine/core';
 import { IconAlertCircle, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useSelector, useDispatch } from 'react-redux';
+import dayjs from 'dayjs';
 import { AppDispatch } from '../../store';
 import {
   selectSpendingTrackerCategories,
@@ -20,12 +20,23 @@ import {
   selectSelectedCategory,
   selectSpendingTrackerLoading,
   selectSpendingTrackerError,
+  selectChartData,
+  selectChartLoading,
+  selectDateRangeMode,
+  selectSmartCount,
+  selectSmartInterval,
+  selectSmartEndCount,
+  selectSmartEndInterval,
+  selectCustomStartDate,
+  selectCustomEndDate,
 } from '../../features/spendingTracker/select';
 import { setSelectedCategoryId, clearError } from '../../features/spendingTracker/slice';
-import { createCategory, deleteCategory } from '../../features/spendingTracker/actions';
+import { createCategory, deleteCategory, loadChartData } from '../../features/spendingTracker/actions';
 import { selectAllAccounts } from '../../features/accounts/select';
 import { SpendingTrackerCategory } from '../../types/types';
 import ConfigCard from './configCard';
+import DateRangeControls from './dateRangeControls';
+import SpendingChart from './spendingChart';
 
 export default function SpendingTracker() {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,6 +46,15 @@ export default function SpendingTracker() {
   const loading = useSelector(selectSpendingTrackerLoading);
   const error = useSelector(selectSpendingTrackerError);
   const accounts = useSelector(selectAllAccounts);
+  const chartData = useSelector(selectChartData);
+  const chartLoading = useSelector(selectChartLoading);
+  const dateRangeMode = useSelector(selectDateRangeMode);
+  const smartCount = useSelector(selectSmartCount);
+  const smartInterval = useSelector(selectSmartInterval);
+  const smartEndCount = useSelector(selectSmartEndCount);
+  const smartEndInterval = useSelector(selectSmartEndInterval);
+  const customStartDate = useSelector(selectCustomStartDate);
+  const customEndDate = useSelector(selectCustomEndDate);
 
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
 
@@ -44,6 +64,29 @@ export default function SpendingTracker() {
       dispatch(setSelectedCategoryId(categories[0].id));
     }
   }, [categories, selectedCategoryId, dispatch]);
+
+  // Load chart data when category or date range changes (debounced)
+  useEffect(() => {
+    if (!selectedCategoryId) return;
+
+    let startDate: string;
+    let endDate: string;
+
+    if (dateRangeMode === 'smart') {
+      startDate = dayjs().subtract(smartCount, smartInterval).format('YYYY-MM-DD');
+      endDate = dayjs().add(smartEndCount, smartEndInterval).format('YYYY-MM-DD');
+    } else {
+      if (!customStartDate || !customEndDate) return;
+      startDate = customStartDate;
+      endDate = customEndDate;
+    }
+
+    const timer = setTimeout(() => {
+      dispatch(loadChartData(selectedCategoryId, startDate, endDate));
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [selectedCategoryId, dateRangeMode, smartCount, smartInterval, smartEndCount, smartEndInterval, customStartDate, customEndDate, dispatch]);
 
   const handleCategoryChange = (value: string | null) => {
     dispatch(setSelectedCategoryId(value));
@@ -170,9 +213,8 @@ export default function SpendingTracker() {
 
         {selectedCategory && <ConfigCard />}
 
-        <Card shadow="sm" p="md">
-          <Text c="dimmed">Chart coming in next slice</Text>
-        </Card>
+        {selectedCategory && <DateRangeControls />}
+        {selectedCategory && <SpendingChart chartData={chartData} loading={chartLoading} />}
       </Stack>
 
       <Modal

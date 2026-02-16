@@ -13,6 +13,8 @@ type SpendingTrackerState = {
   customEndDate: string | null;
   smartCount: number;
   smartInterval: 'weeks' | 'months' | 'years';
+  smartEndCount: number;
+  smartEndInterval: 'weeks' | 'months' | 'years';
 };
 
 const initialState: SpendingTrackerState = {
@@ -27,6 +29,8 @@ const initialState: SpendingTrackerState = {
   customEndDate: null,
   smartCount: 12,
   smartInterval: 'weeks',
+  smartEndCount: 4,
+  smartEndInterval: 'weeks',
 };
 
 const spendingTrackerSlice = createSlice({
@@ -94,6 +98,12 @@ const spendingTrackerSlice = createSlice({
     setSmartInterval: (state, action: PayloadAction<'weeks' | 'months' | 'years'>) => {
       state.smartInterval = action.payload;
     },
+    setSmartEndCount: (state, action: PayloadAction<number>) => {
+      state.smartEndCount = action.payload;
+    },
+    setSmartEndInterval: (state, action: PayloadAction<'weeks' | 'months' | 'years'>) => {
+      state.smartEndInterval = action.payload;
+    },
   },
 });
 
@@ -114,6 +124,8 @@ export const {
   setCustomEndDate,
   setSmartCount,
   setSmartInterval,
+  setSmartEndCount,
+  setSmartEndInterval,
 } = spendingTrackerSlice.actions;
 
 export default spendingTrackerSlice.reducer;

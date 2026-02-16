@@ -30,3 +30,5 @@ export const selectCustomStartDate = (state: RootState) => state.spendingTracker
 export const selectCustomEndDate = (state: RootState) => state.spendingTracker.customEndDate;
 export const selectSmartCount = (state: RootState) => state.spendingTracker.smartCount;
 export const selectSmartInterval = (state: RootState) => state.spendingTracker.smartInterval;
+export const selectSmartEndCount = (state: RootState) => state.spendingTracker.smartEndCount;
+export const selectSmartEndInterval = (state: RootState) => state.spendingTracker.smartEndInterval;
