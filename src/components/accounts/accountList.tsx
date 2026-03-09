@@ -130,6 +130,7 @@ export default function AccountList({ close }: AccountListProps) {
         pushStart: account.pushStart,
         pushEnd: account.pushEnd,
         pushAccount: account.pushAccount,
+        interestAppliesToPositiveBalance: account.interestAppliesToPositiveBalance,
       })),
     );
   };
@@ -228,6 +229,7 @@ export default function AccountList({ close }: AccountListProps) {
                       pushStart: null,
                       pushEnd: null,
                       pushAccount: null,
+                      interestAppliesToPositiveBalance: true,
                     }),
                   );
                 }
@@ -267,6 +269,9 @@ export default function AccountList({ close }: AccountListProps) {
                     </Table.Th>
                     <Table.Th ta="center" w={100}>
                       Interest Tax Rate
+                    </Table.Th>
+                    <Table.Th ta="center" w={150}>
+                      Interest On Positive
                     </Table.Th>
                     <Table.Th ta="center" w={200}>
                       Interest Pay Account
@@ -422,6 +427,20 @@ export default function AccountList({ close }: AccountListProps) {
                                 )
                               }
                             />
+                          </Table.Td>
+                          <Table.Td>
+                            <Center>
+                              <Switch
+                                checked={account.interestAppliesToPositiveBalance}
+                                onChange={(e) =>
+                                  setEditingAccountsList(
+                                    editingAccountsList.map((a) =>
+                                      a.id === account.id ? { ...a, interestAppliesToPositiveBalance: e.target.checked } : a,
+                                    ),
+                                  )
+                                }
+                              />
+                            </Center>
                           </Table.Td>
                           <Table.Td>
                             <Select
