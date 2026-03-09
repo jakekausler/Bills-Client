@@ -120,6 +120,7 @@ export type Account = {
   earlyWithdrawlPenalty: number;
   earlyWithdrawlDate: string | null;
   interestPayAccount: string | null;
+  interestAppliesToPositiveBalance: boolean;
   usesRMD: boolean;
   accountOwnerDOB: string | null;
   rmdAccount: string | null;
