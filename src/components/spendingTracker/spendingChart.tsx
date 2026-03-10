@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   ComposedChart,
   Line,
-  ReferenceArea,
+  Customized,
   XAxis,
   YAxis,
   Tooltip,
@@ -64,11 +64,8 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
         <Text size="xs" fw={600}>{dateRange}</Text>
         <Text size="xs" c="blue">Spent: {formatDollar(row.totalSpent)}</Text>
         <Text size="xs" c="green">Effective Threshold: {formatDollar(row.effectiveThreshold)}</Text>
-        {row.baseThreshold !== row.effectiveThreshold && (
-          <Text size="xs" c="dimmed">Base Threshold: {formatDollar(row.baseThreshold)}</Text>
-        )}
-        {row.carryAfter !== 0 && (
-          <Text size="xs" c="dimmed">Carry: {formatDollar(row.carryAfter)}</Text>
+        {(row.isCurrent || dayjs(row.periodStart).isAfter(dayjs(), 'day')) && (
+          <Text size="xs" c="orange">Remaining: {formatDollar(Math.max(0, row.effectiveThreshold - row.totalSpent))}</Text>
         )}
         {row.isCurrent && (
           <Text size="xs" fw={600} c="yellow">Current Period</Text>
@@ -108,17 +105,10 @@ const SpendingChart = ({ chartData, loading }: SpendingChartProps) => {
   const currentIndex = data.findIndex((d) => d.isCurrent);
   const currentPeriod = currentIndex >= 0 ? data[currentIndex] : undefined;
 
-  // For the ReferenceArea, use the previous and next period labels to create visible width.
-  // If the current period is at an edge, fall back to the current label (still zero-width,
-  // so skip the ReferenceArea entirely when there are no neighbors).
-  let refAreaX1: string | undefined;
-  let refAreaX2: string | undefined;
-  if (currentPeriod && data.length > 1) {
-    const prevLabel = currentIndex > 0 ? data[currentIndex - 1].label : undefined;
-    const nextLabel = currentIndex < data.length - 1 ? data[currentIndex + 1].label : undefined;
-    refAreaX1 = prevLabel || currentPeriod.label;
-    refAreaX2 = nextLabel || currentPeriod.label;
-  }
+  // Current period highlight: rendered via customized component for half-interval width
+  const currentFill = currentPeriod
+    ? (currentPeriod.totalSpent < currentPeriod.effectiveThreshold ? '#40c057' : '#fa5252')
+    : undefined;
 
   return (
     <Card shadow="sm" p="md">
@@ -160,12 +150,45 @@ const SpendingChart = ({ chartData, loading }: SpendingChartProps) => {
               strokeDasharray="5 5"
               dot={false}
             />
-            {currentPeriod && refAreaX1 && refAreaX2 && refAreaX1 !== refAreaX2 && (
-              <ReferenceArea
-                x1={refAreaX1}
-                x2={refAreaX2}
-                fill={currentPeriod.totalSpent < currentPeriod.effectiveThreshold ? '#40c057' : '#fa5252'}
-                fillOpacity={0.15}
+            {currentIndex >= 0 && currentFill && (
+              <Customized
+                component={(props: Record<string, unknown>) => {
+                  const { xAxisMap, yAxisMap } = props as {
+                    xAxisMap: Record<string, { scale: (v: string) => number; bandwidth?: () => number }>;
+                    yAxisMap: Record<string, { y: number; height: number }>;
+                  };
+                  const xAxis = xAxisMap && Object.values(xAxisMap)[0];
+                  const yAxis = yAxisMap && Object.values(yAxisMap)[0];
+                  if (!xAxis || !yAxis || !currentPeriod) return null;
+
+                  const cx = xAxis.scale(currentPeriod.label);
+                  const bandwidth = xAxis.bandwidth?.() ?? 0;
+                  // For point scales (no bandwidth), compute spacing from adjacent ticks
+                  const spacing = bandwidth > 0 ? bandwidth : (
+                    data.length > 1
+                      ? Math.abs(xAxis.scale(data[1].label) - xAxis.scale(data[0].label))
+                      : 100
+                  );
+                  const halfSpacing = spacing / 2;
+
+                  const rawX = cx - halfSpacing + bandwidth / 2;
+                  // Clamp left edge to the plot area (don't draw behind the Y axis)
+                  const offset = (props as { offset?: { left: number } }).offset;
+                  const plotLeft = offset?.left ?? rawX;
+                  const clampedX = Math.max(rawX, plotLeft);
+                  const clampedWidth = spacing - (clampedX - rawX);
+
+                  return (
+                    <rect
+                      x={clampedX}
+                      y={yAxis.y}
+                      width={clampedWidth}
+                      height={yAxis.height}
+                      fill={currentFill}
+                      fillOpacity={0.15}
+                    />
+                  );
+                }}
               />
             )}
           </ComposedChart>
