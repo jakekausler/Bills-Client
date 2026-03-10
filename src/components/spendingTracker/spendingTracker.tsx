@@ -86,7 +86,7 @@ export default function SpendingTracker() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [selectedCategoryId, dateRangeMode, smartCount, smartInterval, smartEndCount, smartEndInterval, customStartDate, customEndDate, dispatch]);
+  }, [selectedCategoryId, categories, dateRangeMode, smartCount, smartInterval, smartEndCount, smartEndInterval, customStartDate, customEndDate, dispatch]);
 
   const handleCategoryChange = (value: string | null) => {
     dispatch(setSelectedCategoryId(value));
