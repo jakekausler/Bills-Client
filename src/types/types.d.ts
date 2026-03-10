@@ -193,7 +193,7 @@ export type SpendingTrackerCategory = {
   increaseByIsVariable: boolean;
   increaseByVariable: string | null;
   increaseByDate: string;
-  startDate: string | null;
+  initializeDate: string | null;
   thresholdChanges: {
     date: string;
     dateIsVariable: boolean;
