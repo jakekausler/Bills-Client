@@ -95,12 +95,14 @@ const pages: Record<string, Page> = {
     component: MonteCarlo,
     sidebar: MonteCarloSimulationSelector,
     icon: IconArrowsSplit2,
+    hidden: true,
   },
   moneyMovement: {
     title: 'Money Movement',
     component: MoneyMovement,
     sidebar: () => null,
     icon: IconChartAreaFilled,
+    hidden: true,
   },
   spendingTracker: {
     title: 'Spending Tracker',
