@@ -109,7 +109,7 @@ export default function SpendingTracker() {
       increaseByDate: '01/01',
       thresholdChanges: [],
       accountId: firstAccountId,
-      startDate: null,
+      initializeDate: null,
     };
 
     try {
