@@ -23,6 +23,7 @@ import { selectAllAccounts } from '../../features/accounts/select';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import { SpendingTrackerCategory } from '../../types/types';
 import ThresholdChangeRow from './thresholdChangeRow';
+import { EditableDateInput } from '../helpers/editableDateInput';
 
 const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -303,11 +304,11 @@ const ConfigCard = () => {
         />
 
         {/* Initialize Date */}
-        <TextInput
+        <EditableDateInput
           label="Initialize Date"
-          placeholder="YYYY-MM-DD (optional)"
-          value={category.initializeDate || ''}
-          onChange={(e) => updateField({ initializeDate: e.target.value || null })}
+          placeholder="MM/DD/YYYY"
+          value={category.initializeDate}
+          onBlur={(value: string | null) => updateField({ initializeDate: value })}
         />
 
         <Divider my="xs" />

@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import { IconTrash, IconVariable, IconVariableOff } from '@tabler/icons-react';
 import { SpendingTrackerCategory } from '../../types/types';
+import { EditableDateInput } from '../helpers/editableDateInput';
 
 type ThresholdChange = SpendingTrackerCategory['thresholdChanges'][number];
 
@@ -33,11 +34,11 @@ const ThresholdChangeRow: React.FC<ThresholdChangeRowProps> = ({
     <Group gap="xs" align="flex-end" wrap="nowrap">
       {/* Date field with variable toggle */}
       {!change.dateIsVariable ? (
-        <TextInput
+        <EditableDateInput
           label="Date"
-          placeholder="YYYY-MM-DD"
-          value={change.date}
-          onChange={(e) => onChange(index, { date: e.target.value })}
+          placeholder="MM/DD/YYYY"
+          value={change.date as string | null}
+          onBlur={(date) => onChange(index, { date: date ?? '' })}
           style={{ flex: 1 }}
           size="xs"
         />
