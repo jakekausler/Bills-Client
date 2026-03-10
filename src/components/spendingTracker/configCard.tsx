@@ -302,12 +302,12 @@ const ConfigCard = () => {
           onChange={(e) => updateField({ increaseByDate: e.target.value })}
         />
 
-        {/* Start Date */}
+        {/* Initialize Date */}
         <TextInput
-          label="Start Date"
+          label="Initialize Date"
           placeholder="YYYY-MM-DD (optional)"
-          value={category.startDate || ''}
-          onChange={(e) => updateField({ startDate: e.target.value || null })}
+          value={category.initializeDate || ''}
+          onChange={(e) => updateField({ initializeDate: e.target.value || null })}
         />
 
         <Divider my="xs" />
