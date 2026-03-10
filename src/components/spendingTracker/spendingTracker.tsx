@@ -30,7 +30,7 @@ import {
   selectCustomStartDate,
   selectCustomEndDate,
 } from '../../features/spendingTracker/select';
-import { setSelectedCategoryId, clearError } from '../../features/spendingTracker/slice';
+import { setSelectedCategoryId, clearError, setSmartInterval, setSmartEndInterval } from '../../features/spendingTracker/slice';
 import { createCategory, deleteCategory, loadChartData } from '../../features/spendingTracker/actions';
 import { selectAllAccounts } from '../../features/accounts/select';
 import { SpendingTrackerCategory } from '../../types/types';
@@ -64,6 +64,17 @@ export default function SpendingTracker() {
       dispatch(setSelectedCategoryId(categories[0].id));
     }
   }, [categories, selectedCategoryId, dispatch]);
+
+  // Auto-match date range interval to category interval
+  useEffect(() => {
+    if (!selectedCategory) return;
+    const intervalMap = { weekly: 'weeks', monthly: 'months', yearly: 'years' } as const;
+    const mapped = intervalMap[selectedCategory.interval];
+    if (mapped && mapped !== smartInterval) {
+      dispatch(setSmartInterval(mapped));
+      dispatch(setSmartEndInterval(mapped));
+    }
+  }, [selectedCategoryId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load chart data when category or date range changes (debounced)
   useEffect(() => {
