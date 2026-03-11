@@ -218,9 +218,8 @@ export default function Variables() {
                       />
                     )}
                   </Table.Td>
-                  <Table.Td style={{ position: 'relative' }}>
+                  <Table.Td style={{ verticalAlign: 'bottom' }}>
                     <ActionIcon
-                      style={{ bottom: '0px', position: 'absolute' }}
                       size="34px"
                       disabled={usedVariables[variable]?.length > 0}
                       onClick={() =>
