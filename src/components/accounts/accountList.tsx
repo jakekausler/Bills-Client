@@ -198,37 +198,41 @@ export default function AccountList({ close }: AccountListProps) {
             />
             <Button
               disabled={!addingAccountType || !editingAccountName || editingAccountName === ''}
-              onClick={() => {
-                if (addingAccountType && editingAccountName !== '') {
-                  dispatch(
-                    addAccount({
-                      type: addingAccountType,
-                      name: editingAccountName,
-                      balance: 0,
-                      hidden: false,
-                      id: '',
-                      pullPriority: -1,
-                      interestTaxRate: 0,
-                      withdrawalTaxRate: 0,
-                      earlyWithdrawlPenalty: 0,
-                      earlyWithdrawlDate: null,
-                      interestPayAccount: null,
-                      usesRMD: false,
-                      accountOwnerDOB: null,
-                      rmdAccount: null,
-                      minimumBalance: null,
-                      maximumBalance: null,
-                      minimumPullAmount: null,
-                      performsPulls: false,
-                      performsPushes: false,
-                      pushStart: null,
-                      pushEnd: null,
-                      pushAccount: null,
-                      interestAppliesToPositiveBalance: true,
-                    }),
-                  );
+              onClick={async () => {
+                try {
+                  if (addingAccountType && editingAccountName !== '') {
+                    await dispatch(
+                      addAccount({
+                        type: addingAccountType,
+                        name: editingAccountName,
+                        balance: 0,
+                        hidden: false,
+                        id: '',
+                        pullPriority: -1,
+                        interestTaxRate: 0,
+                        withdrawalTaxRate: 0,
+                        earlyWithdrawlPenalty: 0,
+                        earlyWithdrawlDate: null,
+                        interestPayAccount: null,
+                        usesRMD: false,
+                        accountOwnerDOB: null,
+                        rmdAccount: null,
+                        minimumBalance: null,
+                        maximumBalance: null,
+                        minimumPullAmount: null,
+                        performsPulls: false,
+                        performsPushes: false,
+                        pushStart: null,
+                        pushEnd: null,
+                        pushAccount: null,
+                        interestAppliesToPositiveBalance: true,
+                      }),
+                    );
+                  }
+                  closeAddingAccount();
+                } catch (error) {
+                  console.error('Failed to add account:', error);
                 }
-                closeAddingAccount();
               }}
             >
               Add
@@ -638,10 +642,14 @@ export default function AccountList({ close }: AccountListProps) {
               </Table>
             </Box>
             <Button
-              onClick={() => {
-                dispatch(editAccounts(editingAccountsList));
-                closeEditingAccounts();
-                resetEditingAccounts();
+              onClick={async () => {
+                try {
+                  await dispatch(editAccounts(editingAccountsList));
+                  closeEditingAccounts();
+                  resetEditingAccounts();
+                } catch (error) {
+                  console.error('Failed to edit accounts:', error);
+                }
               }}
             >
               Save

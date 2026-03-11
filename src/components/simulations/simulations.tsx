@@ -20,6 +20,10 @@ export default function Simulations() {
 
   const [simulationNames, setSimulationNames] = useState(simulations.map((s) => s.name));
 
+  useEffect(() => {
+    setSimulationNames(simulations.map((s) => s.name));
+  }, [simulations]);
+
   const showLoading = useDelayedLoading(!simulationsLoaded);
 
   return (
@@ -116,7 +120,7 @@ export default function Simulations() {
                             })),
                         ),
                       );
-                      setSimulationNames(simulationNames.filter((n) => n !== simulation.name));
+                      setSimulationNames(simulationNames.filter((_, i) => i !== index));
                     }}
                     disabled={simulation.name === 'Default'}
                     aria-label="Delete simulation"

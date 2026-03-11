@@ -111,19 +111,19 @@ export default function ConfigList() {
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <Table aria-label="Healthcare configurations">
-              <thead>
-                <tr>
-                  <th scope="col">Covered Persons</th>
-                  <th scope="col">Plan Name</th>
-                  <th scope="col">Start Date</th>
-                  <th scope="col">End Date</th>
-                  <th scope="col">Deductible (Ind/Fam)</th>
-                  <th scope="col">OOP Max (Ind/Fam)</th>
-                  <th scope="col">HSA</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th scope="col">Covered Persons</Table.Th>
+                  <Table.Th scope="col">Plan Name</Table.Th>
+                  <Table.Th scope="col">Start Date</Table.Th>
+                  <Table.Th scope="col">End Date</Table.Th>
+                  <Table.Th scope="col">Deductible (Ind/Fam)</Table.Th>
+                  <Table.Th scope="col">OOP Max (Ind/Fam)</Table.Th>
+                  <Table.Th scope="col">HSA</Table.Th>
+                  <Table.Th scope="col">Actions</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {configs.map((config) => {
                   // Format covered persons list with overflow handling
                   const displayPersons = config.coveredPersons?.slice(0, 3).join(', ') ?? '';
@@ -132,19 +132,19 @@ export default function ConfigList() {
                     : '';
 
                   return (
-                  <tr key={config.id}>
-                    <td title={config.coveredPersons?.join(', ') ?? ''}>{displayPersons}{overflow}</td>
-                    <td>{config.name}</td>
-                    <td>{config.startDate}</td>
-                    <td>{config.endDate || 'Ongoing'}</td>
-                    <td>
+                  <Table.Tr key={config.id}>
+                    <Table.Td title={config.coveredPersons?.join(', ') ?? ''}>{displayPersons}{overflow}</Table.Td>
+                    <Table.Td>{config.name}</Table.Td>
+                    <Table.Td>{config.startDate}</Table.Td>
+                    <Table.Td>{config.endDate || 'Ongoing'}</Table.Td>
+                    <Table.Td>
                       ${config.individualDeductible} / ${config.familyDeductible}
-                    </td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>
                       ${config.individualOutOfPocketMax} / ${config.familyOutOfPocketMax}
-                    </td>
-                    <td>{config.hsaReimbursementEnabled ? 'Enabled' : 'Disabled'}</td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>{config.hsaReimbursementEnabled ? 'Enabled' : 'Disabled'}</Table.Td>
+                    <Table.Td>
                       <Group gap="xs">
                         <ActionIcon color="blue" onClick={() => handleEdit(config)} aria-label="Edit configuration">
                           <IconEdit size={16} />
@@ -153,11 +153,11 @@ export default function ConfigList() {
                           <IconTrash size={16} />
                         </ActionIcon>
                       </Group>
-                    </td>
-                  </tr>
+                    </Table.Td>
+                  </Table.Tr>
                   );
                 })}
-              </tbody>
+              </Table.Tbody>
             </Table>
           </div>
         )}

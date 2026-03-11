@@ -90,7 +90,7 @@ const SankeyDiagram = () => {
 
     // Calculate spacing between columns
     const totalWidth = dimensions.width;
-    const columnSpacing = (totalWidth - NODE_WIDTH) / (numColumns - 1);
+    const columnSpacing = numColumns > 1 ? (totalWidth - NODE_WIDTH) / (numColumns - 1) : 0;
 
     // Find the maximum total height across all columns (including padding)
     const columnHeights = uniqueColumns.map((col) => {

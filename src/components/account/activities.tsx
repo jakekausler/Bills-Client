@@ -243,7 +243,7 @@ export default function Activities({ style }: ActivitiesProps) {
                     style={{
                       cursor: 'pointer',
                       borderBottom:
-                        activity.id === lastActivityBeforeToday?.id
+                        activity.id && activity.id === lastActivityBeforeToday?.id
                           ? '4px solid var(--mantine-color-gray-6)'
                           : undefined,
                     }}

@@ -126,56 +126,56 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <Table horizontalSpacing="md" verticalSpacing="sm" striped highlightOnHover aria-label="Healthcare expenses">
-              <thead>
-                <tr>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Date</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Name</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Person</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Bill Amount</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Patient Cost</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Copay</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Coinsurance</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>HSA Reimbursed</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Account</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Ind. Ded. Left</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Fam. Ded. Left</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Ind. OOP Left</th>
-                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Fam. OOP Left</th>
-                </tr>
-              </thead>
-              <tbody>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Date</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Name</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Person</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Bill Amount</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Patient Cost</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Copay</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Coinsurance</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>HSA Reimbursed</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Account</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Ind. Ded. Left</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Fam. Ded. Left</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Ind. OOP Left</Table.Th>
+                  <Table.Th scope="col" style={{ whiteSpace: 'nowrap' }}>Fam. OOP Left</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {filteredExpenses.map((expense) => (
-                  <tr
+                  <Table.Tr
                     key={expense.id}
                     style={{
                       backgroundColor: expense.hsaReimbursed > 0 ? '#e7f5ff' : undefined,
                     }}
                   >
-                    <td style={{ whiteSpace: 'nowrap' }}>{expense.date}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.date}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>
                       {expense.name}
                       {expense.patientCost === 0 && (
                         <Badge size="xs" color="green" ml="xs">
                           Fully Covered
                         </Badge>
                       )}
-                    </td>
-                    <td style={{ whiteSpace: 'nowrap' }}>{expense.person}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>${expense.billAmount.toFixed(2)}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>${expense.patientCost.toFixed(2)}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>
+                    </Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.person}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.billAmount.toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.patientCost.toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>
                       {expense.hsaReimbursed > 0 ? `$${expense.hsaReimbursed.toFixed(2)}` : '-'}
-                    </td>
-                    <td style={{ whiteSpace: 'nowrap' }}>{expense.accountName}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>${expense.individualDeductibleRemaining.toFixed(2)}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>${expense.familyDeductibleRemaining.toFixed(2)}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>${expense.individualOOPRemaining.toFixed(2)}</td>
-                    <td style={{ whiteSpace: 'nowrap' }}>${expense.familyOOPRemaining.toFixed(2)}</td>
-                  </tr>
+                    </Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.accountName}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.individualDeductibleRemaining.toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.familyDeductibleRemaining.toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.individualOOPRemaining.toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.familyOOPRemaining.toFixed(2)}</Table.Td>
+                  </Table.Tr>
                 ))}
-              </tbody>
+              </Table.Tbody>
             </Table>
           </div>
         )}

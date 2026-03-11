@@ -3,7 +3,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBills, selectBillsLoaded, selectStartDate } from '../../features/calendar/select';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { loadCalendar } from '../../features/calendar/actions';
 import { AppDispatch } from '../../store';
 import { Calendar as BigCalendar, dayjsLocalizer, Views } from 'react-big-calendar';
@@ -25,6 +25,7 @@ export default function BillCalendar() {
   const startDate = useSelector(selectStartDate);
   const [view, _setView] = useState(Views.MONTH);
   const [monthPickerOpened, setMonthPickerOpened] = useState(false);
+  const calendarContainerRef = useRef<HTMLDivElement>(null);
   const bills = useSelector(selectBills).map((bill) => ({
     ...bill,
     start: new Date(`${bill.date}T00:00:00`),
@@ -38,11 +39,9 @@ export default function BillCalendar() {
 
   const showLoading = useDelayedLoading(!loaded, 50);
 
-  const getEventStyle = (event: CalendarBill) => {
-    // Get the calendar container width
-    const calendarElement = document.querySelector('.rbc-calendar');
-    const containerWidth = calendarElement?.clientWidth || 800; // fallback to 800 if not found
+  const containerWidth = calendarContainerRef.current?.clientWidth || 800;
 
+  const getEventStyle = (event: CalendarBill) => {
     const baseFontSize = containerWidth * 0.012; // 1.2% of container width
     const minFontSize = 8;
     const maxFontSize = 14;
@@ -126,7 +125,7 @@ export default function BillCalendar() {
           loaderProps={{ color: 'blue.6', size: 'xl' }}
           overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
         />
-        <div style={{ height: '100%' }} aria-label="Bill calendar showing scheduled bills and transactions for the selected month" role="region">
+        <div ref={calendarContainerRef} style={{ height: '100%' }} aria-label="Bill calendar showing scheduled bills and transactions for the selected month" role="region">
           <BigCalendar
             localizer={dayjsLocalizer(dayjs)}
             events={bills}

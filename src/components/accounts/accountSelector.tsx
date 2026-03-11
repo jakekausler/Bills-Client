@@ -104,7 +104,7 @@ export default function AccountSelector({
                         updateSelectedAccounts(
                           accounts.every((a) => selectedAccounts.includes(a.id))
                             ? selectedAccounts.filter((id) => !accounts.some((a) => a.id === id))
-                            : [...selectedAccounts, ...accounts.map((a) => a.id)],
+                            : [...new Set([...selectedAccounts, ...accounts.map((a) => a.id)])],
                         ),
                       )
                     }
