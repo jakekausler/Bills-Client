@@ -31,7 +31,7 @@ export const EditableDateInput = ({
     if (!value) return "";
     const date = new Date(`${value}T00:00:00`);
     if (isNaN(date.getTime())) return "";
-    return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+    return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
   });
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarDate, setCalendarDate] = useState<Date | undefined>(undefined);
@@ -50,7 +50,7 @@ export const EditableDateInput = ({
   };
 
   const updateDisplayValue = (date: Date) => {
-    setDisplayValue(`${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`);
+    setDisplayValue(`${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`);
   };
 
   const getPartValues = () => {
@@ -66,7 +66,7 @@ export const EditableDateInput = ({
     const newDisplayValue = `${parts.month.padStart(2, '0')}/${parts.day.padStart(2, '0')}/${parts.year}`;
     setDisplayValue(newDisplayValue);
 
-    const date = new Date(parseInt(parts.year), parseInt(parts.month) - 1, parseInt(parts.day));
+    const date = new Date(Date.UTC(parseInt(parts.year), parseInt(parts.month) - 1, parseInt(parts.day)));
     if (!isNaN(date.getTime())) {
       setEditedDate(toDateString(date));
     }
@@ -75,7 +75,7 @@ export const EditableDateInput = ({
   const getCurrentDateFromValue = () => {
     if (!editedDate) {
       const today = new Date();
-      return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      return new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
     }
     return new Date(`${editedDate}T00:00:00`);
   };
@@ -164,7 +164,7 @@ export const EditableDateInput = ({
           if (!value) return "";
           const date = new Date(`${value}T00:00:00`);
           if (isNaN(date.getTime())) return "";
-          return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+          return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
         });
         break;
       case "Tab":
@@ -186,8 +186,8 @@ export const EditableDateInput = ({
 
       // Validate ranges
       if (monthNum >= 1 && monthNum <= 12 && dayNum >= 1 && dayNum <= 31 && yearNum > 1900) {
-        const date = new Date(yearNum, monthNum - 1, dayNum);
-        if (!isNaN(date.getTime()) && date.getMonth() === monthNum - 1) {
+        const date = new Date(Date.UTC(yearNum, monthNum - 1, dayNum));
+        if (!isNaN(date.getTime()) && date.getUTCMonth() === monthNum - 1) {
           setEditedDate(toDateString(date));
         }
       }
@@ -204,7 +204,7 @@ export const EditableDateInput = ({
         if (!value) return "";
         const date = new Date(`${value}T00:00:00`);
         if (isNaN(date.getTime())) return "";
-        return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+        return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
       });
     }
   };
@@ -260,8 +260,8 @@ export const EditableDateInput = ({
         const yearNum = parseInt(year);
 
         if (monthNum >= 1 && monthNum <= 12 && dayNum >= 1 && dayNum <= 31 && yearNum > 1900) {
-          const date = new Date(yearNum, monthNum - 1, dayNum);
-          if (!isNaN(date.getTime()) && date.getMonth() === monthNum - 1) {
+          const date = new Date(Date.UTC(yearNum, monthNum - 1, dayNum));
+          if (!isNaN(date.getTime()) && date.getUTCMonth() === monthNum - 1) {
             return date;
           }
         }
@@ -279,7 +279,7 @@ export const EditableDateInput = ({
       if (!value) return "";
       const date = new Date(`${value}T00:00:00`);
       if (isNaN(date.getTime())) return "";
-      return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+      return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
     });
   }, [value]);
 

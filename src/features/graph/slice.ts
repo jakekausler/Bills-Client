@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dataset } from '../../types/types';
-import { toDateString } from '../../utils/date';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 interface GraphState {
   datasets: Dataset[];
@@ -22,8 +25,8 @@ const initialState: GraphState = {
   loaded: false,
   error: '',
 
-  startDate: toDateString(new Date()),
-  endDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() + 24))),
+  startDate: dayjs.utc().format('YYYY-MM-DD'),
+  endDate: dayjs.utc().add(24, 'month').format('YYYY-MM-DD'),
 
   show: true,
 };
@@ -64,7 +67,6 @@ export const {
   setGraphError,
   setGraphStartDate,
   setGraphEndDate,
-  setShowGraph,
   toggleGraph,
   updateGraphLoaded,
 } = graphSlice.actions;

@@ -1,9 +1,10 @@
 import { Account, Activity, Bill, Interest } from '../../types/types';
 import { api } from '../../utils/api';
+import { formatDateISO } from '../../utils/date';
 
 export const fetchActivities = async (account: Account, startDate: Date, endDate: Date) => {
   return await api.get(
-    `/api/accounts/${account.id}/consolidated_activity?startDate=${startDate.toISOString().split('T')[0]}&endDate=${endDate.toISOString().split('T')[0]}`,
+    `/api/accounts/${account.id}/consolidated_activity?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
   );
 };
 
@@ -45,7 +46,7 @@ export const fetchBillActivity = async (
   endDate: Date,
 ) => {
   return await api.get(
-    `/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&asActivity=true&startDate=${startDate.toISOString().split('T')[0]}&endDate=${endDate.toISOString().split('T')[0]}`,
+    `/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&asActivity=true&startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
   );
 };
 
@@ -94,7 +95,7 @@ export const fetchSaveInterests = async (accountId: string, interests: Interest[
 
 export const fetchInterestActivity = async (accountId: string, interestId: string, startDate: Date, endDate: Date) => {
   return await api.get(
-    `/api/accounts/${accountId}/interests/${interestId}?startDate=${startDate.toISOString().split('T')[0]}&endDate=${endDate.toISOString().split('T')[0]}&asActivity=true`,
+    `/api/accounts/${accountId}/interests/${interestId}?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}&asActivity=true`,
   );
 };
 

@@ -28,8 +28,21 @@ export function Login({ setToken, invalid }: { setToken: (token: string) => void
       },
       body: JSON.stringify({ username, password }),
     })
-      .then((res) => res.json())
-      .then((data) => setToken(data.token));
+      .then((res) => {
+        if (!res.ok) {
+          setToken('INVALID');
+          return;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (data) {
+          setToken(data.token);
+        }
+      })
+      .catch(() => {
+        setToken('INVALID');
+      });
   };
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {

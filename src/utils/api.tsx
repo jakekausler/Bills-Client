@@ -31,6 +31,12 @@ export const fetchWithAuth = async (endpoint: string, options: RequestInit = {})
     },
   });
 
+  if (response.status === 401) {
+    localStorage.removeItem('token');
+    window.location.reload();
+    throw new Error('Authentication expired');
+  }
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }

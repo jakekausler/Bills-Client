@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Activity, BaseActivity, Bill, Interest } from '../../types/types';
 import { toDateString } from '../../utils/date';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 interface ActivitiesState {
   activities: Activity[];
@@ -40,8 +44,8 @@ const initialState: ActivitiesState = {
   selectedBillLoaded: false,
   interests: null,
   interestsLoaded: false,
-  startDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() - 1))),
-  endDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() + 3))),
+  startDate: dayjs.utc().subtract(1, 'month').format('YYYY-MM-DD'),
+  endDate: dayjs.utc().add(3, 'month').format('YYYY-MM-DD'),
   lastDate: toDateString(new Date()),
   names: {},
   namesLoaded: false,

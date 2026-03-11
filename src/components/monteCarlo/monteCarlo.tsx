@@ -14,6 +14,7 @@ import {
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { AppDispatch } from '../../store';
+import { formatDateISO } from '../../utils/date';
 import {
   selectMonteCarloError,
   selectSelectedSimulation,
@@ -53,8 +54,8 @@ export default function MonteCarlo() {
       await dispatch(startNewSimulation({
         totalSimulations,
         batchSize,
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: endDate.toISOString().split('T')[0],
+        startDate: formatDateISO(startDate),
+        endDate: formatDateISO(endDate),
       }));
     } catch (err) {
       console.error('Failed to create simulation', err);

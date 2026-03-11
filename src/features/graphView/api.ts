@@ -13,7 +13,6 @@ export const fetchGraphViewData = async (
   }
   let selectedSimulationString = '';
   if (selectedSimulations.length > 0) {
-    console.log('selectedSimulations', selectedSimulations);
     selectedSimulationString = `&selectedSimulations=${selectedSimulations.join(',')}`;
   }
   return await api.get(

@@ -4,8 +4,6 @@ export const selectAllActivities = (state: RootState) => state.activities.activi
 
 export const selectActivitiesLoaded = (state: RootState) => state.activities.activitiesLoaded;
 
-export const selectActivitiesError = (state: RootState) => state.activities.activitiesError;
-
 export const selectSelectedActivity = (state: RootState) => state.activities.selectedActivity;
 
 export const selectSelectedActivityLoaded = (state: RootState) => state.activities.selectedActivityLoaded;

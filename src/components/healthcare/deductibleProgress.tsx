@@ -7,6 +7,7 @@ import { getDeductibleProgress, getHealthcareProgressHistory } from '../../featu
 import { selectHealthcareConfigs } from '../../features/healthcare/select';
 import { DeductibleProgress as DeductibleProgressType, ProgressHistoryDataPoint } from '../../types/types';
 import ProgressMiniGraph from './ProgressMiniGraph';
+import { formatDateISO } from '../../utils/date';
 
 interface DeductibleProgressProps {
   startDate: Date | null;
@@ -31,8 +32,8 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
       setError(null);
       // Use the provided endDate, or fall back to end of current calendar year
       const effectiveEndDate = endDate
-        ? endDate.toISOString().split('T')[0]
-        : new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
+        ? formatDateISO(endDate)
+        : formatDateISO(new Date(Date.UTC(new Date().getUTCFullYear(), 11, 31)));
       const data = await getDeductibleProgress(selectedSimulation, effectiveEndDate);
       const progressArray = Object.values(data);
       setProgressData(progressArray);
@@ -48,8 +49,8 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
         let historyEndDate: string;
 
         if (startDate && endDate) {
-          historyStartDate = startDate.toISOString().split('T')[0];
-          historyEndDate = endDate.toISOString().split('T')[0];
+          historyStartDate = formatDateISO(startDate);
+          historyEndDate = formatDateISO(endDate);
         } else {
           // Calculate plan year start/end dates as fallback
           historyStartDate = `${progress.planYear}-${String(config.resetMonth).padStart(2, '0')}-${String(config.resetDay).padStart(2, '0')}`;

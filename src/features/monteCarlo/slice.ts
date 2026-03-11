@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Dataset, GraphData } from '../../types/types';
-import { toDateString } from '../../utils/date';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { SimulationStatus } from './api';
+
+dayjs.extend(utc);
 
 interface MonteCarloState {
   datasets: Dataset[];
@@ -26,8 +29,8 @@ const initialState: MonteCarloState = {
   labels: [],
   loaded: false,
   error: '',
-  startDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() - 1))),
-  endDate: toDateString(new Date(new Date().setMonth(new Date().getUTCMonth() + 24))),
+  startDate: dayjs.utc().subtract(1, 'month').format('YYYY-MM-DD'),
+  endDate: dayjs.utc().add(24, 'month').format('YYYY-MM-DD'),
   selectedAccounts: [],
   nSimulations: 3,
   simulations: [],

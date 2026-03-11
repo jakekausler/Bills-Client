@@ -1,6 +1,6 @@
 import React from 'react';
-export type PageComponentType = React.ComponentType<any>;
-export type SidebarComponentType = React.ComponentType<any>;
+export type PageComponentType = React.ComponentType;
+export type SidebarComponentType = React.ComponentType<{ close: () => void }>;
 
 export type BaseActivity = {
   id?: string;

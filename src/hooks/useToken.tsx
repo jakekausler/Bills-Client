@@ -26,7 +26,6 @@ export const useToken = () => {
           Authorization: token,
         },
       });
-      console.log(response);
 
       if (!response.ok) {
         clearToken();

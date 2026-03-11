@@ -12,8 +12,6 @@ export const selectMonteCarloLoaded = (state: RootState) => state.monteCarlo.loa
 
 export const selectMonteCarloError = (state: RootState) => state.monteCarlo.error;
 
-export const selectMonteCarloSelectedAccounts = (state: RootState) => state.monteCarlo.selectedAccounts;
-
 export const selectSelectedAccounts = (state: RootState) => state.monteCarlo.selectedAccounts;
 
 export const selectNSimulations = (state: RootState) => state.monteCarlo.nSimulations;
