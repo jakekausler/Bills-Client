@@ -106,7 +106,7 @@ export const saveActivity = (
         if (activity.id === 'AUTO-PULL' || activity.id === 'RMD' || activity.id === 'AUTO-PUSH') {
           // Enter as a new activity
           activity.id = undefined;
-          fetchAddActivity(account.id, activity);
+          await fetchAddActivity(account.id, activity);
         } else if (activity.id?.startsWith('SPENDING-TRACKER-')) {
           // Do nothing, we shouldn't be able to edit spending tracker
           return;

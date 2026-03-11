@@ -46,7 +46,7 @@ const monteCarloSlice = createSlice({
       state.datasets = (action.payload.datasets as unknown as Dataset[]).map((dataset) => ({
         ...dataset,
         borderColor: dataset.label === 'Deterministic' ? '#00FA9A' : '#FAEBD7',
-        backgroundColor: `hsla(${dataset.label === 'Deterministic' ? '#00FA9A' : '#FAEBD7'}, 70%, 50%, 0.5)`,
+        backgroundColor: `${dataset.label === 'Deterministic' ? '#00FA9A' : '#FAEBD7'}80`,
       }));
       state.labels = action.payload.labels as unknown as string[];
       state.loaded = true;

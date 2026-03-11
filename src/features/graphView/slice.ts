@@ -59,16 +59,23 @@ const graphViewSlice = createSlice({
   initialState,
   reducers: {
     setGraphViewData: (state, action: PayloadAction<GraphData>) => {
+      const keys = Object.keys(action.payload);
+      if (keys.length === 0) {
+        state.datasets = [];
+        state.labels = [];
+        state.loaded = true;
+        return;
+      }
       const datasets: Dataset[] = [];
-      const labels = action.payload[Object.keys(action.payload)[0]].labels;
-      const type = action.payload[Object.keys(action.payload)[0]].type;
+      const labels = action.payload[keys[0]].labels;
+      const type = action.payload[keys[0]].type;
       Object.keys(action.payload).forEach((simulation, simulationIndex) => {
         action.payload[simulation].datasets.forEach((dataset, accountIndex) => {
           datasets.push({
             ...dataset,
             label: `${dataset.label} (${simulation})`,
             borderColor: lineColors[accountIndex % lineColors.length],
-            backgroundColor: `hsla(${lineColors[accountIndex % lineColors.length]}, 70%, 50%, 0.5)`,
+            backgroundColor: `${lineColors[accountIndex % lineColors.length]}80`,
             borderDash: borderDashes[simulationIndex % borderDashes.length],
           });
         });

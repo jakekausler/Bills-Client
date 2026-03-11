@@ -307,7 +307,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
     if (!allValid(bill)) {
       return;
     }
-    dispatch(saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate));
+    dispatch(saveBill(account as Account, bill as Bill, startDate, endDate, graphStartDate, graphEndDate));
     resetSelected();
   };
 

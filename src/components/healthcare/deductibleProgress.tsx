@@ -121,6 +121,7 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
   }, [fetchProgress, configs]);
 
   const getColor = (spent: number, total: number) => {
+    if (total === 0) return 'green';
     const percent = (spent / total) * 100;
     if (percent < 25) return 'red';
     if (percent < 75) return 'yellow';
@@ -253,7 +254,7 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
                   </Group>
                   <Progress
                     value={
-                      (progress.familyDeductibleSpent / progress.familyDeductibleLimit) * 100
+                      progress.familyDeductibleLimit === 0 ? 0 : (progress.familyDeductibleSpent / progress.familyDeductibleLimit) * 100
                     }
                     color={getColor(progress.familyDeductibleSpent, progress.familyDeductibleLimit)}
                     size="lg"
@@ -281,7 +282,7 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
                   </Group>
                   <Progress
                     value={
-                      (progress.familyOOPSpent / progress.familyOOPLimit) * 100
+                      progress.familyOOPLimit === 0 ? 0 : (progress.familyOOPSpent / progress.familyOOPLimit) * 100
                     }
                     color={getColor(progress.familyOOPSpent, progress.familyOOPLimit)}
                     size="lg"
