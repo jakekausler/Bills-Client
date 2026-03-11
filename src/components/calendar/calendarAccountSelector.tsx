@@ -7,7 +7,7 @@ import { updateSelectedAccounts } from '../../features/calendar/slice';
 import { loadCalendar } from '../../features/calendar/actions';
 import AccountSelector from '../accounts/accountSelector';
 
-export default function GraphViewAccountSelector() {
+export default function CalendarAccountSelector() {
   const dispatch = useDispatch<AppDispatch>();
   const selectedAccounts = useSelector(selectSelectedAccounts);
 

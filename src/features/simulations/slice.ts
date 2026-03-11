@@ -6,6 +6,7 @@ import { Simulation, UsedVariableMap } from '../../types/types';
 interface SimulationsState {
   simulations: Simulation[];
   simulationsLoaded: boolean;
+  simulationsError: string;
 
   usedVariables: UsedVariableMap;
   usedVariablesLoaded: boolean;
@@ -14,6 +15,7 @@ interface SimulationsState {
 const initialState: SimulationsState = {
   simulations: [],
   simulationsLoaded: false,
+  simulationsError: '',
 
   usedVariables: {},
   usedVariablesLoaded: false,
@@ -30,6 +32,9 @@ export const simulationsSlice = createSlice({
     setSimulationsLoaded: (state, action: PayloadAction<boolean>) => {
       state.simulationsLoaded = action.payload;
     },
+    setSimulationsError: (state, action: PayloadAction<string>) => {
+      state.simulationsError = action.payload;
+    },
     setUsedVariables: (state, action: PayloadAction<UsedVariableMap>) => {
       state.usedVariables = action.payload;
       state.usedVariablesLoaded = true;
@@ -40,7 +45,7 @@ export const simulationsSlice = createSlice({
   },
 });
 
-export const { setSimulations, setSimulationsLoaded, setUsedVariables, setUsedVariablesLoaded } =
+export const { setSimulations, setSimulationsLoaded, setSimulationsError, setUsedVariables, setUsedVariablesLoaded } =
   simulationsSlice.actions;
 
 export default simulationsSlice.reducer;

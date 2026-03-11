@@ -6,6 +6,7 @@ import { ActionIcon, Checkbox, LoadingOverlay, Radio, Stack, Table, Text, TextIn
 import { loadSimulations, saveSimulations } from '../../features/simulations/actions';
 import { useEffect, useState } from 'react';
 import { IconEdit, IconEye, IconPlus, IconTrash } from '@tabler/icons-react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 
 export default function Simulations() {
   const simulations = useSelector(selectSimulations);
@@ -19,20 +20,7 @@ export default function Simulations() {
 
   const [simulationNames, setSimulationNames] = useState(simulations.map((s) => s.name));
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  useEffect(() => {
-    const isLoading = !simulationsLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [simulationsLoaded]);
+  const showLoading = useDelayedLoading(!simulationsLoaded);
 
   return (
     <Stack h="100%" w="100%" pos="relative">

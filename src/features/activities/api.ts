@@ -13,11 +13,11 @@ export const fetchBill = async (accountId: string, billId: string, isTransfer: b
 };
 
 export const fetchAddActivity = async (accountId: string, activity: Activity) => {
-  return await api.put(`/api/accounts/${accountId}/activity`, activity);
+  return await api.post(`/api/accounts/${accountId}/activity`, activity);
 };
 
 export const fetchSaveActivity = async (accountId: string, activity: Activity) => {
-  return await api.post(
+  return await api.put(
     `/api/accounts/${accountId}/activity/${activity.id}?isTransfer=${activity.isTransfer}`,
     activity,
   );
@@ -51,14 +51,14 @@ export const fetchBillActivity = async (
 };
 
 export const fetchAddBillActivity = async (accountId: string, activity: Activity, billId: string) => {
-  return await api.post(
+  return await api.put(
     `/api/accounts/${accountId}/bills/${billId}?asActivity=true&isTransfer=${activity.isTransfer}`,
     activity,
   );
 };
 
 export const fetchAddBill = async (accountId: string, bill: Bill) => {
-  return await api.put(`/api/accounts/${accountId}/bills?isTransfer=${bill.isTransfer}`, bill);
+  return await api.post(`/api/accounts/${accountId}/bills?isTransfer=${bill.isTransfer}`, bill);
 };
 
 export const fetchRemoveBill = async (accountId: string, billId: string, isTransfer: boolean) => {
@@ -66,7 +66,7 @@ export const fetchRemoveBill = async (accountId: string, billId: string, isTrans
 };
 
 export const fetchSaveBill = async (accountId: string, bill: Bill) => {
-  return await api.post(`/api/accounts/${accountId}/bills/${bill.id}?isTransfer=${bill.isTransfer}`, bill);
+  return await api.put(`/api/accounts/${accountId}/bills/${bill.id}?isTransfer=${bill.isTransfer}`, bill);
 };
 
 export const fetchChangeAccountForBill = async (
@@ -86,7 +86,7 @@ export const fetchInterests = async (accountId: string) => {
 
 export const fetchSaveInterests = async (accountId: string, interests: Interest[]) => {
   try {
-    return await api.post(`/api/accounts/${accountId}/interests`, interests);
+    return await api.put(`/api/accounts/${accountId}/interests`, interests);
   } catch (error) {
     console.error('[fetchSaveInterests] Failed to save interests:', error);
     throw error;
@@ -100,7 +100,7 @@ export const fetchInterestActivity = async (accountId: string, interestId: strin
 };
 
 export const fetchAddInterestActivity = async (accountId: string, activity: Activity, interestId: string) => {
-  return await api.post(`/api/accounts/${accountId}/interests/${interestId}?asActivity=true`, activity);
+  return await api.put(`/api/accounts/${accountId}/interests/${interestId}?asActivity=true`, activity);
 };
 
 export const fetchNames = async () => {
@@ -108,13 +108,13 @@ export const fetchNames = async () => {
 };
 
 export const fetchSkipBill = async (accountId: string, billId: string, isTransfer: boolean) => {
-  return await api.post(`/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&skip=true`);
+  return await api.put(`/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&skip=true`);
 };
 
 export const fetchSkipInterest = async (accountId: string) => {
-  return await api.post(`/api/accounts/${accountId}/interests?skip=true`);
+  return await api.put(`/api/accounts/${accountId}/interests?skip=true`);
 };
 
 export const fetchSkipSpendingTracker = async (categoryId: string) => {
-  return await api.post(`/api/spending-tracker/${categoryId}?skip=true`);
+  return await api.put(`/api/spending-tracker/${categoryId}?skip=true`);
 };

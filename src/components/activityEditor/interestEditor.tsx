@@ -27,8 +27,7 @@ import utc from 'dayjs/plugin/utc';
 import { v4 as uuidv4 } from 'uuid';
 import { toDateString } from '../../utils/date';
 import { selectCategoriesLoaded } from '../../features/categories/select';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { Interest } from '../../types/types';
@@ -57,20 +56,9 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  useEffect(() => {
-    const isLoading = !interestsLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [interestsLoaded, accountsLoaded, categoriesLoaded, namesLoaded]);
+  const showLoading = useDelayedLoading(
+    !interestsLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded,
+  );
 
   if (!account) {
     return null;

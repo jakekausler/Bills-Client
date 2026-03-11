@@ -20,6 +20,7 @@ const initialState = {
   simulationsLoaded: false,
   usedVariables: {},
   usedVariablesLoaded: false,
+  simulationsError: '',
 };
 
 describe('simulationsSlice reducer', () => {

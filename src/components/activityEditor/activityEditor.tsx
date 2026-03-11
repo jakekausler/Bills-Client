@@ -35,6 +35,8 @@ import { IconVariable, IconVariableOff, IconWifi0 } from '@tabler/icons-react';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import { selectSpendingTrackerCategoryOptions } from '../../features/spendingTracker/select';
 import CreatableSelect from '../helpers/creatableSelect';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
+import { useGroupedAccounts } from '../../hooks/useGroupedAccounts';
 import { useEffect, useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
@@ -52,26 +54,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
   }));
   const accounts = useSelector(selectAllAccounts);
 
-  const [accountList, setAccountList] = useState<{ group: string; items: { value: string; label: string }[] }[]>([]);
-
-  useEffect(() => {
-    const accList: { [key: string]: { value: string; label: string }[] } = {};
-    for (const account of accounts) {
-      if (!(account.type in accList)) {
-        accList[account.type] = [];
-      }
-      accList[account.type].push({
-        value: account.name,
-        label: account.name,
-      });
-    }
-    setAccountList(
-      Object.entries(accList).map(([group, items]) => ({
-        group,
-        items,
-      })),
-    );
-  }, [accounts]);
+  const accountList = useGroupedAccounts(accounts);
 
   const account = useSelector(selectSelectedAccount);
   const startDate = new Date(useSelector(selectStartDate));
@@ -103,20 +86,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
         .map(([name, _]) => name)
     : [];
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  useEffect(() => {
-    const isLoading = !activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [activityLoaded, accountsLoaded, categoriesLoaded, namesLoaded]);
+  const showLoading = useDelayedLoading(!activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded);
 
   if (!account) {
     return <Text>No account selected</Text>;

@@ -1,4 +1,4 @@
-import { RootState } from '../../store';
+import type { RootState } from '../../store';
 
 export const selectSimulations = (state: RootState) => state.simulations.simulations;
 
@@ -13,3 +13,5 @@ export const selectSimulationsLoaded = (state: RootState) => state.simulations.s
 export const selectUsedVariables = (state: RootState) => state.simulations.usedVariables;
 
 export const selectUsedVariablesLoaded = (state: RootState) => state.simulations.usedVariablesLoaded;
+
+export const selectSimulationsError = (state: RootState) => state.simulations.simulationsError;

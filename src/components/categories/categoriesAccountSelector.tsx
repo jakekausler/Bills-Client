@@ -7,7 +7,7 @@ import { updateSelectedAccounts } from '../../features/categories/slice';
 import AccountSelector from '../accounts/accountSelector';
 import { loadCategories } from '../../features/categories/actions';
 
-export default function GraphViewAccountSelector() {
+export default function CategoriesAccountSelector() {
   const dispatch = useDispatch<AppDispatch>();
   const selectedAccounts = useSelector(selectSelectedAccounts);
 

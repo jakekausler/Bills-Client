@@ -6,9 +6,9 @@ export const fetchAccounts = async () => {
 };
 
 export const fetchAddAccount = async (account: Account) => {
-  return await api.put('/api/accounts', account);
+  return await api.post('/api/accounts', account);
 };
 
 export const fetchEditAccounts = async (accounts: Account[]) => {
-  return await api.post('/api/accounts', accounts);
+  return await api.put('/api/accounts', accounts);
 };

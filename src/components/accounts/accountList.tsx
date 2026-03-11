@@ -2,7 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAccountsLoaded, selectSortedAccounts, selectSelectedAccount } from '../../features/accounts/select';
 import { loadActivities } from '../../features/activities/actions';
-import { useEffect, useState, useMemo } from 'react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
+import { useEffect, useMemo, useState } from 'react';
 import { AppDispatch } from '../../store';
 import {
   ActionIcon,
@@ -66,20 +67,7 @@ export default function AccountList({ close }: AccountListProps) {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  useEffect(() => {
-    const isLoading = !loaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [loaded]);
+  const showLoading = useDelayedLoading(!loaded);
 
   useEffect(() => {
     if (selectedAccount) {

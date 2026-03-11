@@ -1,9 +1,24 @@
+import type { RootState } from '../store';
 import { selectSelectedSimulation } from '../features/simulations/select';
-import { store } from '../store';
 
 const getAuthToken = () => {
   return localStorage.getItem('token');
 };
+
+// Dependency injection: Store getState function is set by initializeApi
+let _getState: (() => RootState) | null = null;
+
+export function initializeApi(getState: () => RootState) {
+  _getState = getState;
+}
+
+function getSimulation(): string {
+  if (!_getState) {
+    throw new Error('API not initialized. Call initializeApi(store.getState) first.');
+  }
+  const selectedSimulation = selectSelectedSimulation(_getState());
+  return selectedSimulation ? selectedSimulation.name : '';
+}
 
 // Helper function to get headers with auth token
 export const getHeaders = (token?: string | null, hasBody?: boolean) => {
@@ -47,19 +62,19 @@ export const fetchWithAuth = async (endpoint: string, options: RequestInit = {})
 // Example usage for different HTTP methods
 export const api = {
   get: (endpoint: string) => {
-    const selectedSimulation = selectSelectedSimulation(store.getState());
+    const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (selectedSimulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${selectedSimulation.name}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
     );
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   post: (endpoint: string, data?: any) => {
-    const selectedSimulation = selectSelectedSimulation(store.getState());
+    const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (selectedSimulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${selectedSimulation.name}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
       {
         method: 'POST',
         body: data ? JSON.stringify(data) : undefined,
@@ -69,10 +84,10 @@ export const api = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   put: (endpoint: string, data?: any) => {
-    const selectedSimulation = selectSelectedSimulation(store.getState());
+    const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (selectedSimulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${selectedSimulation.name}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
       {
         method: 'PUT',
         body: data ? JSON.stringify(data) : undefined,
@@ -82,10 +97,10 @@ export const api = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   delete: (endpoint: string, data?: any) => {
-    const selectedSimulation = selectSelectedSimulation(store.getState());
+    const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (selectedSimulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${selectedSimulation.name}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
       {
         method: 'DELETE',
         body: data ? JSON.stringify(data) : undefined,

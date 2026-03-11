@@ -17,22 +17,34 @@ export const loadAccounts = (): AppThunk => async (dispatch) => {
 export const addAccount =
   (account: Account): AppThunk =>
   async (dispatch, getState) => {
-    const accounts = getState().accounts.accounts;
-    const newAccountId = await fetchAddAccount(account);
-    dispatch(
-      setAccounts([
-        ...accounts,
-        {
-          ...account,
-          id: newAccountId,
-        },
-      ]),
-    );
+    try {
+      const accounts = getState().accounts.accounts;
+      const newAccountId = await fetchAddAccount(account);
+      dispatch(
+        setAccounts([
+          ...accounts,
+          {
+            ...account,
+            id: newAccountId,
+          },
+        ]),
+      );
+    } catch (error) {
+      console.error('Failed to add account:', error);
+      dispatch(setAccountsError(error instanceof Error ? error.message : 'Failed to add account'));
+      throw error;
+    }
   };
 
 export const editAccounts =
   (accounts: Account[]): AppThunk =>
   async (dispatch) => {
-    await fetchEditAccounts(accounts);
-    dispatch(setAccounts(accounts));
+    try {
+      await fetchEditAccounts(accounts);
+      dispatch(setAccounts(accounts));
+    } catch (error) {
+      console.error('Failed to edit accounts:', error);
+      dispatch(setAccountsError(error instanceof Error ? error.message : 'Failed to edit accounts'));
+      throw error;
+    }
   };

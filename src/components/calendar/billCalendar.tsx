@@ -2,6 +2,7 @@ import React from 'react';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBills, selectBillsLoaded, selectStartDate } from '../../features/calendar/select';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { useEffect, useState } from 'react';
 import { loadCalendar } from '../../features/calendar/actions';
 import { AppDispatch } from '../../store';
@@ -34,19 +35,7 @@ export default function BillCalendar() {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  useEffect(() => {
-    const isLoading = !loaded;
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 50);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [loaded]);
+  const showLoading = useDelayedLoading(!loaded, 50);
 
   const getEventStyle = (event: CalendarBill) => {
     // Get the calendar container width

@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectAccountsLoaded, selectVisibleAccounts } from '../../features/accounts/select';
 import { AppDispatch } from '../../store';
 import { Box, LoadingOverlay, Stack, Table, Text, useMantineTheme } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { loadAccounts } from '../../features/accounts/actions';
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
 import { CheckboxIcon } from '../helpers/checkboxIcon';
@@ -27,26 +28,13 @@ export default function AccountSelector({
   const accountsLoaded = useSelector(selectAccountsLoaded);
   const dispatch = useDispatch<AppDispatch>();
 
-  const [showLoading, setShowLoading] = useState(false);
+  const showLoading = useDelayedLoading(!accountsLoaded);
 
   const theme = useMantineTheme();
 
   useEffect(() => {
     dispatch(loadAccounts());
   }, []);
-
-  useEffect(() => {
-    const isLoading = !accountsLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [accountsLoaded]);
 
   useEffect(() => {
     dispatch(loadAccounts());

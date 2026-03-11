@@ -12,6 +12,7 @@ import monteCarloSlice from './features/monteCarlo/slice';
 import moneyMovementSlice from './features/moneyMovement/slice';
 import healthcareReducer from './features/healthcare/slice';
 import spendingTrackerReducer from './features/spendingTracker/slice';
+import { initializeApi } from './utils/api';
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +30,9 @@ export const store = configureStore({
     spendingTracker: spendingTrackerReducer,
   },
 });
+
+// Initialize the API module with store access (breaks circular dependency)
+initializeApi(() => store.getState());
 
 // Infer the type of `store`
 export type AppStore = typeof store;

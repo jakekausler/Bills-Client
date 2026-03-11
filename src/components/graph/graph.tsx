@@ -6,8 +6,7 @@ import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { EditableDateInput } from '../helpers/editableDateInput';
 
 Chart.register(...registerables);
@@ -26,20 +25,7 @@ export function Graph({
 }: GraphProps) {
   const dispatch = useDispatch<AppDispatch>();
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  useEffect(() => {
-    const isLoading = !loaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [loaded]);
+  const showLoading = useDelayedLoading(!loaded);
 
   return (
     <Stack pos="relative" h="100%" style={style}>

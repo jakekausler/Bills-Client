@@ -1,22 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock the store module before importing api so that api.tsx picks up the mock
-vi.mock('../store', () => ({
-  store: {
-    getState: vi.fn(),
-  },
-}));
-
 // Mock the simulations selector
 vi.mock('../features/simulations/select', () => ({
   selectSelectedSimulation: vi.fn(),
 }));
 
-import { getHeaders, fetchWithAuth, api } from './api';
-import { store } from '../store';
+import { getHeaders, fetchWithAuth, api, initializeApi } from './api';
 import { selectSelectedSimulation } from '../features/simulations/select';
 
-const mockStore = store as unknown as { getState: ReturnType<typeof vi.fn> };
 const mockSelectSelectedSimulation = selectSelectedSimulation as ReturnType<typeof vi.fn>;
 
 // Helper to build a mock Response
@@ -79,6 +70,8 @@ describe('fetchWithAuth', () => {
       removeItem: vi.fn(),
       clear: vi.fn(),
     });
+    // Initialize api with a mock getState
+    initializeApi(() => ({}) as any);
   });
 
   afterEach(() => {
@@ -165,7 +158,7 @@ describe('api methods', () => {
       removeItem: vi.fn(),
       clear: vi.fn(),
     });
-    mockStore.getState.mockReturnValue({});
+    initializeApi(() => ({}) as any);
     mockSelectSelectedSimulation.mockReturnValue(null);
   });
 

@@ -21,4 +21,6 @@ export const selectVisibleAccounts = createSelector([selectSortedAccounts], (acc
 
 export const selectAccountsLoaded = (state: RootState) => state.accounts.accountsLoaded;
 
+export const selectAccountsError = (state: RootState) => state.accounts.accountsError;
+
 export const selectSelectedAccount = (state: RootState) => state.accounts.selectedAccount;

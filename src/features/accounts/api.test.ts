@@ -42,7 +42,7 @@ describe('accounts api', () => {
   });
 
   describe('fetchAddAccount', () => {
-    it('calls api.put with /api/accounts and the account data', async () => {
+    it('calls api.post with /api/accounts and the account data', async () => {
       const account = {
         id: 'acc-1',
         name: 'Savings',
@@ -61,6 +61,7 @@ describe('accounts api', () => {
         rmdAccount: null,
         minimumBalance: null,
         minimumPullAmount: null,
+        maximumBalance: null,
         performsPulls: false,
         performsPushes: false,
         pushStart: null,
@@ -68,16 +69,16 @@ describe('accounts api', () => {
         pushAccount: null,
       };
       const mockResponse = { success: true };
-      mockApi.put.mockResolvedValue(mockResponse);
+      mockApi.post.mockResolvedValue(mockResponse);
 
       const result = await fetchAddAccount(account);
 
-      expect(mockApi.put).toHaveBeenCalledWith('/api/accounts', account);
-      expect(mockApi.put).toHaveBeenCalledTimes(1);
+      expect(mockApi.post).toHaveBeenCalledWith('/api/accounts', account);
+      expect(mockApi.post).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockResponse);
     });
 
-    it('propagates errors from api.put', async () => {
+    it('propagates errors from api.post', async () => {
       const account = {
         id: 'acc-1',
         name: 'Savings',
@@ -96,20 +97,21 @@ describe('accounts api', () => {
         rmdAccount: null,
         minimumBalance: null,
         minimumPullAmount: null,
+        maximumBalance: null,
         performsPulls: false,
         performsPushes: false,
         pushStart: null,
         pushEnd: null,
         pushAccount: null,
       };
-      mockApi.put.mockRejectedValue(new Error('HTTP error! status: 400'));
+      mockApi.post.mockRejectedValue(new Error('HTTP error! status: 400'));
 
       await expect(fetchAddAccount(account)).rejects.toThrow('HTTP error! status: 400');
     });
   });
 
   describe('fetchEditAccounts', () => {
-    it('calls api.post with /api/accounts and the accounts array', async () => {
+    it('calls api.put with /api/accounts and the accounts array', async () => {
       const accounts = [
         {
           id: 'acc-1',
@@ -129,6 +131,7 @@ describe('accounts api', () => {
           rmdAccount: null,
           minimumBalance: null,
           minimumPullAmount: null,
+          maximumBalance: null,
           performsPulls: false,
           performsPushes: false,
           pushStart: null,
@@ -137,25 +140,25 @@ describe('accounts api', () => {
         },
       ];
       const mockResponse = { success: true };
-      mockApi.post.mockResolvedValue(mockResponse);
+      mockApi.put.mockResolvedValue(mockResponse);
 
       const result = await fetchEditAccounts(accounts);
 
-      expect(mockApi.post).toHaveBeenCalledWith('/api/accounts', accounts);
-      expect(mockApi.post).toHaveBeenCalledTimes(1);
+      expect(mockApi.put).toHaveBeenCalledWith('/api/accounts', accounts);
+      expect(mockApi.put).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockResponse);
     });
 
-    it('calls api.post with an empty array when no accounts provided', async () => {
-      mockApi.post.mockResolvedValue([]);
+    it('calls api.put with an empty array when no accounts provided', async () => {
+      mockApi.put.mockResolvedValue([]);
 
       await fetchEditAccounts([]);
 
-      expect(mockApi.post).toHaveBeenCalledWith('/api/accounts', []);
+      expect(mockApi.put).toHaveBeenCalledWith('/api/accounts', []);
     });
 
-    it('propagates errors from api.post', async () => {
-      mockApi.post.mockRejectedValue(new Error('HTTP error! status: 500'));
+    it('propagates errors from api.put', async () => {
+      mockApi.put.mockRejectedValue(new Error('HTTP error! status: 500'));
 
       await expect(fetchEditAccounts([])).rejects.toThrow('HTTP error! status: 500');
     });

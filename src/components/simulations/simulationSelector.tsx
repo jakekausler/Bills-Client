@@ -2,8 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { Box, LoadingOverlay, Stack, Table, Text, useMantineTheme } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { loadAccounts } from '../../features/accounts/actions';
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
 import { CheckboxIcon } from '../helpers/checkboxIcon';
@@ -20,22 +21,9 @@ export default function SimulationSelector({
   const simulationsLoaded = useSelector(selectSimulationsLoaded);
   const dispatch = useDispatch<AppDispatch>();
 
-  const [showLoading, setShowLoading] = useState(false);
+  const showLoading = useDelayedLoading(!simulationsLoaded);
 
   const theme = useMantineTheme();
-
-  useEffect(() => {
-    const isLoading = !simulationsLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [simulationsLoaded]);
 
   return (
     <Stack h="100%" w="100%" pos="relative">

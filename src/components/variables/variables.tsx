@@ -11,6 +11,7 @@ import { AppDispatch } from '../../store';
 import { saveSimulations } from '../../features/simulations/actions';
 import { IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { ConditionalTooltip } from '../helpers/conditionalTooltip';
 import { UsedVariable } from '../../types/types';
 import { toDateString } from '../../utils/date';
@@ -57,20 +58,7 @@ export default function Variables() {
   const usedVariables = useSelector(selectUsedVariables);
   const variablesLoaded = useSelector(selectUsedVariablesLoaded);
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  useEffect(() => {
-    const isLoading = !variablesLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [variablesLoaded]);
+  const showLoading = useDelayedLoading(!variablesLoaded);
 
   useEffect(() => {
     if (!simulation) {

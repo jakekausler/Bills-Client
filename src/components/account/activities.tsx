@@ -39,7 +39,8 @@ import { BillEditor } from '../activityEditor/billEditor';
 import { InterestEditor } from '../activityEditor/interestEditor';
 import { ActivityEditor } from '../activityEditor/activityEditor';
 import { selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
-import { useEffect, useState } from 'react';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
+import { useState } from 'react';
 import { useContextMenu } from 'mantine-contextmenu';
 import {
   IconCurrencyDollar,
@@ -72,22 +73,9 @@ export default function Activities({ style }: ActivitiesProps) {
 
   const lastActivityBeforeToday = [...activities].reverse().find((a) => new Date(a.date) < new Date());
 
-  const [showLoading, setShowLoading] = useState(false);
+  const showLoading = useDelayedLoading(!activitiesLoaded);
 
   const { showContextMenu } = useContextMenu();
-
-  useEffect(() => {
-    const isLoading = !activitiesLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [activitiesLoaded]);
 
   const dispatch = useDispatch<AppDispatch>();
 

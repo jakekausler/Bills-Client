@@ -7,7 +7,7 @@ import { updateSelectedAccounts } from '../../features/flow/slice';
 import AccountSelector from '../accounts/accountSelector';
 import { loadFlow } from '../../features/flow/actions';
 
-export default function GraphViewAccountSelector() {
+export default function FlowAccountSelector() {
   const dispatch = useDispatch<AppDispatch>();
   const selectedAccounts = useSelector(selectSelectedAccounts);
 

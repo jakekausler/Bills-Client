@@ -6,7 +6,7 @@ export const fetchSimulations = async () => {
 };
 
 export const fetchSaveSimulations = async (simulations: Simulation[]) => {
-  return await api.post('/api/simulations', simulations);
+  return await api.put('/api/simulations', simulations);
 };
 
 export const fetchUsedVariables = async () => {

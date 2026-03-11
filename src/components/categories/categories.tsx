@@ -12,6 +12,7 @@ import {
   selectSortedSelectedCategoryActivity,
 } from '../../features/categories/select';
 import { useElementAspectRatio } from '../../hooks/useElementAspectRatio';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { useEffect, useRef, useState } from 'react';
 import { Group, LoadingOverlay, Stack, Table, useMantineTheme } from '@mantine/core';
 import { CategoryBreakdown } from '../../types/types';
@@ -30,7 +31,6 @@ export default function Categories() {
   const dispatch = useDispatch<AppDispatch>();
   const ref = useRef<HTMLDivElement>(null);
   const isSkinny = useElementAspectRatio(ref);
-  const [showLoading, setShowLoading] = useState(false);
 
   const startDate = useSelector(selectBreakdownStart);
   const endDate = useSelector(selectBreakdownEnd);
@@ -54,18 +54,7 @@ export default function Categories() {
   const selectedCategoryBreakdownLoaded = useSelector(selectSelectedCategoryBreakdownLoaded);
   const selectedCategoryActivity = useSelector(selectSortedSelectedCategoryActivity);
 
-  useEffect(() => {
-    const isLoading = !categoryBreakdownLoaded || (!selectedCategoryBreakdownLoaded && selectedCategory !== '');
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [categoryBreakdownLoaded, selectedCategoryBreakdownLoaded, selectedCategory]);
+  const showLoading = useDelayedLoading(!categoryBreakdownLoaded || (!selectedCategoryBreakdownLoaded && selectedCategory !== ''));
 
   const onCategoryClick = (_: ChartEvent, elements: ActiveElement[]) => {
     if (!elements?.length) return;

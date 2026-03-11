@@ -26,6 +26,7 @@ const makeAccount = (overrides: Partial<Account> = {}): Account => ({
   rmdAccount: null,
   minimumBalance: null,
   minimumPullAmount: null,
+  maximumBalance: null,
   performsPulls: false,
   performsPushes: false,
   pushStart: null,

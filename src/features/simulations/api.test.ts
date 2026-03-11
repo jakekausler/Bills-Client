@@ -4,7 +4,7 @@ import { fetchSimulations, fetchSaveSimulations, fetchUsedVariables } from './ap
 vi.mock('../../utils/api', () => ({
   api: {
     get: vi.fn(),
-    post: vi.fn(),
+    put: vi.fn(),
   },
 }));
 
@@ -12,7 +12,7 @@ import { api } from '../../utils/api';
 
 const mockApi = api as unknown as {
   get: ReturnType<typeof vi.fn>;
-  post: ReturnType<typeof vi.fn>;
+  put: ReturnType<typeof vi.fn>;
 };
 
 describe('simulations api', () => {
@@ -43,30 +43,30 @@ describe('simulations api', () => {
   });
 
   describe('fetchSaveSimulations', () => {
-    it('calls api.post with /api/simulations and the simulations array', async () => {
+    it('calls api.put with /api/simulations and the simulations array', async () => {
       const simulations = [
         { name: 'base', variables: { inflation: { type: 'number', value: 0.03 } }, enabled: true, selected: true },
       ];
       const mockResponse = { success: true };
-      mockApi.post.mockResolvedValue(mockResponse);
+      mockApi.put.mockResolvedValue(mockResponse);
 
       const result = await fetchSaveSimulations(simulations);
 
-      expect(mockApi.post).toHaveBeenCalledWith('/api/simulations', simulations);
-      expect(mockApi.post).toHaveBeenCalledTimes(1);
+      expect(mockApi.put).toHaveBeenCalledWith('/api/simulations', simulations);
+      expect(mockApi.put).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockResponse);
     });
 
-    it('calls api.post with an empty array when no simulations provided', async () => {
-      mockApi.post.mockResolvedValue([]);
+    it('calls api.put with an empty array when no simulations provided', async () => {
+      mockApi.put.mockResolvedValue([]);
 
       await fetchSaveSimulations([]);
 
-      expect(mockApi.post).toHaveBeenCalledWith('/api/simulations', []);
+      expect(mockApi.put).toHaveBeenCalledWith('/api/simulations', []);
     });
 
-    it('propagates errors from api.post', async () => {
-      mockApi.post.mockRejectedValue(new Error('HTTP error! status: 500'));
+    it('propagates errors from api.put', async () => {
+      mockApi.put.mockRejectedValue(new Error('HTTP error! status: 500'));
 
       await expect(fetchSaveSimulations([])).rejects.toThrow('HTTP error! status: 500');
     });

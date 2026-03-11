@@ -21,6 +21,7 @@ import { updateSelectedCategory } from '../../features/spendingTracker/slice';
 import { saveCategory } from '../../features/spendingTracker/actions';
 import { selectAllAccounts } from '../../features/accounts/select';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
+import { useGroupedAccounts } from '../../hooks/useGroupedAccounts';
 import { SpendingTrackerCategory } from '../../types/types';
 import ThresholdChangeRow from './thresholdChangeRow';
 import { EditableDateInput } from '../helpers/editableDateInput';
@@ -50,23 +51,7 @@ const ConfigCard = () => {
   }, [simulationVariables]);
 
   // Build account dropdown options grouped by type
-  const accountOptions = useMemo(() => {
-    const result: { group: string; items: { value: string; label: string }[] }[] = [];
-    const accountsByType: Record<string, { value: string; label: string }[]> = {};
-    for (const account of accounts) {
-      if (!(account.type in accountsByType)) {
-        accountsByType[account.type] = [];
-      }
-      accountsByType[account.type].push({
-        value: account.id,
-        label: account.name,
-      });
-    }
-    for (const [group, items] of Object.entries(accountsByType)) {
-      result.push({ group, items });
-    }
-    return result;
-  }, [accounts]);
+  const accountOptions = useGroupedAccounts(accounts, 'id');
 
   // Check if the selected accountId is valid
   const accountExists = category ? accounts.some((a) => a.id === category.accountId) : false;

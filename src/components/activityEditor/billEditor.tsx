@@ -33,6 +33,8 @@ import { removeBill, saveBill } from '../../features/activities/actions';
 import { IconVariable, IconVariableOff } from '@tabler/icons-react';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import CreatableSelect from '../helpers/creatableSelect';
+import { useDelayedLoading } from '../../hooks/useDelayedLoading';
+import { useGroupedAccounts } from '../../hooks/useGroupedAccounts';
 import { useEffect, useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
@@ -76,41 +78,9 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
       .map(([name, _]) => name)
     : [];
 
-  const [showLoading, setShowLoading] = useState(false);
+  const showLoading = useDelayedLoading(!billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded);
 
-  const [accountList, setAccountList] = useState<{ group: string; items: { value: string; label: string }[] }[]>([]);
-
-  useEffect(() => {
-    const accList: { [key: string]: { value: string; label: string }[] } = {};
-    for (const account of accounts) {
-      if (!(account.type in accList)) {
-        accList[account.type] = [];
-      }
-      accList[account.type].push({
-        value: account.name,
-        label: account.name,
-      });
-    }
-    setAccountList(
-      Object.entries(accList).map(([group, items]) => ({
-        group,
-        items,
-      })),
-    );
-  }, [accounts]);
-
-  useEffect(() => {
-    const isLoading = !billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded;
-
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(true);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setShowLoading(false);
-    }
-  }, [billLoaded, accountsLoaded, categoriesLoaded, namesLoaded]);
+  const accountList = useGroupedAccounts(accounts);
 
   const theme = useMantineTheme();
 

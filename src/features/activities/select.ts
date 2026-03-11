@@ -33,3 +33,5 @@ export const selectShowGraph = (state: RootState) => state.graph.show;
 export const selectNames = (state: RootState) => state.activities.names;
 
 export const selectNamesLoaded = (state: RootState) => state.activities.namesLoaded;
+
+export const selectActivitiesError = (state: RootState) => state.activities.activitiesError;

@@ -19,6 +19,7 @@
     "@mantine/core": "7.15.2",
     "@mantine/dates": "^7.15.2",
     "@mantine/hooks": "7.15.2",
+    "@mantine/notifications": "7.15.2",
     "@reduxjs/toolkit": "^2.5.0",
     "@tabler/icons-react": "^3.24.0",
     "@types/d3": "^7.4.3",

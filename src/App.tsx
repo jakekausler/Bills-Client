@@ -37,6 +37,7 @@ import HealthcareSidebar from './components/healthcare/healthcareSidebar';
 import { loadHealthcareConfigs } from './features/healthcare/actions';
 import SpendingTracker from './components/spendingTracker/spendingTracker';
 import { loadSpendingTrackerCategories } from './features/spendingTracker/actions';
+import { ErrorNotifications } from './components/helpers/errorNotifications';
 
 type Page = {
   title: string;
@@ -127,6 +128,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ErrorNotifications />
       <Routes>
         <Route path="/" element={<AppContent />} />
       </Routes>
