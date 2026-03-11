@@ -13,6 +13,12 @@ import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
 import { ContextMenuProvider } from 'mantine-contextmenu';
 import 'mantine-contextmenu/styles.css';
+import { initDevLogger, resetDevLog } from './utils/devLogger';
+
+if (import.meta.env.DEV) {
+  resetDevLog();
+  initDevLogger();
+}
 
 const theme = createTheme({
   primaryColor: 'gray',
