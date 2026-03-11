@@ -51,28 +51,9 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
   };
 
   const handleNumber = (number: string) => {
-    const input = document.activeElement as HTMLInputElement;
-    const selectionStart = input?.selectionStart || 0;
-    const selectionEnd = input?.selectionEnd || 0;
-
     setDisplayValue((prev) => {
       if (!prev) return number;
-
-      // If there's selected text, replace it with the new number
-      if (selectionStart !== selectionEnd) {
-        const newValue = prev.slice(0, selectionStart) + number + prev.slice(selectionEnd);
-        setTimeout(() => {
-          input?.setSelectionRange(selectionStart + number.length, selectionStart + number.length);
-        }, 0);
-        return newValue;
-      }
-
-      // Insert the number at cursor position
-      const newValue = prev.slice(0, selectionStart) + number + prev.slice(selectionStart);
-      setTimeout(() => {
-        input?.setSelectionRange(selectionStart + number.length, selectionStart + number.length);
-      }, 0);
-      return newValue;
+      return prev + number;
     });
   };
 
