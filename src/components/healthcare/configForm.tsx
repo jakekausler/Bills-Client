@@ -123,6 +123,14 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
   const handleSave = async () => {
     if (!startDate || !name || coveredPersons.length === 0) return;
 
+    // Validate that numeric fields are not empty
+    if (individualDeductible === '' || individualOutOfPocketMax === '' ||
+        familyDeductible === '' || familyOutOfPocketMax === '' ||
+        resetDay === '') {
+      setError('All numeric fields must be filled in');
+      return;
+    }
+
     // Clear any previous errors
     setError(null);
 
@@ -323,8 +331,14 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
         </Button>
         <Button
           onClick={handleSave}
-          disabled={!name || coveredPersons.length === 0 || !startDate}
-          title={!name ? 'Plan name is required' : coveredPersons.length === 0 ? 'At least one covered person is required' : !startDate ? 'Start date is required' : undefined}
+          disabled={!name || coveredPersons.length === 0 || !startDate ||
+            individualDeductible === '' || individualOutOfPocketMax === '' ||
+            familyDeductible === '' || familyOutOfPocketMax === '' ||
+            resetDay === ''}
+          title={!name ? 'Plan name is required' : coveredPersons.length === 0 ? 'At least one covered person is required' : !startDate ? 'Start date is required' :
+            individualDeductible === '' || individualOutOfPocketMax === '' ||
+            familyDeductible === '' || familyOutOfPocketMax === '' ||
+            resetDay === '' ? 'All numeric fields must be filled in' : undefined}
         >
           {isEdit ? 'Update' : 'Create'}
         </Button>

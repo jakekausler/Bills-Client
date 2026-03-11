@@ -17,11 +17,11 @@ export async function updateSpendingTrackerCategory(
   category: SpendingTrackerCategory
 ): Promise<SpendingTrackerCategory> {
   // Server uses PUT on /api/spending-tracker/:id for update
-  return await api.put(`/api/spending-tracker/${id}`, category);
+  return await api.put(`/api/spending-tracker/${encodeURIComponent(id)}`, category);
 }
 
 export async function deleteSpendingTrackerCategory(id: string): Promise<void> {
-  return await api.delete(`/api/spending-tracker/${id}`);
+  return await api.delete(`/api/spending-tracker/${encodeURIComponent(id)}`);
 }
 
 export async function getSpendingTrackerChartData(
@@ -29,5 +29,5 @@ export async function getSpendingTrackerChartData(
   startDate: string,
   endDate: string,
 ): Promise<ChartDataResponse> {
-  return await api.get(`/api/spending-tracker/${id}/chart-data?startDate=${startDate}&endDate=${endDate}`);
+  return await api.get(`/api/spending-tracker/${encodeURIComponent(id)}/chart-data?startDate=${startDate}&endDate=${endDate}`);
 }

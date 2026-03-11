@@ -4,27 +4,27 @@ import { formatDateISO } from '../../utils/date';
 
 export const fetchActivities = async (account: Account, startDate: Date, endDate: Date) => {
   return await api.get(
-    `/api/accounts/${account.id}/consolidated_activity?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
+    `/api/accounts/${encodeURIComponent(account.id)}/consolidated_activity?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
   );
 };
 
 export const fetchBill = async (accountId: string, billId: string, isTransfer: boolean) => {
-  return await api.get(`/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}`);
+  return await api.get(`/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}?isTransfer=${isTransfer}`);
 };
 
 export const fetchAddActivity = async (accountId: string, activity: Activity) => {
-  return await api.post(`/api/accounts/${accountId}/activity`, activity);
+  return await api.post(`/api/accounts/${encodeURIComponent(accountId)}/activity`, activity);
 };
 
 export const fetchSaveActivity = async (accountId: string, activity: Activity) => {
   return await api.put(
-    `/api/accounts/${accountId}/activity/${activity.id}?isTransfer=${activity.isTransfer}`,
+    `/api/accounts/${encodeURIComponent(accountId)}/activity/${encodeURIComponent(activity.id || '')}?isTransfer=${activity.isTransfer}`,
     activity,
   );
 };
 
 export const fetchRemoveActivity = async (accountId: string, activityId: string, isTransfer: boolean) => {
-  return await api.delete(`/api/accounts/${accountId}/activity/${activityId}?isTransfer=${isTransfer}`);
+  return await api.delete(`/api/accounts/${encodeURIComponent(accountId)}/activity/${encodeURIComponent(activityId)}?isTransfer=${isTransfer}`);
 };
 
 export const fetchChangeAccountForActivity = async (
@@ -34,7 +34,7 @@ export const fetchChangeAccountForActivity = async (
   isTransfer: boolean,
 ) => {
   return await api.post(
-    `/api/accounts/${accountId}/activity/${activityId}/change_account/${newAccountId}?isTransfer=${isTransfer}`,
+    `/api/accounts/${encodeURIComponent(accountId)}/activity/${encodeURIComponent(activityId)}/change_account/${encodeURIComponent(newAccountId)}?isTransfer=${isTransfer}`,
   );
 };
 
@@ -46,27 +46,27 @@ export const fetchBillActivity = async (
   endDate: Date,
 ) => {
   return await api.get(
-    `/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&asActivity=true&startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
+    `/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}?isTransfer=${isTransfer}&asActivity=true&startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
   );
 };
 
 export const fetchAddBillActivity = async (accountId: string, activity: Activity, billId: string) => {
   return await api.put(
-    `/api/accounts/${accountId}/bills/${billId}?asActivity=true&isTransfer=${activity.isTransfer}`,
+    `/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}?asActivity=true&isTransfer=${activity.isTransfer}`,
     activity,
   );
 };
 
 export const fetchAddBill = async (accountId: string, bill: Bill) => {
-  return await api.post(`/api/accounts/${accountId}/bills?isTransfer=${bill.isTransfer}`, bill);
+  return await api.post(`/api/accounts/${encodeURIComponent(accountId)}/bills?isTransfer=${bill.isTransfer}`, bill);
 };
 
 export const fetchRemoveBill = async (accountId: string, billId: string, isTransfer: boolean) => {
-  return await api.delete(`/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}`);
+  return await api.delete(`/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}?isTransfer=${isTransfer}`);
 };
 
 export const fetchSaveBill = async (accountId: string, bill: Bill) => {
-  return await api.put(`/api/accounts/${accountId}/bills/${bill.id}?isTransfer=${bill.isTransfer}`, bill);
+  return await api.put(`/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(bill.id || '')}?isTransfer=${bill.isTransfer}`, bill);
 };
 
 export const fetchChangeAccountForBill = async (
@@ -76,17 +76,17 @@ export const fetchChangeAccountForBill = async (
   isTransfer: boolean,
 ) => {
   return await api.post(
-    `/api/accounts/${accountId}/bills/${billId}/change_account/${newAccountId}?isTransfer=${isTransfer}`,
+    `/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}/change_account/${encodeURIComponent(newAccountId)}?isTransfer=${isTransfer}`,
   );
 };
 
 export const fetchInterests = async (accountId: string) => {
-  return await api.get(`/api/accounts/${accountId}/interests`);
+  return await api.get(`/api/accounts/${encodeURIComponent(accountId)}/interests`);
 };
 
 export const fetchSaveInterests = async (accountId: string, interests: Interest[]) => {
   try {
-    return await api.put(`/api/accounts/${accountId}/interests`, interests);
+    return await api.put(`/api/accounts/${encodeURIComponent(accountId)}/interests`, interests);
   } catch (error) {
     console.error('[fetchSaveInterests] Failed to save interests:', error);
     throw error;
@@ -95,12 +95,12 @@ export const fetchSaveInterests = async (accountId: string, interests: Interest[
 
 export const fetchInterestActivity = async (accountId: string, interestId: string, startDate: Date, endDate: Date) => {
   return await api.get(
-    `/api/accounts/${accountId}/interests/${interestId}?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}&asActivity=true`,
+    `/api/accounts/${encodeURIComponent(accountId)}/interests/${encodeURIComponent(interestId)}?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}&asActivity=true`,
   );
 };
 
 export const fetchAddInterestActivity = async (accountId: string, activity: Activity, interestId: string) => {
-  return await api.put(`/api/accounts/${accountId}/interests/${interestId}?asActivity=true`, activity);
+  return await api.put(`/api/accounts/${encodeURIComponent(accountId)}/interests/${encodeURIComponent(interestId)}?asActivity=true`, activity);
 };
 
 export const fetchNames = async () => {
@@ -108,13 +108,13 @@ export const fetchNames = async () => {
 };
 
 export const fetchSkipBill = async (accountId: string, billId: string, isTransfer: boolean) => {
-  return await api.put(`/api/accounts/${accountId}/bills/${billId}?isTransfer=${isTransfer}&skip=true`);
+  return await api.put(`/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}?isTransfer=${isTransfer}&skip=true`);
 };
 
 export const fetchSkipInterest = async (accountId: string) => {
-  return await api.put(`/api/accounts/${accountId}/interests?skip=true`);
+  return await api.put(`/api/accounts/${encodeURIComponent(accountId)}/interests?skip=true`);
 };
 
 export const fetchSkipSpendingTracker = async (categoryId: string) => {
-  return await api.put(`/api/spending-tracker/${categoryId}?skip=true`);
+  return await api.put(`/api/spending-tracker/${encodeURIComponent(categoryId)}?skip=true`);
 };

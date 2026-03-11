@@ -9,11 +9,11 @@ export const fetchGraphViewData = async (
 ) => {
   let selectedAccountString = '';
   if (accountIds.length > 0) {
-    selectedAccountString = `&selectedAccounts=${accountIds.join(',')}`;
+    selectedAccountString = `&selectedAccounts=${encodeURIComponent(accountIds.join(','))}`;
   }
   let selectedSimulationString = '';
   if (selectedSimulations.length > 0) {
-    selectedSimulationString = `&selectedSimulations=${selectedSimulations.join(',')}`;
+    selectedSimulationString = `&selectedSimulations=${encodeURIComponent(selectedSimulations.join(','))}`;
   }
   return await api.get(
     `/api/accounts/graph?startDate=${startDate}&endDate=${endDate}${selectedAccountString}${selectedSimulationString}&combineGraphAccounts=${combineAccounts}`,
