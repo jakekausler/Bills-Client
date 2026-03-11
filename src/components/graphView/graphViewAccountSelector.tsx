@@ -25,7 +25,7 @@ export default function GraphViewAccountSelector() {
 
   useEffect(() => {
     dispatch(loadGraphViewData(selectedAccounts, selectedSimulations, startDate, endDate, combineAccounts));
-  }, [selectedAccounts, startDate, endDate, combineAccounts]);
+  }, [selectedAccounts, selectedSimulations, startDate, endDate, combineAccounts]);
 
   return (
     <Stack>
