@@ -357,17 +357,23 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
         >
           <IconTrash />
         </ActionIcon>
-        <ActionIcon
-          disabled={!allValid()}
-          size="xl"
-          onClick={() => {
-            dispatch(saveInterests(account, interests, startDate, endDate, graphStartDate, graphEndDate));
-            resetSelected();
-          }}
-          aria-label="Save interest rates"
-        >
-          <IconDeviceFloppy />
-        </ActionIcon>
+        {(() => {
+          const isValid = allValid();
+          return (
+            <ActionIcon
+              disabled={!isValid}
+              size="xl"
+              onClick={() => {
+                dispatch(saveInterests(account, interests, startDate, endDate, graphStartDate, graphEndDate));
+                resetSelected();
+              }}
+              aria-label="Save interest rates"
+            >
+              <IconDeviceFloppy />
+            </ActionIcon>
+          );
+        })()}
+
       </Group>
     </Stack>
   );

@@ -121,7 +121,7 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
 
   useEffect(() => {
     fetchProgress();
-  }, [fetchProgress, configs]);
+  }, [fetchProgress]);
 
   const getColor = (spent: number, total: number) => {
     if (total === 0) return 'green';

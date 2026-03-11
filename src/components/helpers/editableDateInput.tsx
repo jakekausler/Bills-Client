@@ -99,13 +99,13 @@ export const EditableDateInput = ({
         e.preventDefault();
         const upDate = getCurrentDateFromValue();
         if (currentPart === "month") {
-          const newMonth = upDate.getMonth() + 1;
-          upDate.setMonth(newMonth === 12 ? 0 : newMonth);
-          if (newMonth === 12) upDate.setFullYear(upDate.getFullYear() + 1);
+          const newMonth = upDate.getUTCMonth() + 1;
+          upDate.setUTCMonth(newMonth === 12 ? 0 : newMonth);
+          if (newMonth === 12) upDate.setUTCFullYear(upDate.getUTCFullYear() + 1);
         } else if (currentPart === "day") {
-          upDate.setDate(upDate.getDate() + 1);
+          upDate.setUTCDate(upDate.getUTCDate() + 1);
         } else {
-          upDate.setFullYear(upDate.getFullYear() + 1);
+          upDate.setUTCFullYear(upDate.getUTCFullYear() + 1);
         }
         setEditedDate(toDateString(upDate));
         updateDisplayValue(upDate);
@@ -121,13 +121,13 @@ export const EditableDateInput = ({
         e.preventDefault();
         const downDate = getCurrentDateFromValue();
         if (currentPart === "month") {
-          const newMonth = downDate.getMonth() - 1;
-          downDate.setMonth(newMonth === -1 ? 11 : newMonth);
-          if (newMonth === -1) downDate.setFullYear(downDate.getFullYear() - 1);
+          const newMonth = downDate.getUTCMonth() - 1;
+          downDate.setUTCMonth(newMonth === -1 ? 11 : newMonth);
+          if (newMonth === -1) downDate.setUTCFullYear(downDate.getUTCFullYear() - 1);
         } else if (currentPart === "day") {
-          downDate.setDate(downDate.getDate() - 1);
+          downDate.setUTCDate(downDate.getUTCDate() - 1);
         } else {
-          downDate.setFullYear(downDate.getFullYear() - 1);
+          downDate.setUTCFullYear(downDate.getUTCFullYear() - 1);
         }
         setEditedDate(toDateString(downDate));
         updateDisplayValue(downDate);

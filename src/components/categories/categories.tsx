@@ -67,6 +67,48 @@ export default function Categories() {
     }
   };
 
+  const renderCategoryTable = () => (
+    <Table
+      stickyHeader
+      style={{ display: 'table', width: '100%', overflow: 'auto', height: 'calc(100% - 40px)' }}
+      aria-label="Category spending"
+    >
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th scope="col">Date</Table.Th>
+          <Table.Th scope="col">Account</Table.Th>
+          <Table.Th scope="col">Name</Table.Th>
+          <Table.Th scope="col">Category</Table.Th>
+          <Table.Th scope="col">Amount</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
+        {selectedCategoryActivity.length === 0 && (
+          <Table.Tr>
+            <Table.Td colSpan={5} ta="center">No activities found for this category.</Table.Td>
+          </Table.Tr>
+        )}
+        {selectedCategoryActivity.map((activity, idx) => (
+          <Table.Tr
+            key={`${activity.account}-${activity.date}-${activity.name}-${activity.amount}`}
+            style={{
+              borderTop:
+                idx !== 0 && activity.category !== selectedCategoryActivity[idx - 1].category
+                  ? '4px solid var(--mantine-color-gray-6)'
+                  : undefined,
+            }}
+          >
+            <Table.Td>{activity.date}</Table.Td>
+            <Table.Td>{activity.account}</Table.Td>
+            <Table.Td>{activity.name}</Table.Td>
+            <Table.Td>{activity.category.split('.')[1]}</Table.Td>
+            <Table.Td>{`$ ${(activity.amount as number).toFixed(2)}`}</Table.Td>
+          </Table.Tr>
+        ))}
+      </Table.Tbody>
+    </Table>
+  );
+
   return (
     <Stack ref={ref} w="100%" h="100%" pos="relative" aria-busy={showLoading}>
       <VisuallyHidden component="h2">Category Breakdown</VisuallyHidden>
@@ -113,45 +155,7 @@ export default function Categories() {
           </Stack>
           {selectedCategory && (
             <Stack w="100%">
-              <Table
-                stickyHeader
-                style={{ display: 'table', width: '100%', overflow: 'auto', height: 'calc(100% - 40px)' }}
-                aria-label="Category spending"
-              >
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th scope="col">Date</Table.Th>
-                    <Table.Th scope="col">Account</Table.Th>
-                    <Table.Th scope="col">Name</Table.Th>
-                    <Table.Th scope="col">Category</Table.Th>
-                    <Table.Th scope="col">Amount</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {selectedCategoryActivity.length === 0 && (
-                    <Table.Tr>
-                      <Table.Td colSpan={5} ta="center">No activities found for this category.</Table.Td>
-                    </Table.Tr>
-                  )}
-                  {selectedCategoryActivity.map((activity, idx) => (
-                    <Table.Tr
-                      key={`${activity.date}-${activity.name}-${activity.amount}`}
-                      style={{
-                        borderTop:
-                          idx !== 0 && activity.category !== selectedCategoryActivity[idx - 1].category
-                            ? '4px solid var(--mantine-color-gray-6)'
-                            : undefined,
-                      }}
-                    >
-                      <Table.Td>{activity.date}</Table.Td>
-                      <Table.Td>{activity.account}</Table.Td>
-                      <Table.Td>{activity.name}</Table.Td>
-                      <Table.Td>{activity.category.split('.')[1]}</Table.Td>
-                      <Table.Td>{`$ ${(activity.amount as number).toFixed(2)}`}</Table.Td>
-                    </Table.Tr>
-                  ))}
-                </Table.Tbody>
-              </Table>
+              {renderCategoryTable()}
             </Stack>
           )}
         </Stack>
@@ -170,45 +174,7 @@ export default function Categories() {
           </Group>
           {selectedCategory && (
             <Stack w="100%" h="50%" style={{ overflow: 'auto' }}>
-              <Table
-                stickyHeader
-                style={{ display: 'table', width: '100%', overflow: 'auto', height: 'calc(100% - 40px)' }}
-                aria-label="Category spending"
-              >
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th scope="col">Date</Table.Th>
-                    <Table.Th scope="col">Account</Table.Th>
-                    <Table.Th scope="col">Name</Table.Th>
-                    <Table.Th scope="col">Category</Table.Th>
-                    <Table.Th scope="col">Amount</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {selectedCategoryActivity.length === 0 && (
-                    <Table.Tr>
-                      <Table.Td colSpan={5} ta="center">No activities found for this category.</Table.Td>
-                    </Table.Tr>
-                  )}
-                  {selectedCategoryActivity.map((activity, idx) => (
-                    <Table.Tr
-                      key={`${activity.date}-${activity.name}-${activity.amount}`}
-                      style={{
-                        borderTop:
-                          idx !== 0 && activity.category !== selectedCategoryActivity[idx - 1].category
-                            ? '4px solid var(--mantine-color-gray-6)'
-                            : undefined,
-                      }}
-                    >
-                      <Table.Td>{activity.date}</Table.Td>
-                      <Table.Td>{activity.account}</Table.Td>
-                      <Table.Td>{activity.name}</Table.Td>
-                      <Table.Td>{activity.category.split('.')[1]}</Table.Td>
-                      <Table.Td>{`$ ${(activity.amount as number).toFixed(2)}`}</Table.Td>
-                    </Table.Tr>
-                  ))}
-                </Table.Tbody>
-              </Table>
+              {renderCategoryTable()}
             </Stack>
           )}
         </Stack>

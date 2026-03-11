@@ -62,7 +62,7 @@ describe('categories api', () => {
       await fetchCategoryBreakdown('2024-01-01', '2024-12-31', ['Checking', 'Savings']);
 
       expect(mockApi.get).toHaveBeenCalledWith(
-        '/api/categories/breakdown?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking,Savings',
+        '/api/categories/breakdown?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking%2CSavings',
       );
     });
 
@@ -105,7 +105,7 @@ describe('categories api', () => {
       await fetchSelectedCategoryBreakdown('Housing', '2024-01-01', '2024-12-31', ['Checking', 'Savings']);
 
       expect(mockApi.get).toHaveBeenCalledWith(
-        '/api/categories/Housing/breakdown?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking,Savings',
+        '/api/categories/Housing/breakdown?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking%2CSavings',
       );
     });
 
@@ -147,7 +147,7 @@ describe('categories api', () => {
       await fetchSelectedCategoryActivity('Housing', '2024-01-01', '2024-12-31', ['Checking', 'Savings']);
 
       expect(mockApi.get).toHaveBeenCalledWith(
-        '/api/categories/Housing/transactions?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking,Savings',
+        '/api/categories/Housing/transactions?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking%2CSavings',
       );
     });
 

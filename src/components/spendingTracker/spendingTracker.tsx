@@ -74,7 +74,7 @@ export default function SpendingTracker() {
       dispatch(setSmartInterval(mapped));
       dispatch(setSmartEndInterval(mapped));
     }
-  }, [selectedCategoryId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedCategoryId, selectedCategory?.interval, smartInterval, dispatch]);
 
   // Load chart data when category or date range changes (debounced)
   useEffect(() => {

@@ -40,7 +40,7 @@ import { InterestEditor } from '../activityEditor/interestEditor';
 import { ActivityEditor } from '../activityEditor/activityEditor';
 import { selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useContextMenu } from 'mantine-contextmenu';
 import {
   IconCurrencyDollar,
@@ -60,11 +60,15 @@ export default function Activities({ style }: ActivitiesProps) {
   const interests = useSelector(selectInterests);
   const account = useSelector(selectSelectedAccount);
   const accountId = account?.id;
-  const startDate = new Date(useSelector(selectStartDate));
-  const endDate = new Date(useSelector(selectEndDate));
+  const startDateStr = useSelector(selectStartDate);
+  const endDateStr = useSelector(selectEndDate);
+  const graphStartDateStr = useSelector(selectGraphStartDate);
+  const graphEndDateStr = useSelector(selectGraphEndDate);
+  const startDate = useMemo(() => new Date(startDateStr), [startDateStr]);
+  const endDate = useMemo(() => new Date(endDateStr), [endDateStr]);
+  const graphStartDate = useMemo(() => new Date(graphStartDateStr), [graphStartDateStr]);
+  const graphEndDate = useMemo(() => new Date(graphEndDateStr), [graphEndDateStr]);
   const activitiesLoaded = useSelector(selectActivitiesLoaded);
-  const graphStartDate = new Date(useSelector(selectGraphStartDate));
-  const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const accounts = useSelector(selectAllAccounts);
 
   const [editorActivity, setEditorActivity] = useState<Activity | null>(null);
@@ -378,7 +382,7 @@ export default function Activities({ style }: ActivitiesProps) {
                           ]
                           : []),
                       ].sort((a, b) => {
-                        const order = { enter: 0, edit: 1, skip: 2, delete: 3 };
+                        const order = { enter: 0, edit: 1, changeAccount: 2, duplicate: 3, skip: 4, delete: 5 };
                         return order[a.key as keyof typeof order] - order[b.key as keyof typeof order];
                       }),
                     )}

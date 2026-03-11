@@ -206,7 +206,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         return 'Please use 01, 02, 03, etc.';
       }
 
-      const daysInMonth = new Date(2024, month, 0).getUTCDate();
+      const daysInMonth = new Date(2024, month, 0).getDate();
       if (isNaN(day) || day < 1 || day > daysInMonth) {
         return 'Invalid day for month';
       }
@@ -247,7 +247,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         return 'Please use 01, 02, 03, etc.';
       }
 
-      const daysInMonth = new Date(2024, month, 0).getUTCDate();
+      const daysInMonth = new Date(2024, month, 0).getDate();
       if (isNaN(day) || day < 1 || day > daysInMonth) {
         return 'Invalid day for month';
       }
@@ -864,18 +864,24 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             />
           </Group>
           <Group w="100%" grow>
-            <Button
-              disabled={!allValid()}
-              title={!allValid() ? 'Fix validation errors before saving' : undefined}
-              onClick={() => {
-                dispatch(
-                  saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate),
-                );
-                resetSelected();
-              }}
-            >
-              Save
-            </Button>
+            {(() => {
+              const isValid = allValid();
+              return (
+                <Button
+                  disabled={!isValid}
+                  title={!isValid ? 'Fix validation errors before saving' : undefined}
+                  onClick={() => {
+                    dispatch(
+                      saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate),
+                    );
+                    resetSelected();
+                  }}
+                >
+                  Save
+                </Button>
+              );
+            })()}
+
             <Button
               disabled={!selectedBill.id}
               title={!selectedBill.id ? 'Bill has not been saved yet' : undefined}

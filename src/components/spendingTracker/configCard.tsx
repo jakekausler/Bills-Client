@@ -321,7 +321,7 @@ const ConfigCard = () => {
 
         {category.thresholdChanges.map((tc, index) => (
           <ThresholdChangeRow
-            key={index}
+            key={`${tc.date || ''}-${tc.newThreshold}-${index}`}
             change={tc}
             index={index}
             onChange={handleThresholdChangeUpdate}

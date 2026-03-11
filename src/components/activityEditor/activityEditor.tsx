@@ -563,15 +563,21 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
         }}
       />
       <Group w="100%" grow>
-        <Button
-          disabled={!allValid()}
-          title={!allValid() ? 'Fix validation errors before saving' : undefined}
-          onClick={() => {
-            save();
-          }}
-        >
-          Save
-        </Button>
+        {(() => {
+          const isValid = allValid();
+          return (
+            <Button
+              disabled={!isValid}
+              title={!isValid ? 'Fix validation errors before saving' : undefined}
+              onClick={() => {
+                save();
+              }}
+            >
+              Save
+            </Button>
+          );
+        })()}
+
         <Button
           disabled={!selectedActivity.id || !!selectedBillId}
           title={!selectedActivity.id ? 'Activity has not been saved yet' : selectedBillId ? 'Cannot remove an activity linked to a bill' : undefined}

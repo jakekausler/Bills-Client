@@ -4,7 +4,6 @@ import Activities from './activities';
 import { Graph } from '../graph/graph';
 import LargeScreenControls from './largeScreenControls';
 import SmallScreenControls from './smallScreenControls';
-import { selectShowGraph } from '../../features/activities/select';
 import { useSelector } from 'react-redux';
 import {
   selectGraphDatasets,
@@ -13,6 +12,7 @@ import {
   selectGraphType,
   selectGraphLoaded,
   selectGraphStartDate,
+  selectShowGraph,
 } from '../../features/graph/select';
 import { setGraphStartDate, setGraphEndDate } from '../../features/graph/slice';
 

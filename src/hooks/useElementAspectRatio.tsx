@@ -9,7 +9,8 @@ export function useElementAspectRatio(ref: React.RefObject<HTMLElement>) {
 
     const observer = new ResizeObserver(() => {
       if (element) {
-        setIsSkinny(element.clientWidth / element.clientHeight < 1);
+        const ratio = element.clientHeight > 0 ? element.clientWidth / element.clientHeight : 0;
+        setIsSkinny(ratio < 1);
       }
     });
 

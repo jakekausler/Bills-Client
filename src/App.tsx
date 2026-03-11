@@ -165,7 +165,7 @@ function AppContent() {
     dispatch(loadMoneyMovementChart());
     dispatch(loadHealthcareConfigs());
     dispatch(loadSpendingTrackerCategories());
-  }, []);
+  }, [dispatch]);
 
   const PageComponent = pages[page as keyof typeof pages].component as PageComponentType;
 

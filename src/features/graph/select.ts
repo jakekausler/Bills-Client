@@ -7,3 +7,4 @@ export const selectGraphLoaded = (state: RootState) => state.graph.loaded;
 export const selectGraphStartDate = (state: RootState) => state.graph.startDate;
 export const selectGraphEndDate = (state: RootState) => state.graph.endDate;
 export const selectGraphError = (state: RootState) => state.graph.error;
+export const selectShowGraph = (state: RootState) => state.graph.show;

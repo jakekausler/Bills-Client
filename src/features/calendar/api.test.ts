@@ -40,7 +40,7 @@ describe('calendar api', () => {
       await fetchBills('2024-01-01', '2024-01-31', ['Checking', 'Savings']);
 
       expect(mockApi.get).toHaveBeenCalledWith(
-        '/api/calendar/bills?startDate=2024-01-01&endDate=2024-01-31&selectedAccounts=Checking,Savings',
+        '/api/calendar/bills?startDate=2024-01-01&endDate=2024-01-31&selectedAccounts=Checking%2CSavings',
       );
     });
 
@@ -60,7 +60,7 @@ describe('calendar api', () => {
       await fetchBills('2024-01-01', '2024-12-31', ['Checking', 'Savings', 'Investment']);
 
       expect(mockApi.get).toHaveBeenCalledWith(
-        '/api/calendar/bills?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking,Savings,Investment',
+        '/api/calendar/bills?startDate=2024-01-01&endDate=2024-12-31&selectedAccounts=Checking%2CSavings%2CInvestment',
       );
     });
 
