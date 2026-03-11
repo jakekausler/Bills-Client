@@ -103,20 +103,20 @@ export const saveActivity = (
       } else if (interestId) {
         await fetchAddInterestActivity(account.id, activity, interestId);
       } else if (activity.id) {
-        if (activity.id === 'AUTO-PULL' || activity.id === 'RMD' || activity.id === 'AUTO-PUSH') {
+        if (activity.id?.startsWith('AUTO-PULL') || activity.id?.startsWith('RMD') || activity.id?.startsWith('AUTO-PUSH')) {
           // Enter as a new activity
           activity.id = undefined;
           await fetchAddActivity(account.id, activity);
         } else if (activity.id?.startsWith('SPENDING-TRACKER-')) {
           // Do nothing, we shouldn't be able to edit spending tracker
           return;
-        } else if (activity.id === 'TAX') {
+        } else if (activity.id?.startsWith('TAX')) {
           // Do nothing, we shouldn't be able to edit tax
           return;
-        } else if (activity.id === 'SOCIAL-SECURITY') {
+        } else if (activity.id?.startsWith('SOCIAL-SECURITY')) {
           // Do nothing, we shouldn't be able to edit social security
           return;
-        } else if (activity.id === 'PENSION') {
+        } else if (activity.id?.startsWith('PENSION')) {
           // Do nothing, we shouldn't be able to edit pension
           return;
         } else {
