@@ -117,7 +117,7 @@ export default function BillCalendar() {
           loaderProps={{ color: 'blue.6', size: 'xl' }}
           overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
         />
-        <div aria-label="Bill calendar showing scheduled bills and transactions for the selected month" role="region">
+        <div style={{ height: '100%' }} aria-label="Bill calendar showing scheduled bills and transactions for the selected month" role="region">
           <BigCalendar
             localizer={dayjsLocalizer(dayjs)}
             events={bills}
