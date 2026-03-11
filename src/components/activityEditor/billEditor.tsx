@@ -160,7 +160,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
       }
     }
     if (name === 'name') {
-      if (!selectedBill.name || selectedBill.name.trim() === '') {
+      if (!value || (value as string).trim() === '') {
         return 'Invalid name';
       }
     }

@@ -152,7 +152,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
       }
     }
     if (name === 'name') {
-      if (!selectedActivity.name || selectedActivity.name.trim() === '') {
+      if (!value || (value as string).trim() === '') {
         return 'Invalid name';
       }
     }
