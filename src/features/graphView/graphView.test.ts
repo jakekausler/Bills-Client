@@ -17,7 +17,7 @@ import {
   selectGraphViewType,
   selectGraphViewLoaded,
   selectGraphViewError,
-  selectSelectedAccounts,
+  selectGraphViewSelectedAccounts,
   selectSelectedSimulations,
   selectCombineAccounts,
 } from './select';
@@ -386,9 +386,9 @@ describe('graphView selectors', () => {
     expect(selectGraphViewError(rootState)).toBe('failed');
   });
 
-  it('selectSelectedAccounts returns selectedAccounts', () => {
+  it('selectGraphViewSelectedAccounts returns selectedAccounts', () => {
     const rootState = makeRootState({ selectedAccounts: ['acct-1'] });
-    expect(selectSelectedAccounts(rootState)).toEqual(['acct-1']);
+    expect(selectGraphViewSelectedAccounts(rootState)).toEqual(['acct-1']);
   });
 
   it('selectSelectedSimulations returns selectedSimulations', () => {

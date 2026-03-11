@@ -885,19 +885,23 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             <Button
               disabled={!selectedBill.id}
               title={!selectedBill.id ? 'Bill has not been saved yet' : undefined}
-              onClick={() => {
-                dispatch(
-                  removeBill(
-                    account as Account,
-                    billId as string,
-                    selectedBill.isTransfer,
-                    startDate,
-                    endDate,
-                    graphStartDate,
-                    graphEndDate,
-                  ),
-                );
-                resetSelected();
+              onClick={async () => {
+                try {
+                  await dispatch(
+                    removeBill(
+                      account as Account,
+                      billId as string,
+                      selectedBill.isTransfer,
+                      startDate,
+                      endDate,
+                      graphStartDate,
+                      graphEndDate,
+                    ),
+                  );
+                  resetSelected();
+                } catch {
+                  // error already dispatched
+                }
               }}
             >
               Remove

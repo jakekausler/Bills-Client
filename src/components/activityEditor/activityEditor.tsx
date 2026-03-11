@@ -581,19 +581,23 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
         <Button
           disabled={!selectedActivity.id || !!selectedBillId}
           title={!selectedActivity.id ? 'Activity has not been saved yet' : selectedBillId ? 'Cannot remove an activity linked to a bill' : undefined}
-          onClick={() => {
-            dispatch(
-              removeActivity(
-                account,
-                activityId as string,
-                selectedActivity.isTransfer,
-                startDate,
-                endDate,
-                graphStartDate,
-                graphEndDate,
-              ),
-            );
-            resetSelected();
+          onClick={async () => {
+            try {
+              await dispatch(
+                removeActivity(
+                  account,
+                  activityId as string,
+                  selectedActivity.isTransfer,
+                  startDate,
+                  endDate,
+                  graphStartDate,
+                  graphEndDate,
+                ),
+              );
+              resetSelected();
+            } catch {
+              // error already dispatched
+            }
           }}
         >
           Remove

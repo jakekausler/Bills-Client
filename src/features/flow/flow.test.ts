@@ -11,7 +11,7 @@ import {
   selectFlow,
   selectFlowLoaded,
   selectFlowError,
-  selectSelectedAccounts,
+  selectFlowSelectedAccounts,
   selectFlowStartDate,
   selectFlowEndDate,
 } from './selector';
@@ -187,9 +187,9 @@ describe('flow selectors', () => {
     expect(selectFlowError(rootState)).toBe('timeout');
   });
 
-  it('selectSelectedAccounts returns selectedAccounts', () => {
+  it('selectFlowSelectedAccounts returns selectedAccounts', () => {
     const rootState = makeRootState({ selectedAccounts: ['checking'] });
-    expect(selectSelectedAccounts(rootState)).toEqual(['checking']);
+    expect(selectFlowSelectedAccounts(rootState)).toEqual(['checking']);
   });
 
   it('selectFlowStartDate returns startDate', () => {

@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import {
   selectGraphViewEndDate,
   selectGraphViewStartDate,
-  selectSelectedAccounts,
+  selectGraphViewSelectedAccounts,
   selectSelectedSimulations,
   selectCombineAccounts,
 } from '../../features/graphView/select';
@@ -17,7 +17,7 @@ import SimulationSelector from '../simulations/simulationSelector';
 
 export default function GraphViewAccountSelector() {
   const dispatch = useDispatch<AppDispatch>();
-  const selectedAccounts = useSelector(selectSelectedAccounts);
+  const selectedAccounts = useSelector(selectGraphViewSelectedAccounts);
   const selectedSimulations = useSelector(selectSelectedSimulations);
   const startDate = useSelector(selectGraphViewStartDate);
   const endDate = useSelector(selectGraphViewEndDate);

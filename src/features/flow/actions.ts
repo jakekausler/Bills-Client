@@ -1,13 +1,13 @@
 import { AppThunk } from '../../store';
 import { fetchFlow } from './api';
-import { selectFlowEndDate, selectFlowStartDate, selectSelectedAccounts } from './selector';
+import { selectFlowEndDate, selectFlowStartDate, selectFlowSelectedAccounts } from './selector';
 import { setFlow, setFlowError, setFlowLoaded } from './slice';
 
 export const loadFlow = (): AppThunk => async (dispatch, getState) => {
   try {
     dispatch(setFlowLoaded(false));
     const state = getState();
-    const selectedAccounts = selectSelectedAccounts(state);
+    const selectedAccounts = selectFlowSelectedAccounts(state);
     const startDate = selectFlowStartDate(state);
     const endDate = selectFlowEndDate(state);
 

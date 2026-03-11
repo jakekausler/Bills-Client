@@ -13,7 +13,7 @@ import {
   selectBillsError,
   selectStartDate,
   selectEndDate,
-  selectSelectedAccounts,
+  selectCalendarSelectedAccounts,
 } from './select';
 import { CalendarBill } from '../../types/types';
 import { RootState } from '../../store';
@@ -218,8 +218,8 @@ describe('calendar selectors', () => {
     expect(selectEndDate(rootState)).toBe('2025-12-31');
   });
 
-  it('selectSelectedAccounts returns selectedAccounts', () => {
+  it('selectCalendarSelectedAccounts returns selectedAccounts', () => {
     const rootState = makeRootState({ selectedAccounts: ['checking', 'savings'] });
-    expect(selectSelectedAccounts(rootState)).toEqual(['checking', 'savings']);
+    expect(selectCalendarSelectedAccounts(rootState)).toEqual(['checking', 'savings']);
   });
 });

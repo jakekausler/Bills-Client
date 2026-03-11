@@ -161,18 +161,18 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
                       )}
                     </Table.Td>
                     <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.person}</Table.Td>
-                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.billAmount.toFixed(2)}</Table.Td>
-                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.patientCost.toFixed(2)}</Table.Td>
-                    <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.copay ? `$${expense.copay.toFixed(2)}` : '-'}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${(expense.billAmount ?? 0).toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${(expense.patientCost ?? 0).toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.copay ? `$${(expense.copay ?? 0).toFixed(2)}` : '-'}</Table.Td>
                     <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.coinsurance ? `${expense.coinsurance}%` : '-'}</Table.Td>
                     <Table.Td style={{ whiteSpace: 'nowrap' }}>
-                      {expense.hsaReimbursed > 0 ? `$${expense.hsaReimbursed.toFixed(2)}` : '-'}
+                      {(expense.hsaReimbursed ?? 0) > 0 ? `$${(expense.hsaReimbursed ?? 0).toFixed(2)}` : '-'}
                     </Table.Td>
                     <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.accountName}</Table.Td>
-                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.individualDeductibleRemaining.toFixed(2)}</Table.Td>
-                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.familyDeductibleRemaining.toFixed(2)}</Table.Td>
-                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.individualOOPRemaining.toFixed(2)}</Table.Td>
-                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${expense.familyOOPRemaining.toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${(expense.individualDeductibleRemaining ?? 0).toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${(expense.familyDeductibleRemaining ?? 0).toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${(expense.individualOOPRemaining ?? 0).toFixed(2)}</Table.Td>
+                    <Table.Td style={{ whiteSpace: 'nowrap' }}>${(expense.familyOOPRemaining ?? 0).toFixed(2)}</Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>

@@ -89,8 +89,8 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
     if (config) {
       setName(config.name);
       setCoveredPersons(config.coveredPersons || []);
-      setStartDate(new Date(config.startDate));
-      setEndDate(config.endDate ? new Date(config.endDate) : null);
+      setStartDate(new Date(config.startDate + 'T00:00:00'));
+      setEndDate(config.endDate ? new Date(config.endDate + 'T00:00:00') : null);
       setIndividualDeductible(config.individualDeductible);
       setIndividualOutOfPocketMax(config.individualOutOfPocketMax);
       setFamilyDeductible(config.familyDeductible);

@@ -5,4 +5,4 @@ export const selectBillsLoaded = (state: RootState) => state.calendar.billsLoade
 export const selectBillsError = (state: RootState) => state.calendar.billsError;
 export const selectStartDate = (state: RootState) => state.calendar.startDate;
 export const selectEndDate = (state: RootState) => state.calendar.endDate;
-export const selectSelectedAccounts = (state: RootState) => state.calendar.selectedAccounts;
+export const selectCalendarSelectedAccounts = (state: RootState) => state.calendar.selectedAccounts;

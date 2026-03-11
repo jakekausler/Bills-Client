@@ -203,7 +203,7 @@ export const loadBillActivity = (
 ): AppThunk => {
   return async (dispatch) => {
     try {
-      dispatch(setSelectedBillLoaded(false));
+      dispatch(setSelectedActivityLoaded(false));
       const billActivity = await fetchBillActivity(account.id, billId, isTransfer, startDate, endDate);
       dispatch(setSelectedActivity(billActivity));
       dispatch(setSelectedActivityBillId(billId));
