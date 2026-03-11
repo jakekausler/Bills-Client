@@ -74,7 +74,7 @@ export function ErrorNotifications() {
           autoClose: 8000,
           withCloseButton: true,
         });
-        dispatch(clear());
+        clear();
       }
     }
   }, [accountsError, activitiesError, billsError, categoriesError, flowError, graphError, graphViewError, healthcareError, moneyMovementError, monteCarloError, simulationsError, spendingTrackerError, dispatch]);

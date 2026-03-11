@@ -5,6 +5,8 @@ const getAuthToken = () => {
   return localStorage.getItem('token');
 };
 
+let isReloading = false;
+
 // Dependency injection: Store getState function is set by initializeApi
 let _getState: (() => RootState) | null = null;
 
@@ -47,15 +49,19 @@ export const fetchWithAuth = async (endpoint: string, options: RequestInit = {})
   });
 
   if (response.status === 401) {
-    localStorage.removeItem('token');
-    window.location.reload();
-    throw new Error('Authentication expired');
+    if (!isReloading) {
+      isReloading = true;
+      localStorage.removeItem('token');
+      window.location.reload();
+    }
+    return new Promise(() => {}); // Never resolves, prevents downstream handlers
   }
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
+  if (response.status === 204) return null;
   return response.json();
 };
 

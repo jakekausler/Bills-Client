@@ -140,6 +140,14 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
       ) {
         return 'Invalid amount';
       }
+      // Healthcare bills must have a non-zero amount
+      if (selectedBill?.isHealthcare && !selectedBill?.amountIsVariable) {
+        const numValue = Number(value);
+        if (numValue === 0) {
+          return 'Healthcare bills require a non-zero amount. Enter the total bill from your provider.';
+        }
+      }
+      return null;
     }
     if (name === 'isTransfer') {
       if (typeof value !== 'boolean') {
@@ -270,15 +278,6 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
         const numValue = Number(value);
         if (!isNaN(numValue) && (numValue < 0 || numValue > 100)) {
           return 'Coinsurance must be between 0% and 100%';
-        }
-      }
-    }
-    if (name === 'amount') {
-      // Healthcare bills must have a non-zero amount
-      if (selectedBill?.isHealthcare && !selectedBill?.amountIsVariable) {
-        const numValue = Number(value);
-        if (numValue === 0) {
-          return 'Healthcare bills require a non-zero amount. Enter the total bill from your provider.';
         }
       }
     }

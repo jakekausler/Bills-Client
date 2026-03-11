@@ -39,11 +39,11 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
       const progressArray = Object.values(data);
       setProgressData(progressArray);
 
-      // Fetch history for each config using the provided date range
+      // Fetch history for each config using the provided date range (parallelized)
       const historyMap: Record<string, ProgressHistoryDataPoint[]> = {};
-      for (const progress of progressArray) {
+      const historyPromises = progressArray.map(async (progress) => {
         const config = configs.find((c) => c.id === progress.configId);
-        if (!config) continue;
+        if (!config) return;
 
         // Use provided dates or fall back to plan year dates
         let historyStartDate: string;
@@ -66,7 +66,8 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
           historyEndDate
         );
         historyMap[progress.configId] = history;
-      }
+      });
+      await Promise.all(historyPromises);
       setHistoryData(historyMap);
 
       // Update progressData with final values from history data
