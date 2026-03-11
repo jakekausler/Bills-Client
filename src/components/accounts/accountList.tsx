@@ -124,6 +124,7 @@ export default function AccountList({ close }: AccountListProps) {
         accountOwnerDOB: account.accountOwnerDOB,
         rmdAccount: account.rmdAccount,
         minimumBalance: account.minimumBalance,
+        maximumBalance: account.maximumBalance,
         minimumPullAmount: account.minimumPullAmount,
         performsPulls: account.performsPulls,
         performsPushes: account.performsPushes,
@@ -223,6 +224,7 @@ export default function AccountList({ close }: AccountListProps) {
                       accountOwnerDOB: null,
                       rmdAccount: null,
                       minimumBalance: null,
+                      maximumBalance: null,
                       minimumPullAmount: null,
                       performsPulls: false,
                       performsPushes: false,
@@ -287,6 +289,9 @@ export default function AccountList({ close }: AccountListProps) {
                     </Table.Th>
                     <Table.Th ta="center" w={100}>
                       Minimum Balance
+                    </Table.Th>
+                    <Table.Th ta="center" w={100}>
+                      Maximum Balance
                     </Table.Th>
                     <Table.Th ta="center" w={100}>
                       Minimum Pull Amount
@@ -506,6 +511,21 @@ export default function AccountList({ close }: AccountListProps) {
                                   editingAccountsList.map((a) =>
                                     a.id === account.id
                                       ? { ...a, minimumBalance: typeof e === 'number' ? e : Number(e) }
+                                      : a,
+                                  ),
+                                )
+                              }
+                            />
+                          </Table.Td>
+                          <Table.Td>
+                            <NumberInput
+                              disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+                              value={account.maximumBalance || 0}
+                              onChange={(e) =>
+                                setEditingAccountsList(
+                                  editingAccountsList.map((a) =>
+                                    a.id === account.id
+                                      ? { ...a, maximumBalance: typeof e === 'number' ? e : Number(e) }
                                       : a,
                                   ),
                                 )
