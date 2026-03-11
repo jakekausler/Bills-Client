@@ -3,3 +3,4 @@ deno.lock
 .env
 dist/tsconfig.tsbuildinfo
 pnpm-lock.yaml
+dist/
