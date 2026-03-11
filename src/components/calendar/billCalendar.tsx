@@ -11,8 +11,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import './calendar.css';
 import { CalendarEvent } from './calendarEvent';
-import { ActionIcon, Group, LoadingOverlay, Stack } from '@mantine/core';
-import { MonthPickerInput } from '@mantine/dates';
+import { ActionIcon, Button, Group, LoadingOverlay, Popover, Stack } from '@mantine/core';
+import { MonthPicker } from '@mantine/dates';
 import { toDateString } from '../../utils/date';
 import { updateEndDate } from '../../features/calendar/slice';
 import { updateStartDate } from '../../features/calendar/slice';
@@ -79,26 +79,32 @@ export default function BillCalendar() {
         >
           <IconChevronLeft />
         </ActionIcon>
-        <MonthPickerInput
-          disabled={!loaded}
-          aria-label="Select calendar month"
-          value={new Date(`${startDate}T00:00:00`)}
-          onChange={(value) => {
-            if (value) {
-              dispatch(updateStartDate(toDateString(value)));
-              dispatch(updateEndDate(dayjs.utc(value).endOf('month').format('YYYY-MM-DD')));
-              dispatch(loadCalendar());
-            }
-          }}
-          placeholder="Pick month"
-          mx="auto"
-          maw={400}
-          styles={{
-            input: {
-              textAlign: 'center',
-            },
-          }}
-        />
+        <Popover position="bottom" withArrow>
+          <Popover.Target>
+            <Button
+              disabled={!loaded}
+              variant="subtle"
+              mx="auto"
+              maw={400}
+              fullWidth
+              styles={{ label: { textAlign: 'center' } }}
+            >
+              {dayjs.utc(startDate).format('MMMM YYYY')}
+            </Button>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <MonthPicker
+              value={new Date(`${startDate}T00:00:00`)}
+              onChange={(value) => {
+                if (value) {
+                  dispatch(updateStartDate(toDateString(value)));
+                  dispatch(updateEndDate(dayjs.utc(value).endOf('month').format('YYYY-MM-DD')));
+                  dispatch(loadCalendar());
+                }
+              }}
+            />
+          </Popover.Dropdown>
+        </Popover>
         <ActionIcon
           disabled={!loaded}
           onClick={() => {
