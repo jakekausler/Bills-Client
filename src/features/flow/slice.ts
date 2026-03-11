@@ -42,6 +42,7 @@ export const flowSlice = createSlice({
     setFlow: (state, action: PayloadAction<Flow>) => {
       state.flow = action.payload;
       state.flowLoaded = true;
+      state.flowError = '';
     },
     setFlowError: (state, action: PayloadAction<string>) => {
       state.flowError = action.payload;

@@ -1,4 +1,4 @@
-import { AppDispatch } from '../../store';
+import { AppThunk } from '../../store';
 import {
   setLoading,
   setError,
@@ -15,7 +15,7 @@ import {
 } from './api';
 import { HealthcareConfig } from '../../types/types';
 
-export const loadHealthcareConfigs = () => async (dispatch: AppDispatch) => {
+export const loadHealthcareConfigs = (): AppThunk => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     const configs = await getHealthcareConfigs();
@@ -27,7 +27,7 @@ export const loadHealthcareConfigs = () => async (dispatch: AppDispatch) => {
 };
 
 export const createHealthcareConfig =
-  (config: Omit<HealthcareConfig, 'id'>) => async (dispatch: AppDispatch) => {
+  (config: Omit<HealthcareConfig, 'id'>): AppThunk => async (dispatch) => {
     try {
       dispatch(setLoading(true));
       const newConfig = await postHealthcareConfig(config);
@@ -42,7 +42,7 @@ export const createHealthcareConfig =
   };
 
 export const updateHealthcareConfig =
-  (id: string, config: HealthcareConfig) => async (dispatch: AppDispatch) => {
+  (id: string, config: HealthcareConfig): AppThunk => async (dispatch) => {
     try {
       dispatch(setLoading(true));
       const updatedConfig = await putHealthcareConfig(id, config);
@@ -56,7 +56,7 @@ export const updateHealthcareConfig =
     }
   };
 
-export const deleteHealthcareConfig = (id: string) => async (dispatch: AppDispatch) => {
+export const deleteHealthcareConfig = (id: string): AppThunk => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     await deleteHealthcareConfigApi(id);

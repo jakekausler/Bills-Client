@@ -53,6 +53,7 @@ export const loadActivities =
     } catch (error) {
       console.error('Failed to load activities', error);
       dispatch(setActivitiesError('Failed to load activities'));
+      throw error;
     }
   };
 

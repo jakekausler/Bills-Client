@@ -64,6 +64,7 @@ const graphViewSlice = createSlice({
         state.datasets = [];
         state.labels = [];
         state.loaded = true;
+        state.error = '';
         return;
       }
       const datasets: Dataset[] = [];
@@ -84,6 +85,7 @@ const graphViewSlice = createSlice({
       state.labels = labels;
       state.type = type;
       state.loaded = true;
+      state.error = '';
     },
     setGraphViewError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;

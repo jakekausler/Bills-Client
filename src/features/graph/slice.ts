@@ -40,6 +40,7 @@ const graphSlice = createSlice({
       state.labels = action.payload.labels;
       state.type = action.payload.type;
       state.loaded = true;
+      state.error = '';
     },
     setGraphError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;

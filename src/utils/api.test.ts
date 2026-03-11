@@ -8,7 +8,7 @@ vi.mock('../features/simulations/select', () => ({
 import { getHeaders, fetchWithAuth, api, initializeApi } from './api';
 import { selectSelectedSimulation } from '../features/simulations/select';
 
-const mockSelectSelectedSimulation = selectSelectedSimulation as ReturnType<typeof vi.fn>;
+const mockSelectSelectedSimulation = selectSelectedSimulation as unknown as ReturnType<typeof vi.fn>;
 
 // Helper to build a mock Response
 function makeMockResponse(data: unknown, ok = true, status = 200) {

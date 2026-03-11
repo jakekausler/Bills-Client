@@ -1,4 +1,4 @@
-import { AppDispatch } from '../../store';
+import { AppThunk } from '../../store';
 import {
   setLoading,
   setError,
@@ -19,7 +19,7 @@ import {
 } from './api';
 import { SpendingTrackerCategory } from '../../types/types';
 
-export const loadSpendingTrackerCategories = () => async (dispatch: AppDispatch) => {
+export const loadSpendingTrackerCategories = (): AppThunk => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     const categories = await getSpendingTrackerCategories();
@@ -31,7 +31,7 @@ export const loadSpendingTrackerCategories = () => async (dispatch: AppDispatch)
 };
 
 export const createCategory =
-  (defaults: Omit<SpendingTrackerCategory, 'id'>) => async (dispatch: AppDispatch) => {
+  (defaults: Omit<SpendingTrackerCategory, 'id'>): AppThunk<Promise<SpendingTrackerCategory>> => async (dispatch) => {
     try {
       dispatch(setLoading(true));
       const newCategory = await createSpendingTrackerCategory(defaults);
@@ -46,7 +46,7 @@ export const createCategory =
   };
 
 export const saveCategory =
-  (id: string, category: SpendingTrackerCategory) => async (dispatch: AppDispatch) => {
+  (id: string, category: SpendingTrackerCategory): AppThunk<Promise<SpendingTrackerCategory>> => async (dispatch) => {
     try {
       dispatch(setLoading(true));
       const updatedCategory = await updateSpendingTrackerCategory(id, category);
@@ -60,7 +60,7 @@ export const saveCategory =
     }
   };
 
-export const deleteCategory = (id: string) => async (dispatch: AppDispatch) => {
+export const deleteCategory = (id: string): AppThunk => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     await deleteSpendingTrackerCategory(id);
@@ -74,7 +74,7 @@ export const deleteCategory = (id: string) => async (dispatch: AppDispatch) => {
 };
 
 export const loadChartData =
-  (categoryId: string, startDate: string, endDate: string) => async (dispatch: AppDispatch) => {
+  (categoryId: string, startDate: string, endDate: string): AppThunk => async (dispatch) => {
     try {
       dispatch(setChartLoading(true));
       dispatch(setChartData(null));

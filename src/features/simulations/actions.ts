@@ -6,6 +6,7 @@ import { setSimulations, setSimulationsError, setSimulationsLoaded, setUsedVaria
 export const loadSimulations = (): AppThunk => {
   return async (dispatch) => {
     try {
+      dispatch(setSimulationsError(''));
       dispatch(setSimulationsLoaded(false));
       const simulations = await fetchSimulations();
       dispatch(setSimulations(simulations));
@@ -13,6 +14,7 @@ export const loadSimulations = (): AppThunk => {
     } catch (error) {
       console.error('Failed to load simulations', error);
       dispatch(setSimulationsError(error instanceof Error ? error.message : 'Failed to load simulations'));
+      dispatch(setSimulationsLoaded(true));
       throw error;
     }
   };
@@ -35,9 +37,9 @@ export const loadUsedVariables = (): AppThunk => {
 export const saveSimulations = (simulations: Simulation[]): AppThunk => {
   return async (dispatch) => {
     try {
+      dispatch(setSimulationsError(''));
       await fetchSaveSimulations(simulations);
       dispatch(loadSimulations());
-      dispatch(loadUsedVariables());
     } catch (error) {
       console.error('Failed to save simulations:', error);
       dispatch(setSimulationsError(error instanceof Error ? error.message : 'Failed to save simulations'));

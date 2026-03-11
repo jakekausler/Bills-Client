@@ -124,7 +124,7 @@ export default function SpendingTracker() {
     };
 
     try {
-      const newCategory = await dispatch(createCategory(defaults)) as SpendingTrackerCategory;
+      const newCategory = await dispatch(createCategory(defaults));
       if (newCategory?.id) {
         dispatch(setSelectedCategoryId(newCategory.id));
       }

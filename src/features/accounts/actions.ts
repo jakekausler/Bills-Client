@@ -5,12 +5,16 @@ import { setAccounts, setAccountsError, setAccountsLoaded } from './slice';
 
 export const loadAccounts = (): AppThunk => async (dispatch) => {
   try {
+    dispatch(setAccountsError(''));
+    dispatch(setAccountsLoaded(false));
     const accounts = await fetchAccounts();
 
     dispatch(setAccounts(accounts));
+  } catch (error) {
+    console.error('Failed to load accounts:', error);
     dispatch(setAccountsLoaded(true));
-  } catch {
     dispatch(setAccountsError('Failed to load accounts'));
+    throw error;
   }
 };
 
@@ -18,8 +22,9 @@ export const addAccount =
   (account: Account): AppThunk =>
   async (dispatch, getState) => {
     try {
-      const accounts = getState().accounts.accounts;
+      dispatch(setAccountsError(''));
       const newAccountId = await fetchAddAccount(account);
+      const accounts = getState().accounts.accounts;
       dispatch(
         setAccounts([
           ...accounts,
@@ -40,6 +45,7 @@ export const editAccounts =
   (accounts: Account[]): AppThunk =>
   async (dispatch) => {
     try {
+      dispatch(setAccountsError(''));
       await fetchEditAccounts(accounts);
       dispatch(setAccounts(accounts));
     } catch (error) {

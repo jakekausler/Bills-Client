@@ -31,6 +31,7 @@ const moneyMovementSlice = createSlice({
     setMoneyMovementData: (state, action: PayloadAction<MoneyMovementData | null>) => {
       state.data = action.payload;
       state.loading = false;
+      state.error = '';
     },
     setMoneyMovementLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;

@@ -1,12 +1,17 @@
 import type { RootState } from '../../store';
+import { createSelector } from '@reduxjs/toolkit';
 
 export const selectSimulations = (state: RootState) => state.simulations.simulations;
 
-export const selectSelectedSimulation = (state: RootState) =>
-  state.simulations.simulations.find((simulation) => simulation.selected);
+export const selectSelectedSimulation = createSelector(
+  [selectSimulations],
+  (simulations) => simulations.find((s) => s.selected)
+);
 
-export const selectSelectedSimulationVariables = (state: RootState) =>
-  state.simulations.simulations.find((simulation) => simulation.selected)?.variables;
+export const selectSelectedSimulationVariables = createSelector(
+  [selectSelectedSimulation],
+  (simulation) => simulation?.variables
+);
 
 export const selectSimulationsLoaded = (state: RootState) => state.simulations.simulationsLoaded;
 

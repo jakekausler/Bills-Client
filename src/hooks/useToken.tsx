@@ -45,7 +45,7 @@ export const useToken = () => {
       clearToken();
       return false;
     }
-  }, [token, clearToken]);
+  }, [clearToken]);
 
   return { token, setToken: saveToken, clearToken, validateToken };
 };

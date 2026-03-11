@@ -34,8 +34,10 @@ export const loadCategories = (): AppThunk => async (dispatch, getState) => {
     if (selectedCategory && selectedCategory !== '') {
       dispatch(loadSelectedCategoryBreakdown(selectedCategory, startDate, endDate, selectedAccounts));
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load categories:', error);
     dispatch(setCategoriesError('Failed to load categories'));
+    throw error;
   }
 };
 

@@ -22,6 +22,7 @@ const healthcareSlice = createSlice({
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
+      state.loading = false;
     },
     setConfigs: (state, action: PayloadAction<HealthcareConfig[]>) => {
       state.configs = action.payload;

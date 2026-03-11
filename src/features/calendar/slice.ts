@@ -36,6 +36,7 @@ export const calendarSlice = createSlice({
     setBills: (state, action: PayloadAction<CalendarBill[]>) => {
       state.bills = action.payload;
       state.billsLoaded = true;
+      state.billsError = '';
     },
     setBillsError: (state, action: PayloadAction<string>) => {
       state.billsError = action.payload;
