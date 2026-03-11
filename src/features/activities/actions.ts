@@ -1,4 +1,4 @@
-import { AppThunk } from '../../store';
+import { AppThunk, AppDispatch } from '../../store';
 import {
   setActivities,
   setActivitiesError,
@@ -41,6 +41,23 @@ import { loadAccounts } from '../accounts/actions';
 import { loadCategories } from '../categories/actions';
 import { loadCalendar } from '../calendar/actions';
 import { loadFlow } from '../flow/actions';
+
+const reloadAllData = (
+  dispatch: any,
+  account: Account,
+  startDate: Date,
+  endDate: Date,
+  graphStartDate: Date,
+  graphEndDate: Date,
+) => {
+  dispatch(loadActivities(account, startDate, endDate));
+  dispatch(loadGraphData(account, graphStartDate, graphEndDate));
+  dispatch(loadNames());
+  dispatch(loadCategories());
+  dispatch(loadCalendar());
+  dispatch(loadAccounts());
+  dispatch(loadFlow());
+};
 
 export const loadActivities =
   (account: Account, startDate: Date, endDate: Date): AppThunk =>
@@ -125,13 +142,7 @@ export const saveActivity = (
       } else {
         await fetchAddActivity(account.id, activity);
       }
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to save activity:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to save activity'));
@@ -152,13 +163,7 @@ export const removeActivity = (
   return async (dispatch) => {
     try {
       await fetchRemoveActivity(account.id, activityId, isTransfer);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to remove activity:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to remove activity'));
@@ -180,13 +185,7 @@ export const changeAccountForActivity = (
   return async (dispatch) => {
     try {
       await fetchChangeAccountForActivity(account.id, activityId, newAccountId, isTransfer);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to change account for activity:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to change account for activity'));
@@ -244,13 +243,7 @@ export const saveBill = (
       } else {
         await fetchAddBill(account.id, bill);
       }
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to save bill:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to save bill'));
@@ -271,13 +264,7 @@ export const removeBill = (
   return async (dispatch) => {
     try {
       await fetchRemoveBill(account.id, billId, isTransfer);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to remove bill:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to remove bill'));
@@ -299,13 +286,7 @@ export const changeAccountForBill = (
   return async (dispatch) => {
     try {
       await fetchChangeAccountForBill(account.id, billId, newAccountId, isTransfer);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to change account for bill:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to change account for bill'));
@@ -339,13 +320,7 @@ export const saveInterests = (
   return async (dispatch) => {
     try {
       await fetchSaveInterests(account.id, interests);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('[saveInterests] Failed to save interests:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to save interests'));
@@ -386,13 +361,7 @@ export const skipBill = (
   return async (dispatch) => {
     try {
       await fetchSkipBill(account.id, billId, isTransfer);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to skip bill:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to skip bill'));
@@ -411,13 +380,7 @@ export const skipInterest = (
   return async (dispatch) => {
     try {
       await fetchSkipInterest(account.id);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to skip interest:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to skip interest'));
@@ -437,13 +400,7 @@ export const skipSpendingTracker = (
   return async (dispatch) => {
     try {
       await fetchSkipSpendingTracker(categoryId);
-      dispatch(loadActivities(account, startDate, endDate));
-      dispatch(loadGraphData(account, graphStartDate, graphEndDate));
-      dispatch(loadNames());
-      dispatch(loadCategories());
-      dispatch(loadCalendar());
-      dispatch(loadAccounts());
-      dispatch(loadFlow());
+      reloadAllData(dispatch, account, startDate, endDate, graphStartDate, graphEndDate);
     } catch (error) {
       console.error('Failed to skip spending tracker:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to skip spending tracker'));
