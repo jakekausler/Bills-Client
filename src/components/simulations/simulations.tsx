@@ -23,7 +23,7 @@ export default function Simulations() {
   const showLoading = useDelayedLoading(!simulationsLoaded);
 
   return (
-    <Stack h="100%" w="100%" pos="relative">
+    <Stack h="100%" w="100%" pos="relative" aria-busy={showLoading}>
       <LoadingOverlay
         visible={showLoading}
         loaderProps={{ color: 'blue.6', size: 'xl' }}
@@ -35,17 +35,17 @@ export default function Simulations() {
           dispatch(saveSimulations(simulations.map((s) => ({ ...s, selected: s.name === value }))));
         }}
       >
-        <Table>
+        <Table aria-label="Simulations list">
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Name</Table.Th>
-              <Table.Th>
+              <Table.Th scope="col">Name</Table.Th>
+              <Table.Th scope="col" aria-label="Visible">
                 <IconEye />
               </Table.Th>
-              <Table.Th>
+              <Table.Th scope="col" aria-label="Selected">
                 <IconEdit />
               </Table.Th>
-              <Table.Th>
+              <Table.Th scope="col">
                 <ActionIcon
                   onClick={() => {
                     setSimulationNames([...simulationNames, `Simulation ${simulations.length + 1}`]);
@@ -61,6 +61,7 @@ export default function Simulations() {
                       ]),
                     );
                   }}
+                  aria-label="Add simulation"
                 >
                   <IconPlus />
                 </ActionIcon>
@@ -81,6 +82,7 @@ export default function Simulations() {
                       onBlur={() => {
                         dispatch(saveSimulations(simulations.map((s, i) => ({ ...s, name: simulationNames[i] }))));
                       }}
+                      aria-label="Simulation name"
                     />
                   )}
                 </Table.Td>
@@ -94,10 +96,11 @@ export default function Simulations() {
                         ),
                       )
                     }
+                    aria-label={`Toggle ${simulation.name} visibility`}
                   />
                 </Table.Td>
                 <Table.Td>
-                  <Radio value={simulation.name} />
+                  <Radio value={simulation.name} aria-label={`Select ${simulation.name}`} />
                 </Table.Td>
                 <Table.Td>
                   <ActionIcon
@@ -116,6 +119,7 @@ export default function Simulations() {
                       setSimulationNames(simulationNames.filter((n) => n !== simulation.name));
                     }}
                     disabled={simulation.name === 'Default'}
+                    aria-label="Delete simulation"
                   >
                     <IconTrash />
                   </ActionIcon>

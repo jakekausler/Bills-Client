@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { TextInput, ActionIcon, Popover } from '@mantine/core';
+import { TextInput, ActionIcon, Popover, VisuallyHidden } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 import { toDateString } from '../../utils/date';
@@ -26,7 +26,7 @@ export const EditableDateInput = ({
   clearable?: boolean;
 }) => {
   const [editedDate, setEditedDate] = useState(value);
-  const [selectedPart, setSelectedPart] = useState<DatePart>("month");
+  const [_selectedPart, setSelectedPart] = useState<DatePart>("month");
   const [displayValue, setDisplayValue] = useState(() => {
     if (!value) return "";
     const date = new Date(`${value}T00:00:00`);
@@ -35,6 +35,7 @@ export const EditableDateInput = ({
   });
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarDate, setCalendarDate] = useState<Date | undefined>(undefined);
+  const [arrowAnnouncement, setArrowAnnouncement] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validDate = (date: string | null) => {
@@ -51,25 +52,6 @@ export const EditableDateInput = ({
 
   const updateDisplayValue = (date: Date) => {
     setDisplayValue(`${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`);
-  };
-
-  const getPartValues = () => {
-    const [month, day, year] = displayValue.split('/');
-    return {
-      month: month || '',
-      day: day || '',
-      year: year || ''
-    };
-  };
-
-  const updateDateFromParts = (parts: { month: string, day: string, year: string }) => {
-    const newDisplayValue = `${parts.month.padStart(2, '0')}/${parts.day.padStart(2, '0')}/${parts.year}`;
-    setDisplayValue(newDisplayValue);
-
-    const date = new Date(Date.UTC(parseInt(parts.year), parseInt(parts.month) - 1, parseInt(parts.day)));
-    if (!isNaN(date.getTime())) {
-      setEditedDate(toDateString(date));
-    }
   };
 
   const getCurrentDateFromValue = () => {
@@ -91,7 +73,7 @@ export const EditableDateInput = ({
     setSelectedPart(currentPart);
 
     switch (e.key) {
-      case "ArrowLeft":
+      case "ArrowLeft": {
         e.preventDefault();
         const leftPart = currentPart === "month" ? "year" : currentPart === "day" ? "month" : "day";
         setSelectedPart(leftPart);
@@ -101,7 +83,8 @@ export const EditableDateInput = ({
           inputRef.current?.setSelectionRange(start, end);
         }, 0);
         break;
-      case "ArrowRight":
+      }
+      case "ArrowRight": {
         e.preventDefault();
         const rightPart = currentPart === "month" ? "day" : currentPart === "day" ? "year" : "month";
         setSelectedPart(rightPart);
@@ -111,7 +94,8 @@ export const EditableDateInput = ({
           inputRef.current?.setSelectionRange(start, end);
         }, 0);
         break;
-      case "ArrowUp":
+      }
+      case "ArrowUp": {
         e.preventDefault();
         const upDate = getCurrentDateFromValue();
         if (currentPart === "month") {
@@ -125,13 +109,15 @@ export const EditableDateInput = ({
         }
         setEditedDate(toDateString(upDate));
         updateDisplayValue(upDate);
+        setArrowAnnouncement(`${(upDate.getUTCMonth() + 1).toString().padStart(2, '0')}/${upDate.getUTCDate().toString().padStart(2, '0')}/${upDate.getUTCFullYear()}`);
         setTimeout(() => {
           const start = currentPart === "month" ? 0 : currentPart === "day" ? 3 : 6;
           const end = currentPart === "month" ? 2 : currentPart === "day" ? 5 : 10;
           inputRef.current?.setSelectionRange(start, end);
         }, 0);
         break;
-      case "ArrowDown":
+      }
+      case "ArrowDown": {
         e.preventDefault();
         const downDate = getCurrentDateFromValue();
         if (currentPart === "month") {
@@ -145,12 +131,14 @@ export const EditableDateInput = ({
         }
         setEditedDate(toDateString(downDate));
         updateDisplayValue(downDate);
+        setArrowAnnouncement(`${(downDate.getUTCMonth() + 1).toString().padStart(2, '0')}/${downDate.getUTCDate().toString().padStart(2, '0')}/${downDate.getUTCFullYear()}`);
         setTimeout(() => {
           const start = currentPart === "month" ? 0 : currentPart === "day" ? 3 : 6;
           const end = currentPart === "month" ? 2 : currentPart === "day" ? 5 : 10;
           inputRef.current?.setSelectionRange(start, end);
         }, 0);
         break;
+      }
       case "Enter":
         e.preventDefault();
         if (validDate(editedDate) === null) {
@@ -291,6 +279,8 @@ export const EditableDateInput = ({
   }, [displayValue, editedDate, showCalendar, getValidDateForCalendar]);
 
   return (
+    <>
+    <VisuallyHidden aria-live="polite" role="status">{arrowAnnouncement}</VisuallyHidden>
     <Popover
       opened={showCalendar}
       onClose={() => setShowCalendar(false)}
@@ -313,13 +303,15 @@ export const EditableDateInput = ({
           onFocus={handleFocus}
           size={size}
           style={style}
+          aria-expanded={showCalendar}
           rightSection={
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               {clearable && displayValue && (
                 <button
                   type="button"
                   onClick={handleClear}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', borderRadius: '2px', outline: 'revert' }}
+                  aria-label="Clear date"
                 >
                   ×
                 </button>
@@ -328,6 +320,7 @@ export const EditableDateInput = ({
                 variant="subtle"
                 size="sm"
                 onClick={() => setShowCalendar(!showCalendar)}
+                aria-label="Open date picker"
               >
                 <IconCalendar size={16} />
               </ActionIcon>
@@ -345,5 +338,6 @@ export const EditableDateInput = ({
         />
       </Popover.Dropdown>
     </Popover>
+    </>
   );
 };

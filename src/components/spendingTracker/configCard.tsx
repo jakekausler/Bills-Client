@@ -180,6 +180,7 @@ const ConfigCard = () => {
             onClick={() => {
               updateField({ thresholdIsVariable: !category.thresholdIsVariable });
             }}
+            aria-label="Toggle variable mode"
           >
             {category.thresholdIsVariable ? <IconVariable /> : <IconVariableOff />}
           </ActionIcon>
@@ -275,6 +276,7 @@ const ConfigCard = () => {
             onClick={() => {
               updateField({ increaseByIsVariable: !category.increaseByIsVariable });
             }}
+            aria-label="Toggle variable mode"
           >
             {category.increaseByIsVariable ? <IconVariable /> : <IconVariableOff />}
           </ActionIcon>
@@ -332,7 +334,7 @@ const ConfigCard = () => {
         <Divider my="xs" />
 
         {/* Save Button */}
-        <Button onClick={handleSave} fullWidth disabled={!isValid()}>
+        <Button onClick={handleSave} fullWidth disabled={!isValid()} title={!isValid() ? (!category.name.trim() ? 'Category name is required' : !category.accountId || !accountExists ? 'A valid account must be selected' : undefined) : undefined}>
           Save
         </Button>
       </Stack>

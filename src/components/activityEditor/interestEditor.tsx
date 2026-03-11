@@ -7,7 +7,7 @@ import {
   selectNamesLoaded,
   selectStartDate,
 } from '../../features/activities/select';
-import { ActionIcon, FocusTrap, Group, LoadingOverlay, Select, Stack, Table } from '@mantine/core';
+import { ActionIcon, FocusTrap, Group, LoadingOverlay, Select, Stack, Table, VisuallyHidden } from '@mantine/core';
 import {
   IconDeviceFloppy,
   IconPlus,
@@ -162,13 +162,13 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       <FocusTrap.InitialFocus />
-      <Table horizontalSpacing={4}>
+      <Table horizontalSpacing={4} aria-label="Interest rates">
         <Table.Thead>
           <Table.Tr>
-            <Table.Th fz="xs">Start</Table.Th>
-            <Table.Th fz="xs">APR</Table.Th>
-            <Table.Th fz="xs">Compounded</Table.Th>
-            <Table.Th fz="xs"></Table.Th>
+            <Table.Th fz="xs" scope="col">Start</Table.Th>
+            <Table.Th fz="xs" scope="col">APR</Table.Th>
+            <Table.Th fz="xs" scope="col">Compounded</Table.Th>
+            <Table.Th fz="xs" scope="col"><VisuallyHidden>Actions</VisuallyHidden></Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -194,6 +194,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                     );
                   }}
                   placeholder="Start date"
+                  aria-label="Start date"
                 />
               </Table.Td>
               <Table.Td>
@@ -202,6 +203,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                     <Select
                       style={{ flex: 1 }}
                       size="xs"
+                      aria-label="APR variable"
                       data={amountVariables.map((name) => ({
                         value: name,
                         label: name,
@@ -228,6 +230,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                     <CalculatorEditor
                       style={{ flex: 1 }}
                       size="xs"
+                      label="APR"
                       value={Number(interest.apr)}
                       onChange={(apr: number) => {
                         dispatch(
@@ -260,6 +263,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                         ),
                       );
                     }}
+                    aria-label="Toggle variable mode"
                   >
                     {interest.aprIsVariable ? <IconVariable /> : <IconVariableOff />}
                   </ActionIcon>
@@ -268,6 +272,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
               <Table.Td>
                 <Select
                   size="xs"
+                  aria-label="Compounding frequency"
                   data={[
                     { value: 'day', label: 'Daily' },
                     { value: 'week', label: 'Weekly' },
@@ -300,6 +305,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
                   onClick={() => {
                     dispatch(updateInterests(interests.filter((i) => i.id !== interest.id)));
                   }}
+                  aria-label="Remove interest rate"
                 >
                   <IconX />
                 </ActionIcon>
@@ -328,6 +334,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
               ]),
             );
           }}
+          aria-label="Add interest rate"
         >
           <IconPlus />
         </ActionIcon>
@@ -336,6 +343,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
           onClick={() => {
             dispatch(updateInterests([...interests].sort((a, b) => (a.applicableDate > b.applicableDate ? 1 : -1))));
           }}
+          aria-label="Sort by date"
         >
           <IconSort09 />
         </ActionIcon>
@@ -345,6 +353,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
             dispatch(saveInterests(account, [], startDate, endDate, graphStartDate, graphEndDate));
             resetSelected();
           }}
+          aria-label="Delete all interest rates"
         >
           <IconTrash />
         </ActionIcon>
@@ -355,6 +364,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
             dispatch(saveInterests(account, interests, startDate, endDate, graphStartDate, graphEndDate));
             resetSelected();
           }}
+          aria-label="Save interest rates"
         >
           <IconDeviceFloppy />
         </ActionIcon>

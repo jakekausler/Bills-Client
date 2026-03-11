@@ -5,7 +5,6 @@ import {
   Group,
   NumberInput,
   Select,
-  TextInput,
 } from '@mantine/core';
 import { IconTrash, IconVariable, IconVariableOff } from '@tabler/icons-react';
 import { SpendingTrackerCategory } from '../../types/types';
@@ -59,6 +58,7 @@ const ThresholdChangeRow: React.FC<ThresholdChangeRowProps> = ({
         ml={-10}
         size="sm"
         onClick={() => onChange(index, { dateIsVariable: !change.dateIsVariable })}
+        aria-label="Toggle date variable mode"
       >
         {change.dateIsVariable ? <IconVariable size={14} /> : <IconVariableOff size={14} />}
       </ActionIcon>
@@ -93,6 +93,7 @@ const ThresholdChangeRow: React.FC<ThresholdChangeRowProps> = ({
         ml={-10}
         size="sm"
         onClick={() => onChange(index, { newThresholdIsVariable: !change.newThresholdIsVariable })}
+        aria-label="Toggle threshold variable mode"
       >
         {change.newThresholdIsVariable ? <IconVariable size={14} /> : <IconVariableOff size={14} />}
       </ActionIcon>
@@ -113,6 +114,7 @@ const ThresholdChangeRow: React.FC<ThresholdChangeRowProps> = ({
         size="sm"
         mb={2}
         onClick={() => onDelete(index)}
+        aria-label="Delete threshold change"
       >
         <IconTrash size={14} />
       </ActionIcon>

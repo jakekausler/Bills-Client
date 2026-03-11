@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, LoadingOverlay, Group } from '@mantine/core';
+import { Stack, LoadingOverlay, Group, VisuallyHidden } from '@mantine/core';
 import { GraphProps } from './types';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
@@ -28,42 +28,47 @@ export function Graph({
   const showLoading = useDelayedLoading(!loaded);
 
   return (
-    <Stack pos="relative" h="100%" style={style}>
+    <Stack pos="relative" h="100%" style={style} aria-busy={showLoading}>
       <LoadingOverlay
         visible={showLoading}
         loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       {startDate && endDate && setGraphStartDate && setGraphEndDate && (
-        <Group w="100%">
-          <EditableDateInput
-            style={{ flex: 1 }}
-            value={startDate}
-            onBlur={(value) => {
-              if (!value) return;
-              dispatch(setGraphStartDate(value));
-            }}
-            label="Graph Start Date"
-            placeholder="Select start date"
-          />
-          <EditableDateInput
-            style={{ flex: 1 }}
-            value={endDate}
-            onBlur={(value) => {
-              if (!value) return;
-              dispatch(setGraphEndDate(value));
-            }}
-            label="Graph End Date"
-            placeholder="Select end date"
-          />
-        </Group>
+        <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
+          <VisuallyHidden component="legend">Graph date range</VisuallyHidden>
+          <Group w="100%">
+            <EditableDateInput
+              style={{ flex: 1 }}
+              value={startDate}
+              onBlur={(value) => {
+                if (!value) return;
+                dispatch(setGraphStartDate(value));
+              }}
+              label="Graph Start Date"
+              placeholder="Select start date"
+            />
+            <EditableDateInput
+              style={{ flex: 1 }}
+              value={endDate}
+              onBlur={(value) => {
+                if (!value) return;
+                dispatch(setGraphEndDate(value));
+              }}
+              label="Graph End Date"
+              placeholder="Select end date"
+            />
+          </Group>
+        </fieldset>
       )}
-      <div style={{ flex: 1, minHeight: 0 }}>
+      <div style={{ flex: 1, minHeight: 0 }} role="img" aria-label="Line chart showing account balance projections over time. Tooltip details are available via mouse hover.">
+        <VisuallyHidden>Account balance projection chart. Data values are shown in tooltips on hover.</VisuallyHidden>
         <Line
+          aria-label="Account balance projection chart"
           data={{
-            datasets: datasets.map((dataset, index) => ({
-              // borderColor: `hsl(${(index * 137.5 + 200) % 360}, 70%, 50%)`,
-              // backgroundColor: `hsla(${(index * 137.5 + 200) % 360}, 70%, 50%, 0.5)`,
+            datasets: datasets.map((dataset, _index) => ({
+              // borderColor: `hsl(${(_index * 137.5 + 200) % 360}, 70%, 50%)`,
+              // backgroundColor: `hsla(${(_index * 137.5 + 200) % 360}, 70%, 50%, 0.5)`,
               pointRadius: 0,
               borderWidth: 1,
               pointHoverRadius: 5,

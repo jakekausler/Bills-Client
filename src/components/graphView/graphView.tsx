@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectGraphViewDatasets, selectGraphViewLoaded, selectGraphViewType } from '../../features/graphView/select';
 import { Graph } from '../graph/graph';
 import { setGraphViewStartDate, setGraphViewEndDate } from '../../features/graphView/slice';
+import { VisuallyHidden } from '@mantine/core';
 
 export default function GraphView() {
   const datasets = useSelector(selectGraphViewDatasets);
@@ -19,15 +20,18 @@ export default function GraphView() {
   const loaded = useSelector(selectGraphViewLoaded);
 
   return (
-    <Graph
-      datasets={datasets}
-      labels={labels}
-      startDate={startDate}
-      endDate={endDate}
-      type={type}
-      loaded={loaded}
-      setGraphStartDate={setGraphViewStartDate}
-      setGraphEndDate={setGraphViewEndDate}
-    />
+    <>
+      <VisuallyHidden component="h2">Account Balance Graph</VisuallyHidden>
+      <Graph
+        datasets={datasets}
+        labels={labels}
+        startDate={startDate}
+        endDate={endDate}
+        type={type}
+        loaded={loaded}
+        setGraphStartDate={setGraphViewStartDate}
+        setGraphEndDate={setGraphViewEndDate}
+      />
+    </>
   );
 }

@@ -77,7 +77,7 @@ export default function ConfigList() {
 
   return (
     <>
-      <Card shadow="sm" p="lg">
+      <Card shadow="sm" p="lg" aria-busy={loading}>
         <Group justify="space-between" mb="md">
           <Title order={3}>Healthcare Configurations</Title>
           <Button leftSection={<IconPlus size={16} />} onClick={handleAdd}>
@@ -98,6 +98,7 @@ export default function ConfigList() {
           </Alert>
         )}
 
+        <div aria-live="polite">
         {loading ? (
           <Group justify="center" py="xl">
             <Loader size="sm" />
@@ -109,17 +110,17 @@ export default function ConfigList() {
           </Text>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <Table>
+            <Table aria-label="Healthcare configurations">
               <thead>
                 <tr>
-                  <th>Covered Persons</th>
-                  <th>Plan Name</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Deductible (Ind/Fam)</th>
-                  <th>OOP Max (Ind/Fam)</th>
-                  <th>HSA</th>
-                  <th>Actions</th>
+                  <th scope="col">Covered Persons</th>
+                  <th scope="col">Plan Name</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col">Deductible (Ind/Fam)</th>
+                  <th scope="col">OOP Max (Ind/Fam)</th>
+                  <th scope="col">HSA</th>
+                  <th scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -145,10 +146,10 @@ export default function ConfigList() {
                     <td>{config.hsaReimbursementEnabled ? 'Enabled' : 'Disabled'}</td>
                     <td>
                       <Group gap="xs">
-                        <ActionIcon color="blue" onClick={() => handleEdit(config)}>
+                        <ActionIcon color="blue" onClick={() => handleEdit(config)} aria-label="Edit configuration">
                           <IconEdit size={16} />
                         </ActionIcon>
-                        <ActionIcon color="red" onClick={() => handleDelete(config)}>
+                        <ActionIcon color="red" onClick={() => handleDelete(config)} aria-label="Delete configuration">
                           <IconTrash size={16} />
                         </ActionIcon>
                       </Group>
@@ -160,6 +161,7 @@ export default function ConfigList() {
             </Table>
           </div>
         )}
+        </div>
       </Card>
 
       <ConfigForm opened={formOpened} onClose={handleFormClose} config={editingConfig} />

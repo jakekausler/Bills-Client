@@ -5,7 +5,7 @@ type HealthcareSidebarProps = {
   close: () => void;
 };
 
-export default function HealthcareSidebar({ close }: HealthcareSidebarProps) {
+export default function HealthcareSidebar({ close: _close }: HealthcareSidebarProps) {
   return (
     <Stack gap="md" p="md">
       <Text size="sm" c="dimmed">

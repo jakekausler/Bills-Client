@@ -96,12 +96,12 @@ describe('simulations selectors', () => {
 
   describe('selectSelectedSimulationVariables', () => {
     it('returns variables of the selected simulation', () => {
-      /* eslint-disable @typescript-eslint/naming-convention */
+       
       const variables = {
         INFLATION: { type: 'number', value: 0.03 },
         RATE: { type: 'number', value: 0.07 },
       };
-      /* eslint-enable @typescript-eslint/naming-convention */
+       
       const simulations = [
         makeSimulation({ name: 'Base Case', selected: true, variables }),
       ];
@@ -129,11 +129,11 @@ describe('simulations selectors', () => {
 
   describe('selectUsedVariables', () => {
     it('returns the usedVariables map from state', () => {
-      /* eslint-disable @typescript-eslint/naming-convention */
+       
       const usedVariables: UsedVariableMap = {
         INFLATION: [{ name: 'INFLATION', type: 'number', date: '2024-01-01' }],
       };
-      /* eslint-enable @typescript-eslint/naming-convention */
+       
       const state = makeRootState({ usedVariables });
       expect(selectUsedVariables(state)).toEqual(usedVariables);
     });

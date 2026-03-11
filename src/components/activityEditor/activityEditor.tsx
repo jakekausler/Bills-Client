@@ -31,13 +31,13 @@ import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '
 import { removeActivity, saveActivity } from '../../features/activities/actions';
 import { Activity } from '../../types/types';
 import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
-import { IconVariable, IconVariableOff, IconWifi0 } from '@tabler/icons-react';
+import { IconVariable, IconVariableOff } from '@tabler/icons-react';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import { selectSpendingTrackerCategoryOptions } from '../../features/spendingTracker/select';
 import CreatableSelect from '../helpers/creatableSelect';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { useGroupedAccounts } from '../../hooks/useGroupedAccounts';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
@@ -87,6 +87,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
     : [];
 
   const showLoading = useDelayedLoading(!activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded);
+  const theme = useMantineTheme();
 
   if (!account) {
     return <Text>No account selected</Text>;
@@ -95,8 +96,6 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
   if (!selectedActivity) {
     return <Text>No activity selected</Text>;
   }
-
-  const theme = useMantineTheme();
 
   const validate = (name: string, value: string | number | boolean | null | undefined) => {
     if (name === 'dateVariable') {
@@ -288,6 +287,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                   }),
                 );
               }}
+              aria-label="Toggle variable mode"
             >
               {selectedActivity.dateIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
@@ -346,6 +346,8 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               gap="sm"
               p="md"
               style={{ backgroundColor: theme.colors.dark[6], borderRadius: 4 }}
+              role="region"
+              aria-label="Healthcare expense details"
             >
               <TextInput
                 label="Person Name"
@@ -462,7 +464,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
             error={validate('isTransfer', selectedActivity.isTransfer)}
           />
           {selectedActivity.isTransfer && (
-            <>
+            <Stack gap="sm" role="region" aria-label="Transfer details">
               <Select
                 label="From Account"
                 value={selectedActivity.from}
@@ -485,7 +487,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                 }}
                 error={validate('to', selectedActivity.to)}
               />
-            </>
+            </Stack>
           )}
           <Group w="100%">
             {((!selectedActivity.amountIsVariable ||
@@ -546,6 +548,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
                   }),
                 );
               }}
+              aria-label="Toggle variable mode"
             >
               {selectedActivity.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
@@ -564,6 +567,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
           <Group w="100%" grow>
             <Button
               disabled={!allValid()}
+              title={!allValid() ? 'Fix validation errors before saving' : undefined}
               onClick={() => {
                 save();
               }}
@@ -572,6 +576,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
             </Button>
             <Button
               disabled={!selectedActivity.id || !!selectedBillId}
+              title={!selectedActivity.id ? 'Activity has not been saved yet' : selectedBillId ? 'Cannot remove an activity linked to a bill' : undefined}
               onClick={() => {
                 dispatch(
                   removeActivity(

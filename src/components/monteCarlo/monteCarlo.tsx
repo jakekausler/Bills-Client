@@ -11,6 +11,7 @@ import {
   Alert,
   Collapse,
   UnstyledButton,
+  VisuallyHidden,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { AppDispatch } from '../../store';
@@ -66,6 +67,7 @@ export default function MonteCarlo() {
 
   return (
     <Stack gap="lg" h="100%" style={{ display: 'flex', flexDirection: 'column' }}>
+      <VisuallyHidden component="h2">Monte Carlo Simulation</VisuallyHidden>
       {error && (
         <Alert color="red" title="Error">
           {error}
@@ -74,14 +76,14 @@ export default function MonteCarlo() {
 
       <Card withBorder>
         <Stack>
-          <UnstyledButton onClick={() => setIsCollapsed(!isCollapsed)} style={{ width: '100%' }}>
+          <UnstyledButton onClick={() => setIsCollapsed(!isCollapsed)} style={{ width: '100%' }} aria-expanded={!isCollapsed} aria-controls="monte-carlo-form">
             <Group justify="space-between" wrap="nowrap">
               <Text size="lg" fw={700}>Create New Simulation</Text>
               {isCollapsed ? <IconChevronDown size={20} /> : <IconChevronUp size={20} />}
             </Group>
           </UnstyledButton>
 
-          <Collapse in={!isCollapsed}>
+          <Collapse in={!isCollapsed} id="monte-carlo-form">
             <Stack>
               <Group>
                 <DateInput

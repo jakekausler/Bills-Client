@@ -44,7 +44,7 @@ describe('categories api', () => {
 
   describe('fetchCategoryBreakdown', () => {
     it('calls api.get with correct endpoint when no selectedAccounts', async () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const mockData = { Food: 500, Housing: 1200 };
       mockApi.get.mockResolvedValue(mockData);
 
@@ -87,7 +87,7 @@ describe('categories api', () => {
 
   describe('fetchSelectedCategoryBreakdown', () => {
     it('calls api.get with correct endpoint for a category without selectedAccounts', async () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const mockData = { January: 150, February: 200 };
       mockApi.get.mockResolvedValue(mockData);
 

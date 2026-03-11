@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Group, LoadingOverlay, Modal, Select, Stack, Table, useMantineTheme } from '@mantine/core';
+import { Button, Group, LoadingOverlay, Modal, Select, Stack, Table, Text, VisuallyHidden, useMantineTheme } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActivitiesLoaded,
@@ -187,31 +187,55 @@ export default function Activities({ style }: ActivitiesProps) {
 
   return (
     <>
-      <Stack pos="relative" h="100%">
+      <Stack pos="relative" h="100%" aria-busy={showLoading}>
         <LoadingOverlay
           visible={showLoading}
           loaderProps={{ color: 'blue.6', size: 'xl' }}
           overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
         />
         <Stack h="100%" style={{ ...style, overflow: 'auto' }}>
-          <Table style={{ width: '100%', tableLayout: 'auto' }} stickyHeader stickyHeaderOffset={0}>
+          <Table style={{ width: '100%', tableLayout: 'auto' }} stickyHeader stickyHeaderOffset={0} aria-label="Account activities">
             <Table.Thead>
               <Table.Tr>
-                <Table.Th></Table.Th>
-                <Table.Th fz="xs">Date</Table.Th>
-                <Table.Th fz="xs">Payee</Table.Th>
-                <Table.Th fz="xs">Category</Table.Th>
-                <Table.Th fz="xs">Amount</Table.Th>
-                <Table.Th fz="xs">Balance</Table.Th>
+                <Table.Th scope="col"><VisuallyHidden>Flag</VisuallyHidden></Table.Th>
+                <Table.Th scope="col" fz="xs">Date</Table.Th>
+                <Table.Th scope="col" fz="xs">Payee</Table.Th>
+                <Table.Th scope="col" fz="xs">Category</Table.Th>
+                <Table.Th scope="col" fz="xs">Amount</Table.Th>
+                <Table.Th scope="col" fz="xs">Balance</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
+              {activities.length === 0 && (
+                <Table.Tr>
+                  <Table.Td colSpan={6} ta="center">
+                    <Text c="dimmed" fz="sm">No activities found for this account and date range.</Text>
+                  </Table.Td>
+                </Table.Tr>
+              )}
               {activities.map((activity, idx) => {
                 return (
                   <Table.Tr
                     key={`${activity.id}-${idx}`}
                     bg={idx % 2 === 0 ? 'gray.9' : ''}
                     onClick={() => selectActivity(activity)}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectActivity(activity);
+                      }
+                      if (e.key === 'F10' && e.shiftKey) {
+                        e.preventDefault();
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const syntheticEvent = new MouseEvent('contextmenu', {
+                          bubbles: true,
+                          clientX: rect.left + rect.width / 2,
+                          clientY: rect.top + rect.height / 2,
+                        });
+                        e.currentTarget.dispatchEvent(syntheticEvent);
+                      }
+                    }}
                     style={{
                       cursor: 'pointer',
                       borderBottom:
@@ -240,11 +264,13 @@ export default function Activities({ style }: ActivitiesProps) {
                                 (activity.billId && activity.firstBill) ||
                                 (activity.interestId && activity.firstInterest)
                               ) {
-                                activity.billId
-                                  ? dispatch(
+                                if (activity.billId) {
+                                  dispatch(
                                     loadAndSelectBill(account?.id as string, activity.billId, activity.isTransfer),
-                                  )
-                                  : dispatch(loadInterests(account?.id as string));
+                                  );
+                                } else {
+                                  dispatch(loadInterests(account?.id as string));
+                                }
                               } else {
                                 selectActivity(activity);
                               }
@@ -294,7 +320,11 @@ export default function Activities({ style }: ActivitiesProps) {
                               title: 'Enter',
                               icon: <IconCurrencyDollar size={16} />,
                               onClick: () => {
-                                activity.billId ? billAsActivityEditor(activity) : interestAsActivityEditor(activity);
+                                if (activity.billId) {
+                                  billAsActivityEditor(activity);
+                                } else {
+                                  interestAsActivityEditor(activity);
+                                }
                               },
                             },
                           ]
@@ -354,8 +384,15 @@ export default function Activities({ style }: ActivitiesProps) {
                     )}
                   >
                     <Table.Td fz="xs">
+                      <VisuallyHidden>
+                        {activity.billId ? 'Recurring bill' : activity.interestId ? 'Interest' : activity.spendingTrackerId ? 'Spending tracker' : 'One-time activity'}
+                        {(activity.firstBill || activity.firstInterest || activity.firstSpendingTracker) ? ', next occurrence' : ''}
+                      </VisuallyHidden>
                       {activity.flag ? (
-                        <IconFlag color={activity.flagColor ? theme.colors[activity.flagColor][4] : 'gray'} size={16} />
+                        <>
+                          <IconFlag color={activity.flagColor ? theme.colors[activity.flagColor][4] : 'gray'} size={16} aria-hidden="true" />
+                          <VisuallyHidden>Flagged {activity.flagColor || 'gray'}</VisuallyHidden>
+                        </>
                       ) : (
                         ''
                       )}
@@ -370,9 +407,11 @@ export default function Activities({ style }: ActivitiesProps) {
                       style={{ whiteSpace: 'nowrap' }}
                       c={(activity.amount as number) < 0 ? 'red' : 'green'}
                     >
+                      <VisuallyHidden>{(activity.amount as number) < 0 ? '(negative)' : '(positive)'}</VisuallyHidden>
                       {'$ ' + (activity.amount as number).toFixed(2)}
                     </Table.Td>
                     <Table.Td fz="xs" style={{ whiteSpace: 'nowrap' }} c={activity.balance < 0 ? 'red' : 'green'}>
+                      <VisuallyHidden>{activity.balance < 0 ? '(negative)' : '(positive)'}</VisuallyHidden>
                       {'$ ' + activity.balance.toFixed(2)}
                     </Table.Td>
                   </Table.Tr>
@@ -382,12 +421,12 @@ export default function Activities({ style }: ActivitiesProps) {
           </Table>
         </Stack>
       </Stack>
-      <Modal opened={!!currentActivity || !!currentBill || !!interests} onClose={resetSelected} withCloseButton={false}>
+      <Modal opened={!!currentActivity || !!currentBill || !!interests} onClose={resetSelected} title={currentBill ? 'Edit Bill' : interests ? 'Edit Interest' : 'Edit Activity'}>
         {currentBill && <BillEditor resetSelected={resetSelected} />}
         {interests && <InterestEditor resetSelected={resetSelected} />}
         {currentActivity && <ActivityEditor resetSelected={resetSelected} />}
       </Modal>
-      <Modal opened={!!editorActivity && !!editorChoice} onClose={resetEditor} withCloseButton={false}>
+      <Modal opened={!!editorActivity && !!editorChoice} onClose={resetEditor} title={`${editorChoice === 'bill' ? 'Bill' : 'Interest'} Options`}>
         <Group w="100%" grow>
           <Button
             onClick={
@@ -407,16 +446,21 @@ export default function Activities({ style }: ActivitiesProps) {
           </Button>
           <Button
             onClick={() => {
-              editorChoice === 'bill' ? skipBill(editorActivity as Activity) : skipInterest();
+              if (editorChoice === 'bill') {
+                skipBill(editorActivity as Activity);
+              } else {
+                skipInterest();
+              }
             }}
           >
             Skip {editorChoice}
           </Button>
         </Group>
       </Modal>
-      <Modal opened={!!changeAccountActivity} onClose={() => setChangeAccountActivity(null)} withCloseButton={false}>
+      <Modal opened={!!changeAccountActivity} onClose={() => setChangeAccountActivity(null)} title="Change Account">
         <Stack>
           <Select
+            label="New account"
             data={accounts.map((acc) => {
               return {
                 value: acc.id,

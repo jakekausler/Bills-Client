@@ -1,11 +1,14 @@
-import { Button, PasswordInput, Stack, Text, TextInput } from '@mantine/core';
-import React, { useEffect, useState } from 'react';
+import { Button, PasswordInput, Stack, Text, TextInput, VisuallyHidden } from '@mantine/core';
+import React, { useEffect, useRef, useState } from 'react';
 
 export function Login({ setToken, invalid }: { setToken: (token: string) => void; invalid: boolean }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [usernameTouched, setUsernameTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const usernameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (username.length === 0) {
@@ -19,6 +22,12 @@ export function Login({ setToken, invalid }: { setToken: (token: string) => void
       setPasswordError('');
     }
   }, [username, password]);
+
+  useEffect(() => {
+    if (invalid) {
+      usernameRef.current?.focus();
+    }
+  }, [invalid]);
 
   const login = () => {
     return fetch('/api/auth/token', {
@@ -45,36 +54,44 @@ export function Login({ setToken, invalid }: { setToken: (token: string) => void
       });
   };
 
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      if (usernameError !== '' || passwordError !== '') {
-        return;
-      }
-      e.preventDefault();
-      login();
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setUsernameTouched(true);
+    setPasswordTouched(true);
+    if (usernameError !== '' || passwordError !== '') {
+      return;
     }
+    login();
   };
 
   return (
-    <Stack align="center" justify="center" h="100vh">
-      {invalid && <Text>Invalid username or password</Text>}
-      <TextInput
-        error={usernameError}
-        w={300}
-        value={username}
-        onKeyUp={handleKeyUp}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <PasswordInput
-        error={passwordError}
-        w={300}
-        value={password}
-        onKeyUp={handleKeyUp}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Button disabled={usernameError !== '' || passwordError !== ''} w={300} onClick={login}>
-        Login
-      </Button>
-    </Stack>
+    <main>
+      <Stack align="center" justify="center" h="100vh">
+        <VisuallyHidden><h1>Login</h1></VisuallyHidden>
+        {invalid && <Text role="alert">Invalid username or password</Text>}
+        <form onSubmit={handleSubmit} aria-label="Login form">
+          <Stack maw={300} w="100%" gap="md">
+            <TextInput
+              ref={usernameRef}
+              label="Username"
+              error={usernameTouched ? usernameError : undefined}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              onBlur={() => setUsernameTouched(true)}
+            />
+            <PasswordInput
+              label="Password"
+              error={passwordTouched ? passwordError : undefined}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onBlur={() => setPasswordTouched(true)}
+            />
+            <Button disabled={usernameError !== '' || passwordError !== ''} type="submit" w="100%">
+              Login
+            </Button>
+          </Stack>
+        </form>
+      </Stack>
+    </main>
   );
 }

@@ -187,7 +187,7 @@ export default function SpendingTracker() {
   }
 
   return (
-    <Container size="xl" py="md">
+    <Container size="xl" py="md" aria-busy={loading || chartLoading}>
       <Stack gap="md">
         {error && (
           <Alert
@@ -207,6 +207,7 @@ export default function SpendingTracker() {
             onChange={handleCategoryChange}
             placeholder="Select a category"
             style={{ flex: 1, maxWidth: 300 }}
+            label="Category"
           />
           <Button leftSection={<IconPlus size={16} />} variant="light" onClick={handleAddCategory}>
             Add New
@@ -222,10 +223,12 @@ export default function SpendingTracker() {
           </Button>
         </Group>
 
+        <div aria-live="polite">
         {selectedCategory && <ConfigCard />}
 
         {selectedCategory && <DateRangeControls />}
         {selectedCategory && <SpendingChart chartData={chartData} loading={chartLoading} />}
+        </div>
       </Stack>
 
       <Modal

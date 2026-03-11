@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { notifications } from '@mantine/notifications';
 import { IconX } from '@tabler/icons-react';
-import type { RootState, AppDispatch } from '../../store';
+import type { AppDispatch } from '../../store';
 
 // Import all error selectors
 import { selectAccountsError } from '../../features/accounts/select';
@@ -31,12 +31,6 @@ import { setMoneyMovementError } from '../../features/moneyMovement/slice';
 import { setMonteCarloError } from '../../features/monteCarlo/slice';
 import { setSimulationsError } from '../../features/simulations/slice';
 import { setError as setSpendingTrackerError } from '../../features/spendingTracker/slice';
-
-interface ErrorConfig {
-  selector: (state: any) => string | null;
-  title: string;
-  clear: () => { type: string; payload?: any };
-}
 
 export function ErrorNotifications() {
   const dispatch = useDispatch<AppDispatch>();
@@ -77,6 +71,8 @@ export function ErrorNotifications() {
           message: value,
           color: 'red',
           icon: <IconX size={16} />,
+          autoClose: 8000,
+          withCloseButton: true,
         });
         dispatch(clear());
       }

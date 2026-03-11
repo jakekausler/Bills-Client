@@ -2,10 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { Box, LoadingOverlay, Stack, Table, Text, useMantineTheme } from '@mantine/core';
-import { useEffect } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { loadAccounts } from '../../features/accounts/actions';
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
 import { CheckboxIcon } from '../helpers/checkboxIcon';
 import { selectSimulations, selectSimulationsLoaded } from '../../features/simulations/select';
@@ -26,7 +24,7 @@ export default function SimulationSelector({
   const theme = useMantineTheme();
 
   return (
-    <Stack h="100%" w="100%" pos="relative">
+    <Stack h="100%" w="100%" pos="relative" aria-busy={showLoading}>
       <LoadingOverlay
         visible={showLoading}
         loaderProps={{ color: 'blue.6', size: 'xl' }}
@@ -35,7 +33,7 @@ export default function SimulationSelector({
       <Table verticalSpacing={0} withRowBorders={false}>
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Simulation</Table.Th>
+            <Table.Th scope="col">Simulation</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -57,12 +55,13 @@ export default function SimulationSelector({
                 }
                 checkedIcon={<IconEye stroke={1.5} color={theme.colors.orange[6]} size={16} />}
                 uncheckedIcon={<IconEyeOff stroke={1.5} color={theme.colors.orange[6]} size={16} />}
+                ariaLabel="Toggle all simulations visibility"
               />
             </Table.Td>
           </Table.Tr>
           {simulations.map((simulation) => (
             <React.Fragment key={simulation.name}>
-              <Table.Tr>
+              <Table.Tr aria-hidden="true" role="presentation">
                 <Table.Td>
                   <Box h={8} />
                 </Table.Td>
@@ -87,6 +86,7 @@ export default function SimulationSelector({
                     }
                     checkedIcon={<IconEye stroke={1.5} color={theme.colors.blue[6]} size={16} />}
                     uncheckedIcon={<IconEyeOff stroke={1.5} color={theme.colors.blue[6]} size={16} />}
+                    ariaLabel={`Toggle ${simulation.name} visibility`}
                   />
                 </Table.Td>
               </Table.Tr>

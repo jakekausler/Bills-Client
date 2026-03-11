@@ -35,7 +35,7 @@ import { selectSelectedSimulationVariables } from '../../features/simulations/se
 import CreatableSelect from '../helpers/creatableSelect';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { useGroupedAccounts } from '../../hooks/useGroupedAccounts';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
@@ -375,6 +375,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                     }),
                   );
                 }}
+                aria-label="Toggle variable mode"
               >
                 {selectedBill.startDateIsVariable ? <IconVariable /> : <IconVariableOff />}
               </ActionIcon>
@@ -431,6 +432,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                     }),
                   );
                 }}
+                aria-label="Toggle variable mode"
               >
                 {selectedBill.endDateIsVariable ? <IconVariable /> : <IconVariableOff />}
               </ActionIcon>
@@ -490,6 +492,8 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               gap="sm"
               p="md"
               style={{ backgroundColor: theme.colors.dark[6], borderRadius: 4 }}
+              role="region"
+              aria-label="Healthcare expense details"
             >
               <TextInput
                 label="Person Name"
@@ -606,7 +610,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             error={validate('isTransfer', selectedBill.isTransfer)}
           />
           {selectedBill.isTransfer && (
-            <>
+            <Stack gap="sm" role="region" aria-label="Transfer details">
               <Select
                 label="From Account"
                 value={selectedBill.from}
@@ -629,7 +633,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 }}
                 error={validate('to', selectedBill.to)}
               />
-            </>
+            </Stack>
           )}
           <Group w="100%">
             {!selectedBill.amountIsVariable && (
@@ -689,6 +693,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                   }),
                 );
               }}
+              aria-label="Toggle variable mode"
             >
               {selectedBill.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>
@@ -827,6 +832,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                     }),
                   );
                 }}
+                aria-label="Toggle variable mode"
               >
                 {selectedBill.increaseByIsVariable ? <IconVariable /> : <IconVariableOff />}
               </ActionIcon>
@@ -858,6 +864,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
           <Group w="100%" grow>
             <Button
               disabled={!allValid()}
+              title={!allValid() ? 'Fix validation errors before saving' : undefined}
               onClick={() => {
                 dispatch(
                   saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate),
@@ -869,6 +876,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             </Button>
             <Button
               disabled={!selectedBill.id}
+              title={!selectedBill.id ? 'Bill has not been saved yet' : undefined}
               onClick={() => {
                 dispatch(
                   removeBill(

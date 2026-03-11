@@ -80,17 +80,17 @@ describe('simulationsSlice reducer', () => {
       const simulation = makeSimulation({
         name: 'With Variables',
         variables: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+           
           INFLATION: { type: 'number', value: 0.03 },
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+           
           RATE: { type: 'number', value: 0.05 },
         },
       });
       const state = reducer(initialState, setSimulations([simulation]));
       expect(state.simulations[0].variables).toEqual({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         INFLATION: { type: 'number', value: 0.03 },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         RATE: { type: 'number', value: 0.05 },
       });
     });
@@ -118,11 +118,11 @@ describe('simulationsSlice reducer', () => {
 
   describe('setUsedVariables', () => {
     it('sets used variables and marks them as loaded', () => {
-      /* eslint-disable @typescript-eslint/naming-convention */
+       
       const usedVariables: UsedVariableMap = {
         INFLATION: [{ name: 'INFLATION', type: 'number', date: '2024-01-01' }],
       };
-      /* eslint-enable @typescript-eslint/naming-convention */
+       
       const state = reducer(initialState, setUsedVariables(usedVariables));
       expect(state.usedVariables).toEqual(usedVariables);
       expect(state.usedVariablesLoaded).toBe(true);
@@ -131,15 +131,15 @@ describe('simulationsSlice reducer', () => {
     it('replaces existing used variables', () => {
       const stateWithVars = {
         ...initialState,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         usedVariables: { OLD_VAR: [{ name: 'OLD_VAR', type: 'number' }] },
         usedVariablesLoaded: true,
       };
-      /* eslint-disable @typescript-eslint/naming-convention */
+       
       const newVariables: UsedVariableMap = {
         NEW_VAR: [{ name: 'NEW_VAR', type: 'string' }],
       };
-      /* eslint-enable @typescript-eslint/naming-convention */
+       
       const state = reducer(stateWithVars, setUsedVariables(newVariables));
       expect(state.usedVariables).toEqual(newVariables);
       expect(state.usedVariables).not.toHaveProperty('OLD_VAR');
@@ -148,7 +148,7 @@ describe('simulationsSlice reducer', () => {
     it('sets used variables to empty object and marks as loaded', () => {
       const stateWithVars = {
         ...initialState,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         usedVariables: { VAR: [{ name: 'VAR', type: 'number' }] },
         usedVariablesLoaded: true,
       };
@@ -158,13 +158,13 @@ describe('simulationsSlice reducer', () => {
     });
 
     it('handles used variables with account and transfer fields', () => {
-      /* eslint-disable @typescript-eslint/naming-convention */
+       
       const usedVariables: UsedVariableMap = {
         TRANSFER_RATE: [
           { name: 'TRANSFER_RATE', type: 'number', from: 'Checking', to: 'Savings' },
         ],
       };
-      /* eslint-enable @typescript-eslint/naming-convention */
+       
       const state = reducer(initialState, setUsedVariables(usedVariables));
       expect(state.usedVariables['TRANSFER_RATE'][0].from).toBe('Checking');
       expect(state.usedVariables['TRANSFER_RATE'][0].to).toBe('Savings');
@@ -184,7 +184,7 @@ describe('simulationsSlice reducer', () => {
     });
 
     it('does not affect usedVariables object', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const usedVariables: UsedVariableMap = { VAR: [{ name: 'VAR', type: 'number' }] };
       const stateWithVars = { ...initialState, usedVariables };
       const state = reducer(stateWithVars, setUsedVariablesLoaded(true));

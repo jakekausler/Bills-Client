@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActionIcon, Button, LoadingOverlay, NumberInput, Stack, Table, Text, TextInput } from '@mantine/core';
+import { ActionIcon, Button, LoadingOverlay, NumberInput, Stack, Table, Text, TextInput, VisuallyHidden } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectSelectedSimulation,
@@ -24,9 +24,9 @@ function UsedVariableTooltip({ used }: { used: UsedVariable[] }) {
       <Table>
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Account</Table.Th>
-            {used.some((u) => !!u.date) && <Table.Th>Date</Table.Th>}
+            <Table.Th scope="col">Name</Table.Th>
+            <Table.Th scope="col">Account</Table.Th>
+            {used.some((u) => !!u.date) && <Table.Th scope="col">Date</Table.Th>}
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -75,59 +75,73 @@ export default function Variables() {
   const variables = simulation.variables;
 
   return (
-    <Stack h="100%" w="100%" pos="relative">
+    <Stack h="100%" w="100%" pos="relative" aria-busy={showLoading}>
       <LoadingOverlay
         visible={showLoading}
         loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
       <h2>{name} Variables</h2>
-      <Table>
+      <Table aria-label="Variables table with name and value columns">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th scope="col">Name</Table.Th>
+            <Table.Th scope="col">Value</Table.Th>
+            <Table.Th scope="col"><VisuallyHidden>Actions</VisuallyHidden></Table.Th>
+          </Table.Tr>
+        </Table.Thead>
         <Table.Tbody>
           {Object.entries(variables).map(([variable, value], idx) => {
             return (
-              <ConditionalTooltip
-                label={<UsedVariableTooltip used={usedVariables[variable]} />}
-                condition={usedVariables[variable]?.length > 0}
-                key={variable}
-              >
-                <Table.Tr w="100%">
+                <Table.Tr w="100%" key={variable}>
                   <Table.Td>
-                    <TextInput
-                      disabled={usedVariables[variable]?.length > 0}
-                      style={{ flex: 1 }}
-                      label="Name"
-                      value={variableNames[idx]}
-                      onBlur={() => {
-                        if (
-                          variableNames[idx] === '' ||
-                          variableNames[idx] === undefined ||
-                          variableNames[idx] === null
-                        )
-                          return;
-                        setVariableNames(variableNames.map((name, i) => (i === idx ? variable : name)));
-                        if (variableNames[idx] !== variable) {
-                          dispatch(
-                            saveSimulations(
-                              simulations.map((s) => {
-                                const updatedSimulation = {
-                                  ...s,
-                                  variables: {
-                                    ...s.variables,
-                                    [variableNames[idx]]: s.variables[variable],
-                                  },
-                                };
-                                delete updatedSimulation.variables[variable];
-                                return updatedSimulation;
-                              }),
-                            ),
-                          );
-                        }
-                      }}
-                      onChange={(event) => {
-                        setVariableNames(variableNames.map((n, i) => (i === idx ? event.target.value : n)));
-                      }}
-                    />
+                    <ConditionalTooltip
+                      label={<UsedVariableTooltip used={usedVariables[variable]} />}
+                      condition={usedVariables[variable]?.length > 0}
+                    >
+                      <div>
+                        <TextInput
+                          disabled={usedVariables[variable]?.length > 0}
+                          style={{ flex: 1 }}
+                          label="Name"
+                          value={variableNames[idx]}
+                          onBlur={() => {
+                            if (
+                              variableNames[idx] === '' ||
+                              variableNames[idx] === undefined ||
+                              variableNames[idx] === null
+                            )
+                              return;
+                            setVariableNames(variableNames.map((name, i) => (i === idx ? variable : name)));
+                            if (variableNames[idx] !== variable) {
+                              dispatch(
+                                saveSimulations(
+                                  simulations.map((s) => {
+                                    const updatedSimulation = {
+                                      ...s,
+                                      variables: {
+                                        ...s.variables,
+                                        [variableNames[idx]]: s.variables[variable],
+                                      },
+                                    };
+                                    delete updatedSimulation.variables[variable];
+                                    return updatedSimulation;
+                                  }),
+                                ),
+                              );
+                            }
+                          }}
+                          onChange={(event) => {
+                            setVariableNames(variableNames.map((n, i) => (i === idx ? event.target.value : n)));
+                          }}
+                        />
+                        {usedVariables[variable]?.length > 0 && (
+                          <VisuallyHidden>
+                            Variable in use by: {usedVariables[variable].map((u) => `${u.name} (${u.account || u.from || 'unknown'})`).join(', ')}
+                          </VisuallyHidden>
+                        )}
+                      </div>
+                    </ConditionalTooltip>
                   </Table.Td>
                   <Table.Td>
                     {value.type === 'amount' && (
@@ -228,12 +242,12 @@ export default function Variables() {
                           ),
                         )
                       }
+                      aria-label="Delete variable"
                     >
                       <IconX />
                     </ActionIcon>
                   </Table.Td>
                 </Table.Tr>
-              </ConditionalTooltip>
             );
           })}
           <Table.Tr>

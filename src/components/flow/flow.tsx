@@ -1,7 +1,7 @@
 import React from 'react';
 import { selectFlow } from '../../features/flow/selector';
 import { useSelector } from 'react-redux';
-import { Box, useMantineTheme } from '@mantine/core';
+import { Box, VisuallyHidden, useMantineTheme } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { sankeyLinkHorizontal } from 'd3-sankey';
@@ -65,7 +65,19 @@ const SankeyDiagram = () => {
     container.select('svg').remove();
 
     // Create the SVG element
-    const svg = container.append('svg').attr('width', dimensions.width).attr('height', dimensions.height);
+    const svg = container
+      .append('svg')
+      .attr('width', dimensions.width)
+      .attr('height', dimensions.height)
+      .attr('role', 'img')
+      .attr('aria-label', 'Money flow diagram showing transfers between accounts');
+
+    svg.append('title').text('Money Flow Diagram');
+
+    svg.append('defs').append('style').text(`
+      .sankey-node:focus { outline: 2px solid #fff; outline-offset: 2px; }
+      .sankey-link:focus { outline: 2px solid #fff; outline-offset: 1px; }
+    `);
 
     const { nodes, links } = data;
 
@@ -196,10 +208,21 @@ const SankeyDiagram = () => {
         selectedLink === d.index ? 1 : selectedNode === d.source.name || selectedNode === d.target.name ? 1 : 0.5,
       )
       .attr('stroke-width', (d) => Math.max(1, d.width ?? 0))
+      .attr('class', 'sankey-link')
+      .attr('tabindex', 0)
+      .attr('role', 'button')
+      .attr('aria-label', (d: any) => `Flow from ${getName(d.source.name)} to ${getName(d.target.name)}, $${d.value.toFixed(2)}`)
       .style('cursor', 'pointer')
-      .on('click', (event, d) => {
+      .on('click', (_event, d) => {
         setSelectedLink(selectedLink === d.index ? null : d.index);
         setSelectedNode(null);
+      })
+      .on('keydown', (event: KeyboardEvent, d: any) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setSelectedLink(selectedLink === d.index ? null : d.index);
+          setSelectedNode(null);
+        }
       })
       .append('title')
       .text((d) => `${d.source.name} -> ${d.target.name}\n$ ${d.value.toFixed(2)}`);
@@ -210,9 +233,20 @@ const SankeyDiagram = () => {
       .selectAll('g')
       .data(updatedNodes)
       .join('g')
+      .attr('class', 'sankey-node')
+      .attr('tabindex', 0)
+      .attr('role', 'button')
+      .attr('aria-label', (d: any) => `${getName(d.name)}${d.name.includes('-') ? `, $${d.value.toFixed(2)}` : ''}`)
       .on('click', (_, d) => {
         setSelectedNode(selectedNode === d.name ? null : d.name);
         setSelectedLink(null);
+      })
+      .on('keydown', (event: KeyboardEvent, d: any) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setSelectedNode(selectedNode === d.name ? null : d.name);
+          setSelectedLink(null);
+        }
       });
 
     // Update rectangle styling to reflect selection state
@@ -254,7 +288,12 @@ const SankeyDiagram = () => {
       .attr('fill', '#333');
   };
 
-  return <Box ref={containerRef} w="100%" h="100%"></Box>;
+  return (
+    <Box ref={containerRef} w="100%" h="100%">
+      <VisuallyHidden component="h2">Money Flow Diagram</VisuallyHidden>
+      <VisuallyHidden>Sankey diagram showing money flow between accounts and categories. Use Tab to navigate nodes and links, Enter or Space to select.</VisuallyHidden>
+    </Box>
+  );
 };
 
 export default SankeyDiagram;

@@ -40,16 +40,17 @@ export default function SmallScreenControls({
         grow
         style={style}
       >
-        <ActionIcon onClick={open}>
+        <ActionIcon onClick={open} aria-label="Open date picker">
           <IconCalendar />
         </ActionIcon>
-        <ActionIcon onClick={() => dispatch(newActivity())}>
+        <ActionIcon onClick={() => dispatch(newActivity())} aria-label="New activity">
           <IconCurrencyDollar />
         </ActionIcon>
         <ActionIcon
           onClick={() => {
             dispatch(newBill());
           }}
+          aria-label="New bill"
         >
           <IconClockDollar />
         </ActionIcon>
@@ -58,10 +59,11 @@ export default function SmallScreenControls({
             if (!accountId) return;
             dispatch(loadInterests(accountId));
           }}
+          aria-label="Edit interest rates"
         >
           <IconPercentage />
         </ActionIcon>
-        <ActionIcon onClick={() => dispatch(toggleGraph())}>
+        <ActionIcon onClick={() => dispatch(toggleGraph())} aria-label="Toggle graph">
           <IconActivity />
         </ActionIcon>
       </Group>

@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import { ActionIcon, AppShell, Box, Burger, Button, Group } from '@mantine/core';
+import { ActionIcon, AppShell, Box, Burger, Button, Group, VisuallyHidden } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store';
-import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartBar, IconChartAreaFilled, IconChartLine, IconArrowsSplit2, IconHeartbeat, IconTargetArrow } from '@tabler/icons-react';
+import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartAreaFilled, IconChartLine, IconArrowsSplit2, IconHeartbeat, IconTargetArrow } from '@tabler/icons-react';
 import { loadAccounts } from './features/accounts/actions';
 import AccountList from './components/accounts/accountList';
 import Account from './components/account/account';
@@ -140,6 +140,20 @@ function AppContent() {
   const [opened, { toggle, close }] = useDisclosure();
   const [page, setPage] = useState<string>(Object.keys(pages)[0]);
   const dispatch = useDispatch<AppDispatch>();
+  const mainContentRef = useRef<HTMLElement>(null);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    document.title = `${pages[page].title} - Bills`;
+  }, [page]);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    mainContentRef.current?.focus();
+  }, [page]);
 
   useEffect(() => {
     dispatch(loadAccounts());
@@ -158,63 +172,95 @@ function AppContent() {
   const SidebarComponent = pages[page as keyof typeof pages].sidebar as SidebarComponentType;
 
   return (
-    <AppShell
-      header={{ height: 50 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-      styles={{
-        main: { height: 'calc(100vh - 50px)' },
-      }}
-      padding="md"
-    >
-      <AppShell.Header>
-        <Group p="xs" w="100%">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <Group justify="space-between" style={{ flex: 1 }}>
-            {Object.entries(pages).map(([key, { title, icon, hidden }]) => {
-              if (hidden) return null;
-              const Icon = icon as React.ComponentType;
-              return (
-                <Box key={key}>
-                  <Button
-                    visibleFrom="sm"
-                    onClick={() => {
-                      setPage(key);
-                      if (opened) {
-                        toggle();
-                      }
-                    }}
-                  >
-                    {title}
-                  </Button>
-                  <ActionIcon
-                    onClick={() => {
-                      setPage(key);
-                      if (opened) {
-                        toggle();
-                      }
-                    }}
-                    hiddenFrom="sm"
-                    disabled={page === key}
-                  >
-                    <Icon />
-                  </ActionIcon>
-                </Box>
-              );
-            })}
+    <>
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: 'auto',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+          zIndex: 9999,
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.position = 'static';
+          e.currentTarget.style.width = 'auto';
+          e.currentTarget.style.height = 'auto';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.position = 'absolute';
+          e.currentTarget.style.width = '1px';
+          e.currentTarget.style.height = '1px';
+        }}
+      >
+        Skip to main content
+      </a>
+      <AppShell
+        header={{ height: 50 }}
+        navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+        styles={{
+          main: { height: 'calc(100vh - 50px)' },
+        }}
+        padding="md"
+      >
+        <AppShell.Header>
+          <Group p="xs" w="100%">
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" aria-label="Toggle sidebar navigation" />
+            <nav aria-label="Main navigation">
+              <Group justify="space-between" style={{ flex: 1 }}>
+                {Object.entries(pages).map(([key, { title, icon, hidden }]) => {
+                  if (hidden) return null;
+                  const Icon = icon as React.ComponentType;
+                  return (
+                    <Box key={key}>
+                      <Button
+                        visibleFrom="sm"
+                        onClick={() => {
+                          setPage(key);
+                          if (opened) {
+                            toggle();
+                          }
+                        }}
+                        aria-current={page === key ? 'page' : undefined}
+                      >
+                        {title}
+                      </Button>
+                      <ActionIcon
+                        onClick={() => {
+                          setPage(key);
+                          if (opened) {
+                            toggle();
+                          }
+                        }}
+                        hiddenFrom="sm"
+                        disabled={page === key}
+                        aria-label={title}
+                        aria-current={page === key ? 'page' : undefined}
+                      >
+                        <Icon />
+                      </ActionIcon>
+                    </Box>
+                  );
+                })}
+              </Group>
+            </nav>
           </Group>
-        </Group>
-      </AppShell.Header>
+        </AppShell.Header>
 
-      <AppShell.Navbar p="md" style={{ overflow: 'auto' }}>
-        <Box>
-          <SidebarComponent close={close} />
-        </Box>
-      </AppShell.Navbar>
+        <AppShell.Navbar p="md" style={{ overflow: 'auto' }}>
+          <nav aria-label="Sidebar navigation">
+            <SidebarComponent close={close} />
+          </nav>
+        </AppShell.Navbar>
 
-      <AppShell.Main>
-        <PageComponent />
-      </AppShell.Main>
-    </AppShell>
+        <AppShell.Main id="main-content" ref={mainContentRef} tabIndex={-1}>
+          <VisuallyHidden><h1>{pages[page].title}</h1></VisuallyHidden>
+          <PageComponent />
+        </AppShell.Main>
+      </AppShell>
+    </>
   );
 }
 

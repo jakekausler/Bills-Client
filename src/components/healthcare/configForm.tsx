@@ -182,7 +182,7 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
         </Alert>
       )}
 
-      <Tabs defaultValue="basic">
+      <Tabs defaultValue="basic" aria-label="Healthcare configuration settings">
         <Tabs.List>
           <Tabs.Tab value="basic">Basic Info</Tabs.Tab>
           <Tabs.Tab value="thresholds">Deductibles & OOP</Tabs.Tab>
@@ -321,7 +321,11 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={handleSave} disabled={!name || coveredPersons.length === 0 || !startDate}>
+        <Button
+          onClick={handleSave}
+          disabled={!name || coveredPersons.length === 0 || !startDate}
+          title={!name ? 'Plan name is required' : coveredPersons.length === 0 ? 'At least one covered person is required' : !startDate ? 'Start date is required' : undefined}
+        >
           {isEdit ? 'Update' : 'Create'}
         </Button>
       </Group>

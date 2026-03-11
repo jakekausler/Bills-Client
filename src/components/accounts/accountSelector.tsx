@@ -52,7 +52,7 @@ export default function AccountSelector({
   );
 
   return (
-    <Stack h="100%" w="100%" pos="relative">
+    <Stack h="100%" w="100%" pos="relative" aria-busy={showLoading}>
       <LoadingOverlay
         visible={showLoading}
         loaderProps={{ color: 'blue.6', size: 'xl' }}
@@ -61,7 +61,7 @@ export default function AccountSelector({
       <Table verticalSpacing={4} withRowBorders={false}>
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Account</Table.Th>
+            <Table.Th scope="col">Account</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -83,12 +83,13 @@ export default function AccountSelector({
                 }
                 checkedIcon={<IconEye stroke={1.5} color={theme.colors.orange[6]} size={16} />}
                 uncheckedIcon={<IconEyeOff stroke={1.5} color={theme.colors.orange[6]} size={16} />}
+                ariaLabel="Toggle all accounts visibility"
               />
             </Table.Td>
           </Table.Tr>
           {Object.entries(accountsWithCategories).map(([type, accounts]) => (
             <React.Fragment key={type}>
-              <Table.Tr>
+              <Table.Tr aria-hidden="true" role="presentation">
                 <Table.Td>
                   <Box h={8} />
                 </Table.Td>
@@ -113,6 +114,7 @@ export default function AccountSelector({
                     }
                     checkedIcon={<IconEye stroke={1.5} color={theme.colors.blue[6]} size={16} />}
                     uncheckedIcon={<IconEyeOff stroke={1.5} color={theme.colors.blue[6]} size={16} />}
+                    ariaLabel={`Toggle all ${type} accounts visibility`}
                   />
                 </Table.Td>
               </Table.Tr>
@@ -135,6 +137,7 @@ export default function AccountSelector({
                       }
                       checkedIcon={<IconEye size={16} />}
                       uncheckedIcon={<IconEyeOff size={16} />}
+                      ariaLabel={`Toggle ${account.name} visibility`}
                     />
                   </Table.Td>
                 </Table.Tr>

@@ -121,7 +121,7 @@ describe('fetchWithAuth', () => {
 
   it('merges caller-supplied headers with auth headers', async () => {
     fetchMock.mockResolvedValue(makeMockResponse({}));
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     await fetchWithAuth('/api/endpoint', { headers: { 'X-Custom': 'value' } });
     const [, options] = fetchMock.mock.calls[0];
     expect(options.headers['X-Custom']).toBe('value');

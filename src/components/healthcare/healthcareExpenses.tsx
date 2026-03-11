@@ -29,8 +29,6 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
     (state: RootState) =>
       state.simulations.simulations.find((s) => s.selected)?.name || 'Default'
   );
-  const configs = useSelector((state: RootState) => state.healthcare.configs);
-
   const [expenses, setExpenses] = useState<HealthcareExpense[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,6 +107,7 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
         <Group justify="space-between">
           <Title order={3}>Healthcare Expenses</Title>
           <Select
+            aria-label="Filter by person"
             placeholder="Filter by person"
             data={peopleOptions}
             value={filterPerson}
@@ -119,28 +118,29 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
           />
         </Group>
 
+        <div aria-live="polite">
         {filteredExpenses.length === 0 ? (
           <Text c="dimmed" ta="center" py="xl">
             No healthcare expenses found for this period.
           </Text>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <Table horizontalSpacing="md" verticalSpacing="sm" striped highlightOnHover>
+            <Table horizontalSpacing="md" verticalSpacing="sm" striped highlightOnHover aria-label="Healthcare expenses">
               <thead>
                 <tr>
-                  <th style={{ whiteSpace: 'nowrap' }}>Date</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Name</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Person</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Bill Amount</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Patient Cost</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Copay</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Coinsurance</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>HSA Reimbursed</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Account</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Ind. Ded. Left</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Fam. Ded. Left</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Ind. OOP Left</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Fam. OOP Left</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Date</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Name</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Person</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Bill Amount</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Patient Cost</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Copay</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Coinsurance</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>HSA Reimbursed</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Account</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Ind. Ded. Left</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Fam. Ded. Left</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Ind. OOP Left</th>
+                  <th scope="col" style={{ whiteSpace: 'nowrap' }}>Fam. OOP Left</th>
                 </tr>
               </thead>
               <tbody>
@@ -179,6 +179,7 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
             </Table>
           </div>
         )}
+        </div>
 
         <Text size="xs" c="dimmed" ta="right">
           Showing {filteredExpenses.length} expense{filteredExpenses.length !== 1 ? 's' : ''}

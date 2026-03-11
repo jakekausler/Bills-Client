@@ -3,7 +3,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBills, selectBillsLoaded, selectStartDate } from '../../features/calendar/select';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { loadCalendar } from '../../features/calendar/actions';
 import { AppDispatch } from '../../store';
 import { Calendar as BigCalendar, dayjsLocalizer, Views } from 'react-big-calendar';
@@ -28,7 +28,7 @@ export default function BillCalendar() {
     ...bill,
     start: new Date(`${bill.date}T00:00:00`),
     end: new Date(`${bill.date}T00:00:00`),
-    title: `${bill.name} \$${(bill.isTransfer ? Math.abs(bill.amount) : bill.amount).toFixed(2)}`,
+    title: `${bill.name} $${(bill.isTransfer ? Math.abs(bill.amount) : bill.amount).toFixed(2)}`,
     allDay: true,
   }));
   const loaded = useSelector(selectBillsLoaded);
@@ -75,11 +75,13 @@ export default function BillCalendar() {
             dispatch(updateEndDate(dayjs.utc(startDate).subtract(1, 'month').endOf('month').format('YYYY-MM-DD')));
             dispatch(loadCalendar());
           }}
+          aria-label="Previous month"
         >
           <IconChevronLeft />
         </ActionIcon>
         <MonthPickerInput
           disabled={!loaded}
+          aria-label="Select calendar month"
           value={new Date(`${startDate}T00:00:00`)}
           onChange={(value) => {
             if (value) {
@@ -104,6 +106,7 @@ export default function BillCalendar() {
             dispatch(updateEndDate(dayjs.utc(startDate).add(1, 'month').endOf('month').format('YYYY-MM-DD')));
             dispatch(loadCalendar());
           }}
+          aria-label="Next month"
         >
           <IconChevronRight />
         </ActionIcon>
@@ -114,21 +117,23 @@ export default function BillCalendar() {
           loaderProps={{ color: 'blue.6', size: 'xl' }}
           overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
         />
-        <BigCalendar
-          localizer={dayjsLocalizer(dayjs)}
-          events={bills}
-          views={[Views.MONTH]}
-          view={view}
-          onView={() => {}}
-          onNavigate={() => {}}
-          date={new Date(`${startDate}T00:00:00`)}
-          selectable
-          showAllEvents={true}
-          defaultView={view}
-          eventPropGetter={getEventStyle}
-          toolbar={false}
-          components={components}
-        />
+        <div aria-label="Bill calendar showing scheduled bills and transactions for the selected month" role="region">
+          <BigCalendar
+            localizer={dayjsLocalizer(dayjs)}
+            events={bills}
+            views={[Views.MONTH]}
+            view={view}
+            onView={() => {}}
+            onNavigate={() => {}}
+            date={new Date(`${startDate}T00:00:00`)}
+            selectable
+            showAllEvents={true}
+            defaultView={view}
+            eventPropGetter={getEventStyle}
+            toolbar={false}
+            components={components}
+          />
+        </div>
       </Stack>
     </Stack>
   );

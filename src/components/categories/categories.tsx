@@ -13,8 +13,8 @@ import {
 } from '../../features/categories/select';
 import { useElementAspectRatio } from '../../hooks/useElementAspectRatio';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { useEffect, useRef, useState } from 'react';
-import { Group, LoadingOverlay, Stack, Table, useMantineTheme } from '@mantine/core';
+import { useEffect, useRef } from 'react';
+import { Group, LoadingOverlay, Stack, Table, useMantineTheme, VisuallyHidden } from '@mantine/core';
 import { CategoryBreakdown } from '../../types/types';
 import { Doughnut } from 'react-chartjs-2';
 import { ActiveElement, Chart, ChartEvent } from 'chart.js';
@@ -68,7 +68,8 @@ export default function Categories() {
   };
 
   return (
-    <Stack ref={ref} w="100%" h="100%" pos="relative">
+    <Stack ref={ref} w="100%" h="100%" pos="relative" aria-busy={showLoading}>
+      <VisuallyHidden component="h2">Category Breakdown</VisuallyHidden>
       <LoadingOverlay
         visible={showLoading}
         loaderProps={{ color: 'blue.6', size: 'xl' }}
@@ -115,17 +116,23 @@ export default function Categories() {
               <Table
                 stickyHeader
                 style={{ display: 'table', width: '100%', overflow: 'auto', height: 'calc(100% - 40px)' }}
+                aria-label="Category spending"
               >
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Date</Table.Th>
-                    <Table.Th>Account</Table.Th>
-                    <Table.Th>Name</Table.Th>
-                    <Table.Th>Category</Table.Th>
-                    <Table.Th>Amount</Table.Th>
+                    <Table.Th scope="col">Date</Table.Th>
+                    <Table.Th scope="col">Account</Table.Th>
+                    <Table.Th scope="col">Name</Table.Th>
+                    <Table.Th scope="col">Category</Table.Th>
+                    <Table.Th scope="col">Amount</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
+                  {selectedCategoryActivity.length === 0 && (
+                    <Table.Tr>
+                      <Table.Td colSpan={5} ta="center">No activities found for this category.</Table.Td>
+                    </Table.Tr>
+                  )}
                   {selectedCategoryActivity.map((activity, idx) => (
                     <Table.Tr
                       key={`${activity.date}-${activity.name}-${activity.amount}`}
@@ -140,7 +147,7 @@ export default function Categories() {
                       <Table.Td>{activity.account}</Table.Td>
                       <Table.Td>{activity.name}</Table.Td>
                       <Table.Td>{activity.category.split('.')[1]}</Table.Td>
-                      <Table.Td>{`$ ${(activity.amount as Number).toFixed(2)}`}</Table.Td>
+                      <Table.Td>{`$ ${(activity.amount as number).toFixed(2)}`}</Table.Td>
                     </Table.Tr>
                   ))}
                 </Table.Tbody>
@@ -166,17 +173,23 @@ export default function Categories() {
               <Table
                 stickyHeader
                 style={{ display: 'table', width: '100%', overflow: 'auto', height: 'calc(100% - 40px)' }}
+                aria-label="Category spending"
               >
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Date</Table.Th>
-                    <Table.Th>Account</Table.Th>
-                    <Table.Th>Name</Table.Th>
-                    <Table.Th>Category</Table.Th>
-                    <Table.Th>Amount</Table.Th>
+                    <Table.Th scope="col">Date</Table.Th>
+                    <Table.Th scope="col">Account</Table.Th>
+                    <Table.Th scope="col">Name</Table.Th>
+                    <Table.Th scope="col">Category</Table.Th>
+                    <Table.Th scope="col">Amount</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
+                  {selectedCategoryActivity.length === 0 && (
+                    <Table.Tr>
+                      <Table.Td colSpan={5} ta="center">No activities found for this category.</Table.Td>
+                    </Table.Tr>
+                  )}
                   {selectedCategoryActivity.map((activity, idx) => (
                     <Table.Tr
                       key={`${activity.date}-${activity.name}-${activity.amount}`}
@@ -191,7 +204,7 @@ export default function Categories() {
                       <Table.Td>{activity.account}</Table.Td>
                       <Table.Td>{activity.name}</Table.Td>
                       <Table.Td>{activity.category.split('.')[1]}</Table.Td>
-                      <Table.Td>{`$ ${(activity.amount as Number).toFixed(2)}`}</Table.Td>
+                      <Table.Td>{`$ ${(activity.amount as number).toFixed(2)}`}</Table.Td>
                     </Table.Tr>
                   ))}
                 </Table.Tbody>
@@ -267,26 +280,33 @@ function CategoryChart({
     ],
   };
 
+  const chartTitle = selectedCategory ? `${selectedCategory} Breakdown` : 'Spending Breakdown';
+  const categoryList = categoryBreakdown.labels.join(', ');
+
   return (
     <Stack h="100%" w="100%" justify="center" align="center">
-      <Doughnut
-        data={chartData}
-        options={{
-          onClick: onCategoryClick,
-          plugins: {
-            title: {
-              display: true,
-              text: selectedCategory ? `${selectedCategory} Breakdown` : 'Spending Breakdown',
-              color: theme.colors.dark[0],
-            },
-            legend: {
-              labels: {
+      <div role="img" aria-label={`Doughnut chart showing ${chartTitle}. Categories: ${categoryList}. ${onCategoryClick ? 'Click on a segment to drill down. Chart interaction requires mouse.' : 'Tooltip details are available via mouse hover.'}`}>
+        <VisuallyHidden>{onCategoryClick ? 'This chart is interactive via mouse click to select a category for detailed breakdown.' : 'Tooltip details are available via mouse hover.'}</VisuallyHidden>
+        <Doughnut
+          aria-label="Category breakdown chart"
+          data={chartData}
+          options={{
+            onClick: onCategoryClick,
+            plugins: {
+              title: {
+                display: true,
+                text: chartTitle,
                 color: theme.colors.dark[0],
               },
+              legend: {
+                labels: {
+                  color: theme.colors.dark[0],
+                },
+              },
             },
-          },
-        }}
-      />
+          }}
+        />
+      </div>
     </Stack>
   );
 }

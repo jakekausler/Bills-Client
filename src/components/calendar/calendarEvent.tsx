@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { Box, Divider, Group, Stack, Text, Tooltip, VisuallyHidden } from '@mantine/core';
 import { CSSProperties } from 'react';
 import { CalendarBill } from '../../types/types';
 
@@ -62,9 +62,12 @@ export function CalendarEvent({ event }: CalendarEventProps) {
     </Stack>
   );
 
+  const eventType = event.isTransfer ? 'Transfer' : event.amount < 0 ? 'Expense' : 'Income';
+
   return (
     <Tooltip label={tooltipContent} withArrow color="dark.6" radius="md" arrowSize={10}>
-      <Box style={containerStyle}>
+      <Box style={containerStyle} tabIndex={0}>
+        <VisuallyHidden>{eventType}: </VisuallyHidden>
         <Text style={nameStyle}>{event.name}</Text>
         <Text style={amountStyle}>${event.amount.toFixed(2)}</Text>
       </Box>

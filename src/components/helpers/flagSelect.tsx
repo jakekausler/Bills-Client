@@ -1,5 +1,5 @@
 import React from 'react';
-import { Combobox, Group, Input, InputBase, useCombobox } from '@mantine/core';
+import { Combobox, Group, Input, InputBase, VisuallyHidden, useCombobox } from '@mantine/core';
 import { IconCancel, IconFlag } from '@tabler/icons-react';
 
 function FlagItem({ value, ...others }: { value: string }) {
@@ -44,7 +44,7 @@ export const FlagSelect = ({
           rightSectionPointerEvents="none"
           multiline
         >
-          {flagColor ? <FlagItem value={flagColor} /> : <Input.Placeholder>No Flag</Input.Placeholder>}
+          {flagColor ? <><FlagItem value={flagColor} /><VisuallyHidden>{flagColor.charAt(0).toUpperCase() + flagColor.slice(1)} flag</VisuallyHidden></> : <Input.Placeholder>No Flag</Input.Placeholder>}
         </InputBase>
       </Combobox.Target>
 
@@ -66,8 +66,9 @@ export const FlagSelect = ({
             { value: 'orange', label: 'Orange' },
             { value: 'gray', label: 'Gray' },
           ].map((option) => (
-            <Combobox.Option key={option.value} value={option.value}>
+            <Combobox.Option key={option.value} value={option.value} aria-label={option.label}>
               <FlagItem value={option.value} />
+              <VisuallyHidden>{option.label}</VisuallyHidden>
             </Combobox.Option>
           ))}
         </Combobox.Options>

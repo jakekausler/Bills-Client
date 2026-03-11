@@ -106,7 +106,7 @@ describe('categoriesSlice reducer', () => {
 
   describe('setCategories', () => {
     it('sets categories and marks them as loaded', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const categories = { Food: ['Groceries', 'Restaurants'], Transport: ['Gas', 'Parking'] };
       const newState = reducer(state, setCategories(categories));
       expect(newState.categories).toEqual(categories);
@@ -114,11 +114,11 @@ describe('categoriesSlice reducer', () => {
     });
 
     it('replaces existing categories', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const initial = reducer(state, setCategories({ OldCat: ['old'] }));
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const updated = reducer(initial, setCategories({ NewCat: ['new'] }));
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       expect(updated.categories).toEqual({ NewCat: ['new'] });
       expect(updated.categories).not.toHaveProperty('OldCat');
     });
@@ -158,7 +158,7 @@ describe('categoriesSlice reducer', () => {
 
   describe('updateCategoryBreakdown', () => {
     it('sets the category breakdown and marks it as loaded', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const breakdown: CategoryBreakdown = { Groceries: 250, Restaurants: 120 };
       const newState = reducer(state, updateCategoryBreakdown(breakdown));
       expect(newState.categoryBreakdown).toEqual(breakdown);
@@ -166,11 +166,11 @@ describe('categoriesSlice reducer', () => {
     });
 
     it('replaces existing breakdown', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const first = reducer(state, updateCategoryBreakdown({ OldCat: 100 }));
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const second = reducer(first, updateCategoryBreakdown({ NewCat: 200 }));
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       expect(second.categoryBreakdown).toEqual({ NewCat: 200 });
     });
   });
@@ -190,7 +190,7 @@ describe('categoriesSlice reducer', () => {
 
   describe('updateSelectedCategoryBreakdown', () => {
     it('sets selected category breakdown and marks it as loaded', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const breakdown: CategoryBreakdown = { 'Whole Foods': 180, 'Trader Joes': 70 };
       const newState = reducer(state, updateSelectedCategoryBreakdown(breakdown));
       expect(newState.selectedCategoryBreakdown).toEqual(breakdown);

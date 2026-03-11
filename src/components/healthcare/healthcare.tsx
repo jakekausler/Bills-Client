@@ -47,7 +47,7 @@ export default function Healthcare() {
               onChange={setFilterStartDate}
               clearable
               style={{ width: 150 }}
-              label="Date Range"
+              label="Start Date"
             />
             <DateInput
               placeholder="End date"
@@ -55,7 +55,7 @@ export default function Healthcare() {
               onChange={setFilterEndDate}
               clearable
               style={{ width: 150 }}
-              label=" "
+              label="End Date"
             />
           </Group>
         </Card>

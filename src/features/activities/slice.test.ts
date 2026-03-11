@@ -547,7 +547,7 @@ describe('activitiesSlice reducer', () => {
 
   describe('updateNames', () => {
     it('sets names and marks as loaded', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const names: Record<string, string> = { 'Grocery Store': 'Groceries', 'Electric Bill': 'Utilities' };
       const newState = reducer(state, updateNames(names));
       expect(newState.names).toEqual(names);
@@ -555,9 +555,9 @@ describe('activitiesSlice reducer', () => {
     });
 
     it('replaces existing names', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const first = reducer(state, updateNames({ 'Old Name': 'Old Category' }));
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const newNames: Record<string, string> = { 'New Name': 'New Category' };
       const second = reducer(first, updateNames(newNames));
       expect(second.names).toEqual(newNames);

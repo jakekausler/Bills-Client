@@ -21,6 +21,7 @@ import {
   Table,
   Text,
   TextInput,
+  VisuallyHidden,
 } from '@mantine/core';
 import { setSelectedAccount } from '../../features/accounts/slice';
 import { loadGraphData } from '../../features/graph/actions';
@@ -126,7 +127,7 @@ export default function AccountList({ close }: AccountListProps) {
 
   return (
     <>
-      <Stack h="100%" pos="relative" gap={8}>
+      <Stack h="100%" pos="relative" gap={8} aria-busy={showLoading}>
         <LoadingOverlay
           visible={showLoading}
           loaderProps={{ color: 'blue.6', size: 'xl' }}
@@ -148,6 +149,7 @@ export default function AccountList({ close }: AccountListProps) {
                   setEditingAccountName('');
                   openAddingAccount();
                 }}
+                aria-label="Add account"
               >
                 <IconPlus size="12px" />
               </ActionIcon>
@@ -155,6 +157,7 @@ export default function AccountList({ close }: AccountListProps) {
             {accounts.map((account) => (
               <Button
                 disabled={selectedAccount?.id === account.id}
+                aria-current={selectedAccount?.id === account.id ? 'true' : undefined}
                 key={account.id}
                 onClick={() => {
                   dispatch(setSelectedAccount(account));
@@ -168,6 +171,7 @@ export default function AccountList({ close }: AccountListProps) {
                 <Group w="100%" justify="space-between">
                   <Text size="xs">{account.name}</Text>
                   <Text size="xs" c={account.balance < 0 ? 'red' : 'green'}>
+                    <VisuallyHidden>{account.balance < 0 ? '(negative)' : '(positive)'}</VisuallyHidden>
                     {`$ ${account.balance.toFixed(2)}`}
                   </Text>
                 </Group>
@@ -190,6 +194,7 @@ export default function AccountList({ close }: AccountListProps) {
               placeholder="Name"
               value={editingAccountName}
               onChange={(e) => setEditingAccountName(e.target.value)}
+              aria-label="Account name"
             />
             <Button
               disabled={!addingAccountType || !editingAccountName || editingAccountName === ''}
@@ -233,70 +238,70 @@ export default function AccountList({ close }: AccountListProps) {
         <Modal opened={editingAccounts} onClose={closeEditingAccounts} title="Edit Accounts" size="xl">
           <Stack>
             <Box h="60vh" style={{ overflowY: 'auto', overflowX: 'auto' }}>
-              <Table miw={500} style={{ tableLayout: 'fixed' }}>
+              <Table miw={500} style={{ tableLayout: 'fixed' }} aria-label="Account balances">
                 <Table.Thead bg="dark.7" style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                   <Table.Tr>
-                    <Table.Th ta="center" w={60}>
+                    <Table.Th scope="col" ta="center" w={60}>
                       Visible
                     </Table.Th>
-                    <Table.Th ta="center" w={200}>
+                    <Table.Th scope="col" ta="center" w={200}>
                       Name
                     </Table.Th>
-                    <Table.Th ta="center" w={150}>
+                    <Table.Th scope="col" ta="center" w={150}>
                       Type
                     </Table.Th>
-                    <Table.Th ta="center" w={80}>
+                    <Table.Th scope="col" ta="center" w={80}>
                       Pull Priority
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Withdrawal Tax Rate
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Early Withdrawl Penalty
                     </Table.Th>
-                    <Table.Th ta="center" w={120}>
+                    <Table.Th scope="col" ta="center" w={120}>
                       Early Withdrawl Date
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Interest Tax Rate
                     </Table.Th>
-                    <Table.Th ta="center" w={150}>
+                    <Table.Th scope="col" ta="center" w={150}>
                       Interest On Positive
                     </Table.Th>
-                    <Table.Th ta="center" w={200}>
+                    <Table.Th scope="col" ta="center" w={200}>
                       Interest Pay Account
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Uses RMD
                     </Table.Th>
-                    <Table.Th ta="center" w={200}>
+                    <Table.Th scope="col" ta="center" w={200}>
                       RMD Account
                     </Table.Th>
-                    <Table.Th ta="center" w={120}>
+                    <Table.Th scope="col" ta="center" w={120}>
                       Account Owner DOB
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Minimum Balance
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Maximum Balance
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Minimum Pull Amount
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Perform Pulls
                     </Table.Th>
-                    <Table.Th ta="center" w={100}>
+                    <Table.Th scope="col" ta="center" w={100}>
                       Perform Pushes
                     </Table.Th>
-                    <Table.Th ta="center" w={120}>
+                    <Table.Th scope="col" ta="center" w={120}>
                       Push Start
                     </Table.Th>
-                    <Table.Th ta="center" w={120}>
+                    <Table.Th scope="col" ta="center" w={120}>
                       Push End
                     </Table.Th>
-                    <Table.Th ta="center" w={200}>
+                    <Table.Th scope="col" ta="center" w={200}>
                       Push Account
                     </Table.Th>
                   </Table.Tr>
@@ -317,6 +322,7 @@ export default function AccountList({ close }: AccountListProps) {
                               }
                               checkedIcon={<IconEyeOff />}
                               uncheckedIcon={<IconEye />}
+                              ariaLabel={`Toggle visibility for ${account.name}`}
                             />
                           </Table.Td>
                           <Table.Td>
@@ -329,6 +335,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Account name"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -341,6 +348,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   editingAccountsList.map((a) => (a.id === account.id ? { ...a, type: e } : a)),
                                 )
                               }
+                              aria-label="Account type"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -356,6 +364,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Pull priority"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -371,6 +380,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Withdrawal tax rate"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -386,6 +396,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Early withdrawal penalty"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -404,6 +415,7 @@ export default function AccountList({ close }: AccountListProps) {
                                 )
                               }
                               valueFormat="MM/DD/YYYY"
+                              aria-label="Early withdrawal date"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -419,6 +431,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Interest tax rate"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -432,6 +445,7 @@ export default function AccountList({ close }: AccountListProps) {
                                     ),
                                   )
                                 }
+                                aria-label="Interest on positive balance"
                               />
                             </Center>
                           </Table.Td>
@@ -447,6 +461,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Interest pay account"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -460,6 +475,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Uses RMD"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -472,6 +488,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   editingAccountsList.map((a) => (a.id === account.id ? { ...a, rmdAccount: e } : a)),
                                 )
                               }
+                              aria-label="RMD account"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -488,6 +505,7 @@ export default function AccountList({ close }: AccountListProps) {
                                 )
                               }
                               valueFormat="MM/DD/YYYY"
+                              aria-label="Account owner date of birth"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -503,6 +521,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Minimum balance"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -518,6 +537,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Maximum balance"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -533,6 +553,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   ),
                                 )
                               }
+                              aria-label="Minimum pull amount"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -547,6 +568,7 @@ export default function AccountList({ close }: AccountListProps) {
                                     ),
                                   )
                                 }
+                                aria-label="Perform pulls"
                               />
                             </Center>
                           </Table.Td>
@@ -562,6 +584,7 @@ export default function AccountList({ close }: AccountListProps) {
                                     ),
                                   )
                                 }
+                                aria-label="Perform pushes"
                               />
                             </Center>
                           </Table.Td>
@@ -577,6 +600,7 @@ export default function AccountList({ close }: AccountListProps) {
                                 )
                               }
                               valueFormat="MM/DD/YYYY"
+                              aria-label="Push start date"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -591,6 +615,7 @@ export default function AccountList({ close }: AccountListProps) {
                                 )
                               }
                               valueFormat="MM/DD/YYYY"
+                              aria-label="Push end date"
                             />
                           </Table.Td>
                           <Table.Td>
@@ -603,6 +628,7 @@ export default function AccountList({ close }: AccountListProps) {
                                   editingAccountsList.map((a) => (a.id === account.id ? { ...a, pushAccount: e } : a)),
                                 )
                               }
+                              aria-label="Push account"
                             />
                           </Table.Td>
                         </Table.Tr>

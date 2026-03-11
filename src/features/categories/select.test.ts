@@ -70,7 +70,7 @@ const makeRootState = (categoriesOverrides = {}) =>
 describe('categories selectors', () => {
   describe('selectCategories', () => {
     it('returns all categories from state', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const categories = { Food: ['Groceries', 'Restaurants'], Transport: ['Gas'] };
       const state = makeRootState({ categories });
       expect(selectCategories(state)).toEqual(categories);
@@ -108,7 +108,7 @@ describe('categories selectors', () => {
 
   describe('selectCategoryBreakdown', () => {
     it('returns the category breakdown from state', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const breakdown = { Groceries: 250, Restaurants: 120 };
       const state = makeRootState({ categoryBreakdown: breakdown });
       expect(selectCategoryBreakdown(state)).toEqual(breakdown);
@@ -134,7 +134,7 @@ describe('categories selectors', () => {
 
   describe('selectSelectedCategoryBreakdown', () => {
     it('returns the selected category breakdown', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const breakdown = { 'Whole Foods': 180, 'Trader Joes': 70 };
       const state = makeRootState({ selectedCategoryBreakdown: breakdown });
       expect(selectSelectedCategoryBreakdown(state)).toEqual(breakdown);

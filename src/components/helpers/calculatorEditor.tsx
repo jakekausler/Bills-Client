@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActionIcon, Button, Popover, Table, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Popover, Table, TextInput, VisuallyHidden } from '@mantine/core';
 import { IconCalculator } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
@@ -35,6 +35,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
   const [currentOperation, setCurrentOperation] = useState<Operation | null>(null);
   const [firstOperand, setFirstOperand] = useState<number | null>(null);
   const [displayValue, setDisplayValue] = useState<string | null>(null);
+  const [calcAnnouncement, setCalcAnnouncement] = useState('');
 
   useEffect(() => {
     setDisplayValue(restProps.value?.toString() || null);
@@ -88,7 +89,9 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
       const secondOperand = Number(stripOperand(displayValue || restProps.value));
       const result = calculate(firstOperand, secondOperand, currentOperation);
       if (isNaN(result)) return;
-      restProps.onChange?.(Math.round(result * 100) / 100);
+      const rounded = Math.round(result * 100) / 100;
+      setCalcAnnouncement(`Result: ${rounded}`);
+      restProps.onChange?.(rounded);
       setOpened(false);
       setFirstOperand(null);
       setCurrentOperation(null);
@@ -198,7 +201,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
     }
 
     // Only prevent default for non-standard input
-    if (!key.match(/^[0-9.\-]$/)) {
+    if (!key.match(/^[0-9.-]$/)) {
       event.preventDefault();
     }
   };
@@ -297,6 +300,9 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
 
   return (
     <Popover opened={opened} onChange={setOpened} position="bottom-start" offset={5} width="target">
+      <VisuallyHidden aria-live="polite" role="status">
+        {calcAnnouncement}
+      </VisuallyHidden>
       <Popover.Target>
         <TextInput
           {...restProps}
@@ -307,7 +313,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
           }}
           value={displayValue ?? restProps.value?.toString() ?? ''}
           rightSection={
-            <ActionIcon onClick={() => setOpened((o) => !o)}>
+            <ActionIcon onClick={() => setOpened((o) => !o)} aria-label="Open calculator">
               <IconCalculator size="1.1rem" />
             </ActionIcon>
           }
@@ -325,8 +331,8 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
         />
       </Popover.Target>
       {opened && (
-        <Popover.Dropdown p="xs">
-          <Table verticalSpacing={2} horizontalSpacing={2} withRowBorders={false}>
+        <Popover.Dropdown p="xs" tabIndex={0}>
+          <Table verticalSpacing={2} horizontalSpacing={2} withRowBorders={false} role="presentation">
             <Table.Tbody>
               <Table.Tr>
                 {['7', '8', '9', '+'].map((value) => (
@@ -336,6 +342,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
                       p={0}
                       w="30px"
                       h="30px"
+                      aria-label={value === '+' ? 'Add' : value}
                     >
                       {value}
                     </Button>
@@ -350,6 +357,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
                       p={0}
                       w="30px"
                       h="30px"
+                      aria-label={value === '-' ? 'Subtract' : value}
                     >
                       {value}
                     </Button>
@@ -364,6 +372,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
                       p={0}
                       w="30px"
                       h="30px"
+                      aria-label={value === '*' ? 'Multiply' : value}
                     >
                       {value}
                     </Button>
@@ -386,6 +395,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
                       p={0}
                       w="30px"
                       h="30px"
+                      aria-label={value === '/' ? 'Divide' : value === '=' ? 'Equals' : value === '.' ? 'Decimal point' : value}
                     >
                       {value}
                     </Button>

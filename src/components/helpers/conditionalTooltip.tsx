@@ -11,7 +11,7 @@ export const ConditionalTooltip = ({
   condition: boolean;
 }) => {
   if (condition) {
-    return <Tooltip label={label}>{children}</Tooltip>;
+    return <Tooltip label={label} events={{ hover: true, focus: true, touch: true }}>{children}</Tooltip>;
   }
   return children;
 };

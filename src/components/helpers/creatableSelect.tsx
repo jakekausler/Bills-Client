@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { useEffect, useState } from 'react';
-import { CloseButton, Combobox, InputBase, useCombobox } from '@mantine/core';
+import { CloseButton, Combobox, InputBase, VisuallyHidden, useCombobox } from '@mantine/core';
 
 interface CreatableSelectProps {
   data: { label: string; value: string }[];
@@ -16,6 +16,7 @@ export default function CreatableSelect({ data, value, onChange, label, error, c
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
+  const hintId = useId();
   const [search, setSearch] = useState(value || '');
 
   useEffect(() => {
@@ -88,8 +89,10 @@ export default function CreatableSelect({ data, value, onChange, label, error, c
           onClick={() => combobox.openDropdown()}
           rightSectionPointerEvents={clearable ? 'auto' : 'none'}
           placeholder="Pick value"
+          aria-describedby={hintId}
         />
       </Combobox.Target>
+      <VisuallyHidden id={hintId}>Type to search existing options or enter a new value</VisuallyHidden>
 
       <Combobox.Dropdown>
         <Combobox.Options>
