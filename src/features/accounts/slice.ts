@@ -28,7 +28,7 @@ export const accountsSlice = createSlice({
     setAccountsError: (state, action: PayloadAction<string>) => {
       state.accountsError = action.payload;
     },
-    setSelectedAccount: (state, action: PayloadAction<Account>) => {
+    setSelectedAccount: (state, action: PayloadAction<Account | null>) => {
       state.selectedAccount = action.payload;
     },
     setAccountsLoaded: (state, action: PayloadAction<boolean>) => {

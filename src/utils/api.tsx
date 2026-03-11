@@ -37,7 +37,7 @@ export const getHeaders = (token?: string | null, hasBody?: boolean) => {
 };
 
 // Generic fetch wrapper that adds auth headers
-export const fetchWithAuth = async (endpoint: string, options: RequestInit = {}) => {
+export const fetchWithAuth = async (endpoint: string, options: RequestInit = {}): Promise<any> => {
   const token = getAuthToken();
 
   const response = await fetch(`${endpoint}`, {
@@ -75,8 +75,7 @@ export const api = {
     );
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  post: (endpoint: string, data?: any) => {
+  post: (endpoint: string, data?: unknown) => {
     const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
@@ -88,8 +87,7 @@ export const api = {
     );
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  put: (endpoint: string, data?: any) => {
+  put: (endpoint: string, data?: unknown) => {
     const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
@@ -101,8 +99,7 @@ export const api = {
     );
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  delete: (endpoint: string, data?: any) => {
+  delete: (endpoint: string, data?: unknown) => {
     const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +

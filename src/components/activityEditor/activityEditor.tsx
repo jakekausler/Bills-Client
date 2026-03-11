@@ -232,373 +232,367 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
         loaderProps={{ color: 'blue.6', size: 'xl' }}
         overlayProps={{ blur: 1, opacity: 1, zIndex: 1000 }}
       />
-      {selectedActivity ? (
-        <>
-          <FocusTrap.InitialFocus />
-          <Group w="100%">
-            {!selectedActivity.dateIsVariable && (
-              <EditableDateInput
-                style={{ flex: 1 }}
-                label="Date"
-                value={selectedActivity.date}
-                onBlur={(value) => {
-                  if (!value) return;
-                  dispatch(
-                    updateActivity({
-                      ...selectedActivity,
-                      date: value,
-                    }),
-                  );
-                }}
-                placeholder="Date"
-              />
-            )}
-            {selectedActivity.dateIsVariable && (
-              <Select
-                style={{ flex: 1 }}
-                label="Date"
-                value={selectedActivity.dateVariable as string}
-                data={dateVariables.map((v) => ({ label: v, value: v }))}
-                onChange={(v) => {
-                  if (!v) return;
-                  dispatch(
-                    updateActivity({
-                      ...selectedActivity,
-                      dateVariable: v,
-                    }),
-                  );
-                }}
-                error={validate('dateVariable', selectedActivity.dateVariable)}
-              />
-            )}
-            <ActionIcon
-              mt={
-                (selectedActivity.dateIsVariable && !validate('dateVariable', selectedActivity.dateVariable)) ||
-                (!selectedActivity.dateIsVariable && !validate('date', selectedActivity.date))
-                  ? 22
-                  : 2
-              }
-              ml={-12}
-              onClick={() => {
+      <FocusTrap.InitialFocus />
+      <Group w="100%">
+        {!selectedActivity.dateIsVariable && (
+          <EditableDateInput
+            style={{ flex: 1 }}
+            label="Date"
+            value={selectedActivity.date}
+            onBlur={(value) => {
+              if (!value) return;
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  date: value,
+                }),
+              );
+            }}
+            placeholder="Date"
+          />
+        )}
+        {selectedActivity.dateIsVariable && (
+          <Select
+            style={{ flex: 1 }}
+            label="Date"
+            value={selectedActivity.dateVariable as string}
+            data={dateVariables.map((v) => ({ label: v, value: v }))}
+            onChange={(v) => {
+              if (!v) return;
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  dateVariable: v,
+                }),
+              );
+            }}
+            error={validate('dateVariable', selectedActivity.dateVariable)}
+          />
+        )}
+        <ActionIcon
+          mt={
+            (selectedActivity.dateIsVariable && !validate('dateVariable', selectedActivity.dateVariable)) ||
+            (!selectedActivity.dateIsVariable && !validate('date', selectedActivity.date))
+              ? 22
+              : 2
+          }
+          ml={-12}
+          onClick={() => {
+            dispatch(
+              updateActivity({
+                ...selectedActivity,
+                dateIsVariable: !selectedActivity.dateIsVariable,
+              }),
+            );
+          }}
+          aria-label="Toggle variable mode"
+        >
+          {selectedActivity.dateIsVariable ? <IconVariable /> : <IconVariableOff />}
+        </ActionIcon>
+      </Group>
+      <CreatableSelect
+        label="Name"
+        error={validate('name', selectedActivity.name)}
+        value={selectedActivity.name}
+        onChange={(v: string | null) => {
+          const newActivity = {
+            ...selectedActivity,
+            name: v || '',
+          };
+          if (!categoryTouched && v && v in names) {
+            newActivity.category = names[v];
+          }
+          dispatch(updateActivity(newActivity));
+        }}
+        data={Object.entries(names).map(([key, _value]) => ({
+          label: key,
+          value: key,
+        }))}
+        clearable
+      />
+      <Select
+        label="Category"
+        value={selectedActivity.category}
+        data={categories}
+        onChange={(v) => {
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              category: v ? v : '',
+            }),
+          );
+          setCategoryTouched(true);
+        }}
+        searchable
+        error={validate('category', selectedActivity.category)}
+      />
+      <Checkbox
+        label="Healthcare Expense"
+        checked={selectedActivity.isHealthcare ?? false}
+        onChange={(event) => {
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              isHealthcare: event.currentTarget.checked,
+            }),
+          );
+        }}
+        error={validate('isHealthcare', selectedActivity.isHealthcare)}
+      />
+      {selectedActivity.isHealthcare && (
+        <Stack
+          gap="sm"
+          p="md"
+          style={{ backgroundColor: theme.colors.dark[6], borderRadius: 4 }}
+          role="region"
+          aria-label="Healthcare expense details"
+        >
+          <TextInput
+            label="Person Name"
+            value={selectedActivity.healthcarePerson || ''}
+            onChange={(e) => {
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  healthcarePerson: e.target.value || null,
+                }),
+              );
+            }}
+            placeholder="e.g., John, Jane"
+            description="Which family member is this expense for?"
+            required
+            error={validate('healthcarePerson', selectedActivity.healthcarePerson)}
+          />
+
+          <Group grow>
+            <NumberInput
+              label="Copay Amount"
+              value={selectedActivity.copayAmount ?? ''}
+              onChange={(v) => {
                 dispatch(
                   updateActivity({
                     ...selectedActivity,
-                    dateIsVariable: !selectedActivity.dateIsVariable,
+                    copayAmount: v !== '' && typeof v === 'number' ? v : null,
                   }),
                 );
               }}
-              aria-label="Toggle variable mode"
-            >
-              {selectedActivity.dateIsVariable ? <IconVariable /> : <IconVariableOff />}
-            </ActionIcon>
+              placeholder="25.00"
+              description="Fixed copay (e.g., $25 for doctor visit). Leave empty if using deductible/coinsurance."
+              prefix="$"
+              min={0}
+              decimalScale={2}
+            />
+
+            <NumberInput
+              label="Coinsurance Percent"
+              value={selectedActivity.coinsurancePercent ?? ''}
+              onChange={(v) => {
+                dispatch(
+                  updateActivity({
+                    ...selectedActivity,
+                    coinsurancePercent: v !== '' && typeof v === 'number' ? v : null,
+                  }),
+                );
+              }}
+              placeholder="20"
+              description="Percentage you pay (e.g., 20 for 20%). Used after deductible is met."
+              suffix="%"
+              min={0}
+              error={validate('coinsurancePercent', selectedActivity.coinsurancePercent)}
+            />
           </Group>
-          <CreatableSelect
-            label="Name"
-            error={validate('name', selectedActivity.name)}
-            value={selectedActivity.name}
-            onChange={(v: string | null) => {
-              const newActivity = {
-                ...selectedActivity,
-                name: v || '',
-              };
-              if (!categoryTouched && v && v in names) {
-                newActivity.category = names[v];
-              }
-              dispatch(updateActivity(newActivity));
+
+          <Checkbox
+            label="Counts toward deductible"
+            checked={selectedActivity.countsTowardDeductible ?? true}
+            onChange={(e) => {
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  countsTowardDeductible: e.currentTarget.checked,
+                }),
+              );
             }}
-            data={Object.entries(names).map(([key, _value]) => ({
-              label: key,
-              value: key,
-            }))}
-            clearable
+            description="Usually yes, except for some preventive care or copays"
+          />
+
+          <Checkbox
+            label="Counts toward out-of-pocket maximum"
+            checked={selectedActivity.countsTowardOutOfPocket ?? true}
+            onChange={(e) => {
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  countsTowardOutOfPocket: e.currentTarget.checked,
+                }),
+              );
+            }}
+            description="Usually yes for all patient costs"
+          />
+        </Stack>
+      )}
+      {!selectedActivity.isTransfer && (
+        <Select
+          label="Spending Category"
+          data={spendingCategoryOptions}
+          value={selectedActivity.spendingCategory || ''}
+          onChange={(value) => {
+            dispatch(
+              updateActivity({
+                ...selectedActivity,
+                spendingCategory: value === '' ? null : value,
+              }),
+            );
+          }}
+        />
+      )}
+      <Checkbox
+        label="Is this a transfer?"
+        checked={selectedActivity.isTransfer}
+        onChange={(event) => {
+          const checked = event.currentTarget.checked;
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              isTransfer: checked,
+              ...(checked ? { spendingCategory: null } : {}),
+            }),
+          );
+        }}
+        error={validate('isTransfer', selectedActivity.isTransfer)}
+      />
+      {selectedActivity.isTransfer && (
+        <Stack gap="sm" role="region" aria-label="Transfer details">
+          <Select
+            label="From Account"
+            value={selectedActivity.from}
+            data={accountList}
+            searchable
+            placeholder="Select an account"
+            onChange={(v) => {
+              dispatch(updateActivity({ ...selectedActivity, from: v }));
+            }}
+            error={validate('from', selectedActivity.from)}
           />
           <Select
-            label="Category"
-            value={selectedActivity.category}
-            data={categories}
-            onChange={(v) => {
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  category: v ? v : '',
-                }),
-              );
-              setCategoryTouched(true);
-            }}
+            label="To Account"
+            value={selectedActivity.to}
+            data={accountList}
             searchable
-            error={validate('category', selectedActivity.category)}
-          />
-          <Checkbox
-            label="Healthcare Expense"
-            checked={selectedActivity.isHealthcare ?? false}
-            onChange={(event) => {
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  isHealthcare: event.currentTarget.checked,
-                }),
-              );
+            placeholder="Select an account"
+            onChange={(v) => {
+              dispatch(updateActivity({ ...selectedActivity, to: v }));
             }}
-            error={validate('isHealthcare', selectedActivity.isHealthcare)}
+            error={validate('to', selectedActivity.to)}
           />
-          {selectedActivity.isHealthcare && (
-            <Stack
-              gap="sm"
-              p="md"
-              style={{ backgroundColor: theme.colors.dark[6], borderRadius: 4 }}
-              role="region"
-              aria-label="Healthcare expense details"
-            >
-              <TextInput
-                label="Person Name"
-                value={selectedActivity.healthcarePerson || ''}
-                onChange={(e) => {
-                  dispatch(
-                    updateActivity({
-                      ...selectedActivity,
-                      healthcarePerson: e.target.value || null,
-                    }),
-                  );
-                }}
-                placeholder="e.g., John, Jane"
-                description="Which family member is this expense for?"
-                required
-                error={validate('healthcarePerson', selectedActivity.healthcarePerson)}
-              />
-
-              <Group grow>
-                <NumberInput
-                  label="Copay Amount"
-                  value={selectedActivity.copayAmount ?? ''}
-                  onChange={(v) => {
-                    dispatch(
-                      updateActivity({
-                        ...selectedActivity,
-                        copayAmount: v !== '' && typeof v === 'number' ? v : null,
-                      }),
-                    );
-                  }}
-                  placeholder="25.00"
-                  description="Fixed copay (e.g., $25 for doctor visit). Leave empty if using deductible/coinsurance."
-                  prefix="$"
-                  min={0}
-                  decimalScale={2}
-                />
-
-                <NumberInput
-                  label="Coinsurance Percent"
-                  value={selectedActivity.coinsurancePercent ?? ''}
-                  onChange={(v) => {
-                    dispatch(
-                      updateActivity({
-                        ...selectedActivity,
-                        coinsurancePercent: v !== '' && typeof v === 'number' ? v : null,
-                      }),
-                    );
-                  }}
-                  placeholder="20"
-                  description="Percentage you pay (e.g., 20 for 20%). Used after deductible is met."
-                  suffix="%"
-                  min={0}
-                  error={validate('coinsurancePercent', selectedActivity.coinsurancePercent)}
-                />
-              </Group>
-
-              <Checkbox
-                label="Counts toward deductible"
-                checked={selectedActivity.countsTowardDeductible ?? true}
-                onChange={(e) => {
-                  dispatch(
-                    updateActivity({
-                      ...selectedActivity,
-                      countsTowardDeductible: e.currentTarget.checked,
-                    }),
-                  );
-                }}
-                description="Usually yes, except for some preventive care or copays"
-              />
-
-              <Checkbox
-                label="Counts toward out-of-pocket maximum"
-                checked={selectedActivity.countsTowardOutOfPocket ?? true}
-                onChange={(e) => {
-                  dispatch(
-                    updateActivity({
-                      ...selectedActivity,
-                      countsTowardOutOfPocket: e.currentTarget.checked,
-                    }),
-                  );
-                }}
-                description="Usually yes for all patient costs"
-              />
-            </Stack>
-          )}
-          {!selectedActivity.isTransfer && (
-            <Select
-              label="Spending Category"
-              data={spendingCategoryOptions}
-              value={selectedActivity.spendingCategory || ''}
-              onChange={(value) => {
-                dispatch(
-                  updateActivity({
-                    ...selectedActivity,
-                    spendingCategory: value === '' ? null : value,
-                  }),
-                );
-              }}
-            />
-          )}
-          <Checkbox
-            label="Is this a transfer?"
-            checked={selectedActivity.isTransfer}
-            onChange={(event) => {
-              const checked = event.currentTarget.checked;
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  isTransfer: checked,
-                  ...(checked ? { spendingCategory: null } : {}),
-                }),
-              );
-            }}
-            error={validate('isTransfer', selectedActivity.isTransfer)}
-          />
-          {selectedActivity.isTransfer && (
-            <Stack gap="sm" role="region" aria-label="Transfer details">
-              <Select
-                label="From Account"
-                value={selectedActivity.from}
-                data={accountList}
-                searchable
-                placeholder="Select an account"
-                onChange={(v) => {
-                  dispatch(updateActivity({ ...selectedActivity, from: v }));
-                }}
-                error={validate('from', selectedActivity.from)}
-              />
-              <Select
-                label="To Account"
-                value={selectedActivity.to}
-                data={accountList}
-                searchable
-                placeholder="Select an account"
-                onChange={(v) => {
-                  dispatch(updateActivity({ ...selectedActivity, to: v }));
-                }}
-                error={validate('to', selectedActivity.to)}
-              />
-            </Stack>
-          )}
-          <Group w="100%">
-            {((!selectedActivity.amountIsVariable ||
-              selectedActivity.amountVariable === '{HALF}' ||
-              selectedActivity.amountVariable === '{FULL}') && (
-              <Group w="100%" style={{ flex: 1 }}>
-                <CalculatorEditor
-                  style={{ flex: 1 }}
-                  label="Amount"
-                  value={
-                    selectedActivity.isTransfer
-                      ? Math.abs(Number(selectedActivity.amount))
-                      : Number(selectedActivity.amount)
-                  }
-                  onChange={(v: number) => {
-                    dispatch(
-                      updateActivity({
-                        ...selectedActivity,
-                        amount: v,
-                      }),
-                    );
-                  }}
-                  error={validate('amount', selectedActivity.amount) || undefined}
-                  handleEnter={handleEnter}
-                />
-              </Group>
-            )) || (
-              <Select
-                style={{ flex: 1 }}
-                label="Amount"
-                value={selectedActivity.amountVariable as string}
-                data={amountVariables.map((v) => ({ label: v, value: v }))}
-                onChange={(v) => {
-                  if (!v) return;
-                  dispatch(
-                    updateActivity({
-                      ...selectedActivity,
-                      amountVariable: v,
-                    }),
-                  );
-                }}
-                error={validate('amountVariable', selectedActivity.amountVariable)}
-              />
-            )}
-            <ActionIcon
-              mt={
-                (selectedActivity.amountIsVariable && !validate('amountVariable', selectedActivity.amountVariable)) ||
-                (!selectedActivity.amountIsVariable && !validate('amount', selectedActivity.amount))
-                  ? 22
-                  : 2
-              }
-              ml={-12}
-              onClick={() => {
-                dispatch(
-                  updateActivity({
-                    ...selectedActivity,
-                    amountIsVariable: !selectedActivity.amountIsVariable,
-                  }),
-                );
-              }}
-              aria-label="Toggle variable mode"
-            >
-              {selectedActivity.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
-            </ActionIcon>
-          </Group>
-          <FlagSelect
-            flagColor={selectedActivity.flagColor}
-            onChange={(v: { flagColor: string | null; flag: boolean }) => {
-              dispatch(updateActivity({ ...selectedActivity, flagColor: v.flagColor, flag: v.flag }));
-            }}
-            dropdownProps={{
-              zIndex: 1001,
-              withinPortal: true,
-              position: 'bottom',
-            }}
-          />
-          <Group w="100%" grow>
-            <Button
-              disabled={!allValid()}
-              title={!allValid() ? 'Fix validation errors before saving' : undefined}
-              onClick={() => {
-                save();
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              disabled={!selectedActivity.id || !!selectedBillId}
-              title={!selectedActivity.id ? 'Activity has not been saved yet' : selectedBillId ? 'Cannot remove an activity linked to a bill' : undefined}
-              onClick={() => {
-                dispatch(
-                  removeActivity(
-                    account,
-                    activityId as string,
-                    selectedActivity.isTransfer,
-                    startDate,
-                    endDate,
-                    graphStartDate,
-                    graphEndDate,
-                  ),
-                );
-                resetSelected();
-              }}
-            >
-              Remove
-            </Button>
-          </Group>
-        </>
-      ) : (
-        <Text>No activity selected</Text>
+        </Stack>
       )}
+      <Group w="100%">
+        {(!selectedActivity.amountIsVariable ||
+          selectedActivity.amountVariable === '{HALF}' ||
+          selectedActivity.amountVariable === '{FULL}') ? (
+          <Group w="100%" style={{ flex: 1 }}>
+            <CalculatorEditor
+              style={{ flex: 1 }}
+              label="Amount"
+              value={
+                selectedActivity.isTransfer
+                  ? Math.abs(Number(selectedActivity.amount))
+                  : Number(selectedActivity.amount)
+              }
+              onChange={(v: number) => {
+                dispatch(
+                  updateActivity({
+                    ...selectedActivity,
+                    amount: v,
+                  }),
+                );
+              }}
+              error={validate('amount', selectedActivity.amount) || undefined}
+              handleEnter={handleEnter}
+            />
+          </Group>
+        ) : (
+          <Select
+            style={{ flex: 1 }}
+            label="Amount"
+            value={selectedActivity.amountVariable as string}
+            data={amountVariables.map((v) => ({ label: v, value: v }))}
+            onChange={(v) => {
+              if (!v) return;
+              dispatch(
+                updateActivity({
+                  ...selectedActivity,
+                  amountVariable: v,
+                }),
+              );
+            }}
+            error={validate('amountVariable', selectedActivity.amountVariable)}
+          />
+        )}
+        <ActionIcon
+          mt={
+            (selectedActivity.amountIsVariable && !validate('amountVariable', selectedActivity.amountVariable)) ||
+            (!selectedActivity.amountIsVariable && !validate('amount', selectedActivity.amount))
+              ? 22
+              : 2
+          }
+          ml={-12}
+          onClick={() => {
+            dispatch(
+              updateActivity({
+                ...selectedActivity,
+                amountIsVariable: !selectedActivity.amountIsVariable,
+              }),
+            );
+          }}
+          aria-label="Toggle variable mode"
+        >
+          {selectedActivity.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
+        </ActionIcon>
+      </Group>
+      <FlagSelect
+        flagColor={selectedActivity.flagColor}
+        onChange={(v: { flagColor: string | null; flag: boolean }) => {
+          dispatch(updateActivity({ ...selectedActivity, flagColor: v.flagColor, flag: v.flag }));
+        }}
+        dropdownProps={{
+          zIndex: 1001,
+          withinPortal: true,
+          position: 'bottom',
+        }}
+      />
+      <Group w="100%" grow>
+        <Button
+          disabled={!allValid()}
+          title={!allValid() ? 'Fix validation errors before saving' : undefined}
+          onClick={() => {
+            save();
+          }}
+        >
+          Save
+        </Button>
+        <Button
+          disabled={!selectedActivity.id || !!selectedBillId}
+          title={!selectedActivity.id ? 'Activity has not been saved yet' : selectedBillId ? 'Cannot remove an activity linked to a bill' : undefined}
+          onClick={() => {
+            dispatch(
+              removeActivity(
+                account,
+                activityId as string,
+                selectedActivity.isTransfer,
+                startDate,
+                endDate,
+                graphStartDate,
+                graphEndDate,
+              ),
+            );
+            resetSelected();
+          }}
+        >
+          Remove
+        </Button>
+      </Group>
     </Stack>
   );
 };

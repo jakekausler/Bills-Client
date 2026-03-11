@@ -354,7 +354,7 @@ export default function AccountList({ close }: AccountListProps) {
                           <Table.Td>
                             <NumberInput
                               disabled={!(account.type === 'Savings' || account.type === 'Investment')}
-                              value={account.pullPriority || -1}
+                              value={account.pullPriority ?? -1}
                               onChange={(e) =>
                                 setEditingAccountsList(
                                   editingAccountsList.map((a) =>
@@ -370,7 +370,7 @@ export default function AccountList({ close }: AccountListProps) {
                           <Table.Td>
                             <NumberInput
                               disabled={!(account.type === 'Investment')}
-                              value={account.withdrawalTaxRate || 0}
+                              value={account.withdrawalTaxRate ?? 0}
                               onChange={(e) =>
                                 setEditingAccountsList(
                                   editingAccountsList.map((a) =>
@@ -386,7 +386,7 @@ export default function AccountList({ close }: AccountListProps) {
                           <Table.Td>
                             <NumberInput
                               disabled={!(account.type === 'Investment')}
-                              value={account.earlyWithdrawlPenalty || 0}
+                              value={account.earlyWithdrawlPenalty ?? 0}
                               onChange={(e) =>
                                 setEditingAccountsList(
                                   editingAccountsList.map((a) =>
@@ -421,7 +421,7 @@ export default function AccountList({ close }: AccountListProps) {
                           <Table.Td>
                             <NumberInput
                               disabled={!(account.type === 'Savings')}
-                              value={account.interestTaxRate || 0}
+                              value={account.interestTaxRate ?? 0}
                               onChange={(e) =>
                                 setEditingAccountsList(
                                   editingAccountsList.map((a) =>
@@ -511,7 +511,7 @@ export default function AccountList({ close }: AccountListProps) {
                           <Table.Td>
                             <NumberInput
                               disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.minimumBalance || 0}
+                              value={account.minimumBalance ?? 0}
                               onChange={(e) =>
                                 setEditingAccountsList(
                                   editingAccountsList.map((a) =>
@@ -527,7 +527,7 @@ export default function AccountList({ close }: AccountListProps) {
                           <Table.Td>
                             <NumberInput
                               disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.maximumBalance || 0}
+                              value={account.maximumBalance ?? 0}
                               onChange={(e) =>
                                 setEditingAccountsList(
                                   editingAccountsList.map((a) =>
@@ -543,7 +543,7 @@ export default function AccountList({ close }: AccountListProps) {
                           <Table.Td>
                             <NumberInput
                               disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.minimumPullAmount || 0}
+                              value={account.minimumPullAmount ?? 0}
                               onChange={(e) =>
                                 setEditingAccountsList(
                                   editingAccountsList.map((a) =>

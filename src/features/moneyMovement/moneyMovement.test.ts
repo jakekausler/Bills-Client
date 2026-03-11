@@ -78,18 +78,18 @@ describe('moneyMovementSlice reducer', () => {
 
   describe('setMoneyMovementData', () => {
     it('sets data', () => {
-      const state = reducer(undefined, setMoneyMovementData(sampleMoneyMovementData));
+      const state = reducer(undefined, setMoneyMovementData(sampleMoneyMovementData as any));
       expect(state.data).toEqual(sampleMoneyMovementData);
     });
 
     it('sets loading to false after data is set', () => {
       const pre = reducer(undefined, setMoneyMovementLoading(true));
-      const state = reducer(pre, setMoneyMovementData(sampleMoneyMovementData));
+      const state = reducer(pre, setMoneyMovementData(sampleMoneyMovementData as any));
       expect(state.loading).toBe(false);
     });
 
     it('sets data to null when given null', () => {
-      const pre = reducer(undefined, setMoneyMovementData(sampleMoneyMovementData));
+      const pre = reducer(undefined, setMoneyMovementData(sampleMoneyMovementData as any));
       const state = reducer(pre, setMoneyMovementData(null));
       expect(state.data).toBeNull();
     });

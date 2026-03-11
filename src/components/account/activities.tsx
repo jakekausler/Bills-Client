@@ -405,10 +405,10 @@ export default function Activities({ style }: ActivitiesProps) {
                     <Table.Td
                       fz="xs"
                       style={{ whiteSpace: 'nowrap' }}
-                      c={(activity.amount as number) < 0 ? 'red' : 'green'}
+                      c={Number(activity.amount) < 0 ? 'red' : 'green'}
                     >
-                      <VisuallyHidden>{(activity.amount as number) < 0 ? '(negative)' : '(positive)'}</VisuallyHidden>
-                      {'$ ' + (activity.amount as number).toFixed(2)}
+                      <VisuallyHidden>{Number(activity.amount) < 0 ? '(negative)' : '(positive)'}</VisuallyHidden>
+                      {'$ ' + Number(activity.amount).toFixed(2)}
                     </Table.Td>
                     <Table.Td fz="xs" style={{ whiteSpace: 'nowrap' }} c={activity.balance < 0 ? 'red' : 'green'}>
                       <VisuallyHidden>{activity.balance < 0 ? '(negative)' : '(positive)'}</VisuallyHidden>
