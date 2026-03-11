@@ -336,12 +336,14 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
                                 {progress.individualDeductibleLimit.toLocaleString()}
                               </Text>
                             </Group>
-                            <ProgressMiniGraph
-                              data={personDeductibleHistory}
-                              limit={progress.individualDeductibleLimit}
-                              color="cyan"
-                              height={100}
-                            />
+                            {isExpanded && (
+                              <ProgressMiniGraph
+                                data={personDeductibleHistory}
+                                limit={progress.individualDeductibleLimit}
+                                color="cyan"
+                                height={100}
+                              />
+                            )}
                           </div>
                           <div>
                             <Group justify="space-between" mb={4}>
@@ -356,12 +358,14 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
                                 {progress.individualOOPLimit.toLocaleString()}
                               </Text>
                             </Group>
-                            <ProgressMiniGraph
-                              data={personOOPHistory}
-                              limit={progress.individualOOPLimit}
-                              color="grape"
-                              height={100}
-                            />
+                            {isExpanded && (
+                              <ProgressMiniGraph
+                                data={personOOPHistory}
+                                limit={progress.individualOOPLimit}
+                                color="grape"
+                                height={100}
+                              />
+                            )}
                           </div>
                         </Stack>
                       </div>
