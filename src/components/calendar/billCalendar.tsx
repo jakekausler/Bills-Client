@@ -24,6 +24,7 @@ dayjs.extend(utc);
 export default function BillCalendar() {
   const startDate = useSelector(selectStartDate);
   const [view, _setView] = useState(Views.MONTH);
+  const [monthPickerOpened, setMonthPickerOpened] = useState(false);
   const bills = useSelector(selectBills).map((bill) => ({
     ...bill,
     start: new Date(`${bill.date}T00:00:00`),
@@ -79,7 +80,7 @@ export default function BillCalendar() {
         >
           <IconChevronLeft />
         </ActionIcon>
-        <Popover position="bottom" withArrow>
+        <Popover position="bottom" withArrow opened={monthPickerOpened} onChange={setMonthPickerOpened}>
           <Popover.Target>
             <Button
               disabled={!loaded}
@@ -87,6 +88,7 @@ export default function BillCalendar() {
               mx="auto"
               maw={400}
               fullWidth
+              onClick={() => setMonthPickerOpened((o) => !o)}
               styles={{ label: { textAlign: 'center' } }}
             >
               {dayjs.utc(startDate).format('MMMM YYYY')}
@@ -100,6 +102,7 @@ export default function BillCalendar() {
                   dispatch(updateStartDate(toDateString(value)));
                   dispatch(updateEndDate(dayjs.utc(value).endOf('month').format('YYYY-MM-DD')));
                   dispatch(loadCalendar());
+                  setMonthPickerOpened(false);
                 }
               }}
             />
