@@ -18,6 +18,7 @@ import { initDevLogger, resetDevLog } from './utils/devLogger';
 if (import.meta.env.DEV) {
   resetDevLog();
   initDevLogger();
+  console.log('[DevLogger] Frontend logging initialized');
 }
 
 const theme = createTheme({

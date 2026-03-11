@@ -50,22 +50,13 @@ function sendLogToBackend(level: LogLevel, args: unknown[]): void {
     timestamp: new Date().toISOString(),
   };
 
-  // Try to use sendBeacon for reliability (works even on page unload)
-  const data = JSON.stringify(payload);
-  if (navigator.sendBeacon) {
-    const blob = new Blob([data], { type: 'application/json' });
-    navigator.sendBeacon('/api/dev/log', blob);
-  } else {
-    // Fallback to fetch (fire-and-forget, no await)
-    fetch('/api/dev/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: data,
-      keepalive: true,
-    }).catch(() => {
-      // Silently ignore errors to avoid infinite loops
-    });
-  }
+  fetch('/api/dev/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }).catch(() => {
+    // Silently ignore errors to avoid infinite loops
+  });
 }
 
 /**
@@ -92,15 +83,9 @@ export function initDevLogger(): void {
 export function resetDevLog(): void {
   if (!import.meta.env.DEV) return;
 
-  // Fire-and-forget POST to reset endpoint
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon('/api/dev/log/reset');
-  } else {
-    fetch('/api/dev/log/reset', {
-      method: 'POST',
-      keepalive: true,
-    }).catch(() => {
-      // Silently ignore errors
-    });
-  }
+  fetch('/api/dev/log/reset', {
+    method: 'POST',
+  }).catch(() => {
+    // Silently ignore errors
+  });
 }
