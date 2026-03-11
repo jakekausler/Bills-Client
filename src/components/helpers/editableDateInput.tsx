@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { TextInput, ActionIcon, Popover } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
@@ -250,7 +250,7 @@ export const EditableDateInput = ({
     inputRef.current?.focus();
   };
 
-  const getValidDateForCalendar = () => {
+  const getValidDateForCalendar = useCallback(() => {
     if (!editedDate) {
       // If no date, try to parse from display value
       const [month, day, year] = displayValue.split('/');
@@ -271,7 +271,7 @@ export const EditableDateInput = ({
 
     const date = new Date(`${editedDate}T00:00:00`);
     return isNaN(date.getTime()) ? new Date() : date;
-  };
+  }, [editedDate, displayValue]);
 
   useEffect(() => {
     setEditedDate(value);
@@ -288,7 +288,7 @@ export const EditableDateInput = ({
     if (showCalendar) {
       setCalendarDate(getValidDateForCalendar());
     }
-  }, [displayValue, editedDate, showCalendar]);
+  }, [displayValue, editedDate, showCalendar, getValidDateForCalendar]);
 
   return (
     <Popover

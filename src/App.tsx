@@ -119,7 +119,7 @@ function App() {
     if (token && token !== 'INVALID') {
       validateToken();
     }
-  }, [token]);
+  }, [token, validateToken]);
 
   if (!token || token === 'INVALID') {
     return <Login setToken={setToken} invalid={token === 'INVALID'} />;
