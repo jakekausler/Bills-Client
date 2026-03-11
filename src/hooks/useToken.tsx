@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 
 export const useToken = () => {
   const getToken = () => {
+    if (import.meta.env.VITE_DISABLE_AUTH === 'true') {
+      return 'auth-disabled';
+    }
     return localStorage.getItem('token');
   };
 
@@ -19,6 +22,10 @@ export const useToken = () => {
 
   const validateToken = async () => {
     if (!token) return false;
+
+    if (import.meta.env.VITE_DISABLE_AUTH === 'true') {
+      return true;
+    }
 
     try {
       const response = await fetch('/api/auth/validate', {
