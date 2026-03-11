@@ -34,10 +34,6 @@ export default function AccountSelector({
 
   useEffect(() => {
     dispatch(loadAccounts());
-  }, []);
-
-  useEffect(() => {
-    dispatch(loadAccounts());
   }, [dispatch]);
 
   const accountsWithCategories = accounts.reduce(

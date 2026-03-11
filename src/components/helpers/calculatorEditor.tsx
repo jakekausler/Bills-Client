@@ -69,7 +69,7 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
     ) {
       const secondOperand = Number(stripOperand(displayValue || restProps.value));
       const result = calculate(firstOperand, secondOperand, currentOperation);
-      if (isNaN(result)) return;
+      if (isNaN(result) || !isFinite(result)) return;
       const rounded = Math.round(result * 100) / 100;
       setCalcAnnouncement(`Result: ${rounded}`);
       restProps.onChange?.(rounded);

@@ -307,7 +307,7 @@ export default function AccountList({ close }: AccountListProps) {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {editingAccountsList
+                  {[...editingAccountsList]
                     .sort((a, b) => compareTypes(a.type, b.type) || a.name.localeCompare(b.name))
                     .map((account) => {
                       return (

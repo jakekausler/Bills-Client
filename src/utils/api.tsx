@@ -65,7 +65,7 @@ export const api = {
     const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
     );
   },
 
@@ -74,7 +74,7 @@ export const api = {
     const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
       {
         method: 'POST',
         body: data ? JSON.stringify(data) : undefined,
@@ -87,7 +87,7 @@ export const api = {
     const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
       {
         method: 'PUT',
         body: data ? JSON.stringify(data) : undefined,
@@ -100,7 +100,7 @@ export const api = {
     const simulation = getSimulation();
     return fetchWithAuth(
       endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${simulation}` : ''),
+        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
       {
         method: 'DELETE',
         body: data ? JSON.stringify(data) : undefined,

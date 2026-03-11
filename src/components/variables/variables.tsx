@@ -153,12 +153,12 @@ export default function Variables() {
                           setVariableValues(variableValues.map((v, i) => (i === idx ? amount : v)));
                         }}
                         onBlur={(event) => {
+                          const parsed = parseFloat(event.target.value);
+                          const finalValue = isNaN(parsed) ? 0 : parsed;
                           setVariableValues(
                             variableValues.map((v, i) =>
                               i === idx
-                                ? typeof event.target.value === 'number'
-                                  ? event.target.value
-                                  : parseFloat(event.target.value)
+                                ? finalValue
                                 : v,
                             ),
                           );
@@ -173,10 +173,7 @@ export default function Variables() {
                                       ? {
                                           [variable]: {
                                             ...s.variables[variable],
-                                            value:
-                                              typeof event.target.value === 'number'
-                                                ? event.target.value
-                                                : parseFloat(event.target.value),
+                                            value: finalValue,
                                           },
                                         }
                                       : {}),
@@ -223,7 +220,7 @@ export default function Variables() {
                   </Table.Td>
                   <Table.Td style={{ position: 'relative' }}>
                     <ActionIcon
-                      style={{ bottom: 'px', position: 'absolute' }}
+                      style={{ bottom: '0px', position: 'absolute' }}
                       size="34px"
                       disabled={usedVariables[variable]?.length > 0}
                       onClick={() =>

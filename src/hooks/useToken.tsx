@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useToken = () => {
   const getToken = () => {
@@ -15,12 +15,12 @@ export const useToken = () => {
     setToken(token);
   };
 
-  const clearToken = () => {
+  const clearToken = useCallback(() => {
     localStorage.removeItem('token');
     setToken(null);
-  };
+  }, []);
 
-  const validateToken = async () => {
+  const validateToken = useCallback(async () => {
     if (!token) return false;
 
     if (import.meta.env.VITE_DISABLE_AUTH === 'true') {
@@ -45,13 +45,7 @@ export const useToken = () => {
       clearToken();
       return false;
     }
-  };
-
-  useEffect(() => {
-    if (token) {
-      validateToken();
-    }
-  }, [token]);
+  }, [token, clearToken]);
 
   return { token, setToken: saveToken, clearToken, validateToken };
 };
