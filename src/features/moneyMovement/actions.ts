@@ -13,6 +13,7 @@ export const loadMoneyMovementChart = (): AppThunk => async (dispatch, getState)
     dispatch(setMoneyMovementData(data));
   } catch (error) {
     console.error('Failed to load money movement chart', error);
+    dispatch(setMoneyMovementLoading(false));
     dispatch(setMoneyMovementError('Failed to load money movement chart'));
   }
 };

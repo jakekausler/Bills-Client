@@ -11,6 +11,7 @@ export const loadGraphViewData =
       dispatch(setGraphViewData(data));
     } catch (error) {
       console.error('Failed to load graph view data', error);
+      dispatch(setGraphViewLoaded(true));
       dispatch(setGraphViewError('Failed to load graph view data'));
     }
   };

@@ -12,6 +12,7 @@ export const loadGraphData =
       dispatch(setGraphData(data));
     } catch (error) {
       console.error('Failed to load graph data', error);
+      dispatch(updateGraphLoaded(true));
       dispatch(setGraphError('Failed to load graph data'));
     }
   };

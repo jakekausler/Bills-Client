@@ -216,6 +216,9 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
       }
     }
     if (name === 'increaseByDate') {
+      if (value === '' || value === undefined || value === null) {
+        return null;
+      }
       const dateParts = value.split('/');
       if (dateParts.length !== 2) {
         return 'Invalid date format - use MM/DD';
@@ -301,7 +304,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
     const bill = selectedBill
       ? {
         ...selectedBill,
-        amount: amount || selectedBill.amount,
+        amount: amount ?? selectedBill.amount,
       }
       : null;
     if (!allValid(bill)) {

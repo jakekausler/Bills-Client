@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Title, Stack, Progress, Text, Group, Loader, Alert, Button, Collapse, Badge } from '@mantine/core';
 import { IconAlertCircle, IconRefresh, IconChevronDown, IconChevronUp, IconCheck } from '@tabler/icons-react';
 import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 import { RootState } from '../../store';
 import { getDeductibleProgress, getHealthcareProgressHistory } from '../../features/healthcare/api';
 import { selectHealthcareConfigs } from '../../features/healthcare/select';
@@ -53,8 +54,9 @@ export default function DeductibleProgress({ startDate, endDate }: DeductiblePro
           historyEndDate = formatDateISO(endDate);
         } else {
           // Calculate plan year start/end dates as fallback
-          historyStartDate = `${progress.planYear}-${String(config.resetMonth).padStart(2, '0')}-${String(config.resetDay).padStart(2, '0')}`;
-          historyEndDate = `${progress.planYear + 1}-${String(config.resetMonth).padStart(2, '0')}-${String(config.resetDay - 1).padStart(2, '0')}`;
+          historyStartDate = `${progress.planYear}-${String(config.resetMonth + 1).padStart(2, '0')}-${String(config.resetDay).padStart(2, '0')}`;
+          const planYearEndDate = dayjs(`${progress.planYear + 1}-${String(config.resetMonth + 1).padStart(2, '0')}-${String(config.resetDay).padStart(2, '0')}`);
+          historyEndDate = planYearEndDate.subtract(1, 'day').format('YYYY-MM-DD');
         }
 
         const history = await getHealthcareProgressHistory(

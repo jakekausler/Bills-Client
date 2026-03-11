@@ -112,7 +112,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
       }
     }
     if (name === 'amountVariable') {
-      if (selectedActivity.amountVariable) {
+      if (selectedActivity.amountIsVariable) {
         if (!amountVariables.includes(value as string) && value !== '{HALF}' && value !== '{FULL}') {
           return 'Invalid amount';
         }
@@ -217,7 +217,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
     }
     const activity: Activity = {
       ...selectedActivity,
-      amount: amount || selectedActivity.amount,
+      amount: amount ?? selectedActivity.amount,
     } as Activity;
     if (!allValid(activity)) {
       return;

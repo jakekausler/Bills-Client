@@ -23,7 +23,7 @@ export const fetchSelectedCategoryBreakdown = async (
     selectedAccountString = `&selectedAccounts=${selectedAccounts.join(',')}`;
   }
   return await api.get(
-    `/api/categories/${category}/breakdown?startDate=${startDate}&endDate=${endDate}${selectedAccountString}`,
+    `/api/categories/${encodeURIComponent(category)}/breakdown?startDate=${startDate}&endDate=${endDate}${selectedAccountString}`,
   );
 };
 
@@ -38,6 +38,6 @@ export const fetchSelectedCategoryActivity = async (
     selectedAccountString = `&selectedAccounts=${selectedAccounts.join(',')}`;
   }
   return await api.get(
-    `/api/categories/${category}/transactions?startDate=${startDate}&endDate=${endDate}${selectedAccountString}`,
+    `/api/categories/${encodeURIComponent(category)}/transactions?startDate=${startDate}&endDate=${endDate}${selectedAccountString}`,
   );
 };

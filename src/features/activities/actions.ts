@@ -75,9 +75,8 @@ export const loadAndDuplicateBill = (accountId: string, billId: string, isTransf
     try {
       dispatch(setSelectedBillLoaded(false));
       const bill = await fetchBill(accountId, billId, isTransfer);
-      bill.id = undefined;
-      bill.name = `Copy of ${bill.name}`;
-      dispatch(setSelectedBill(bill));
+      const newBill = { ...bill, id: undefined, name: `Copy of ${bill.name}` };
+      dispatch(setSelectedBill(newBill));
     } catch (error) {
       console.error('Failed to load and duplicate bill:', error);
       dispatch(setActivitiesError(error instanceof Error ? error.message : 'Failed to load and duplicate bill'));
@@ -105,8 +104,8 @@ export const saveActivity = (
       } else if (activity.id) {
         if (activity.id?.startsWith('AUTO-PULL') || activity.id?.startsWith('RMD') || activity.id?.startsWith('AUTO-PUSH')) {
           // Enter as a new activity
-          activity.id = undefined;
-          await fetchAddActivity(account.id, activity);
+          const newActivity = { ...activity, id: undefined };
+          await fetchAddActivity(account.id, newActivity);
         } else if (activity.id?.startsWith('SPENDING-TRACKER-')) {
           // Do nothing, we shouldn't be able to edit spending tracker
           return;

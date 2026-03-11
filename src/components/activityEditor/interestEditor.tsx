@@ -142,7 +142,7 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
       if (i === index) {
         return {
           ...interest,
-          apr: apr || interest.apr,
+          apr: apr ?? interest.apr,
         };
       }
       return interest;

@@ -20,8 +20,8 @@ import {
 
 export const loadCategories = (): AppThunk => async (dispatch, getState) => {
   try {
-    const categories = await fetchCategories();
     dispatch(setCategoriesLoaded(false));
+    const categories = await fetchCategories();
     dispatch(setCategories(categories));
 
     const state = getState();
