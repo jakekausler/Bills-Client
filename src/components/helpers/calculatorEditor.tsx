@@ -172,7 +172,13 @@ export function CalculatorEditor({ handleEnter, ...restProps }: CalculatorEditor
       const selectionEnd = input.selectionEnd || 0;
       const isAtEnd = selectionStart === input.value.length && selectionEnd === input.value.length;
 
-      if (isAtEnd || isEmpty || isZero || isFullySelected) {
+      if (isFullySelected) {
+        event.preventDefault();
+        setDisplayValue(key);
+        return;
+      }
+
+      if (isAtEnd || isEmpty || isZero) {
         event.preventDefault();
         handleNumber(key);
         return;
