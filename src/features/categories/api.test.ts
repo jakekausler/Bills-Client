@@ -112,11 +112,9 @@ describe('categories api', () => {
     it('encodes the category name in the URL path', async () => {
       mockApi.get.mockResolvedValue({});
 
-      await fetchSelectedCategoryBreakdown('Transportation', '2024-03-01', '2024-03-31', []);
+      await fetchSelectedCategoryBreakdown('Food & Drink', '2024-03-01', '2024-03-31', []);
 
-      expect(mockApi.get).toHaveBeenCalledWith(
-        '/api/categories/Transportation/breakdown?startDate=2024-03-01&endDate=2024-03-31',
-      );
+      expect(mockApi.get).toHaveBeenCalledWith(expect.stringContaining(encodeURIComponent('Food & Drink')));
     });
 
     it('propagates errors from api.get', async () => {

@@ -2,11 +2,12 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { sort } from '../../utils/array';
 
+export const ACCOUNT_TYPE_ORDER = ['Checking', 'Savings', 'Credit', 'Loan', 'Investment'] as const;
+
 const compareTypes = (typeA: string, typeB: string) => {
-  const types = ['Checking', 'Savings', 'Credit', 'Loan', 'Investment'];
-  const indexA = types.indexOf(typeA);
-  const indexB = types.indexOf(typeB);
-  return (indexA === -1 ? types.length : indexA) - (indexB === -1 ? types.length : indexB);
+  const indexA = ACCOUNT_TYPE_ORDER.indexOf(typeA as never);
+  const indexB = ACCOUNT_TYPE_ORDER.indexOf(typeB as never);
+  return (indexA === -1 ? ACCOUNT_TYPE_ORDER.length : indexA) - (indexB === -1 ? ACCOUNT_TYPE_ORDER.length : indexB);
 };
 
 export const selectAllAccounts = (state: RootState) => state.accounts.accounts;

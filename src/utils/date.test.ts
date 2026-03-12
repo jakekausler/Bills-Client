@@ -44,9 +44,9 @@ describe('toDate', () => {
 });
 
 describe('toDateString', () => {
-  // toDateString uses getFullYear() (local) + getUTCMonth() + getUTCDate().
-  // To get a stable result across timezones, we construct dates whose local
-  // getFullYear() and UTC month/day are unambiguous — i.e. we avoid dates
+  // toDateString uses getUTCFullYear() + getUTCMonth() + getUTCDate().
+  // To get a stable result across timezones, we construct dates whose UTC
+  // year, month, and day are unambiguous — i.e. we avoid dates
   // where midnight UTC would cross a year or month boundary in local time.
   // Using mid-month, mid-year dates and noon UTC ensures stability.
 
