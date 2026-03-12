@@ -281,13 +281,13 @@ export default function AccountList({ close }: AccountListProps) {
       dispatch(loadActivities(selectedAccount, startDateObj, endDateObj));
       dispatch(loadGraphData(selectedAccount, graphStartDateObj, graphEndDateObj));
     }
-  }, [selectedAccount, startDateObj, endDateObj, graphStartDateObj, graphEndDateObj]);
+  }, [selectedAccount, startDateObj, endDateObj, graphStartDateObj, graphEndDateObj, dispatch]);
 
   useEffect(() => {
     if (loaded && accounts.length > 0 && !selectedAccount) {
       dispatch(setSelectedAccount(accounts[0]));
     }
-  }, [loaded, accounts, selectedAccount, startDate, endDate]);
+  }, [loaded, accounts, selectedAccount, startDate, endDate, dispatch]);
 
   const accountsWithCategories = accounts.reduce(
     (acc, account) => {

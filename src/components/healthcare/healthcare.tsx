@@ -48,6 +48,7 @@ export default function Healthcare() {
               clearable
               style={{ width: 150 }}
               label="Start Date"
+              maxDate={filterEndDate ?? undefined}
             />
             <DateInput
               placeholder="End date"
@@ -56,6 +57,7 @@ export default function Healthcare() {
               clearable
               style={{ width: 150 }}
               label="End Date"
+              minDate={filterStartDate ?? undefined}
             />
           </Group>
         </Card>

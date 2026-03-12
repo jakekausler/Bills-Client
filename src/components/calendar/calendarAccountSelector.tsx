@@ -13,7 +13,7 @@ export default function CalendarAccountSelector() {
 
   useEffect(() => {
     dispatch(loadCalendar());
-  }, [selectedAccounts]);
+  }, [selectedAccounts, dispatch]);
 
   return <AccountSelector selectedAccounts={selectedAccounts} updateSelectedAccounts={updateSelectedAccounts} />;
 }

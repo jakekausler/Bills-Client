@@ -13,7 +13,7 @@ export default function CategoriesAccountSelector() {
 
   useEffect(() => {
     dispatch(loadCategories());
-  }, [selectedAccounts]);
+  }, [selectedAccounts, dispatch]);
 
   return <AccountSelector selectedAccounts={selectedAccounts} updateSelectedAccounts={updateSelectedAccounts} />;
 }

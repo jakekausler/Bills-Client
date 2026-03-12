@@ -13,7 +13,7 @@ export default function FlowAccountSelector() {
 
   useEffect(() => {
     dispatch(loadFlow());
-  }, [selectedAccounts]);
+  }, [selectedAccounts, dispatch]);
 
   return <AccountSelector selectedAccounts={selectedAccounts} updateSelectedAccounts={updateSelectedAccounts} />;
 }

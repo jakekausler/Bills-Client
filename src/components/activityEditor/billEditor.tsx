@@ -377,7 +377,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                     }),
                   );
                 }}
-                aria-label="Toggle variable mode"
+                aria-label="Toggle variable mode for start date"
               >
                 {selectedBill.startDateIsVariable ? <IconVariable /> : <IconVariableOff />}
               </ActionIcon>
@@ -434,7 +434,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                     }),
                   );
                 }}
-                aria-label="Toggle variable mode"
+                aria-label="Toggle variable mode for end date"
               >
                 {selectedBill.endDateIsVariable ? <IconVariable /> : <IconVariableOff />}
               </ActionIcon>
@@ -695,7 +695,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                   }),
                 );
               }}
-              aria-label="Toggle variable mode"
+              aria-label="Toggle variable mode for amount"
             >
               {selectedBill.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
             </ActionIcon>

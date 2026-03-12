@@ -115,6 +115,7 @@ const DateRangeControls = () => {
               onChange={(date) => dispatch(setCustomStartDate(date ? dayjs(date).format('YYYY-MM-DD') : null))}
               placeholder="Select date"
               size="sm"
+              maxDate={customEndDate ? new Date(customEndDate + 'T00:00:00') : undefined}
             />
             <DateInput
               label="End Date"
@@ -122,6 +123,7 @@ const DateRangeControls = () => {
               onChange={(date) => dispatch(setCustomEndDate(date ? dayjs(date).format('YYYY-MM-DD') : null))}
               placeholder="Select date"
               size="sm"
+              minDate={customStartDate ? new Date(customStartDate + 'T00:00:00') : undefined}
             />
           </Group>
         )}

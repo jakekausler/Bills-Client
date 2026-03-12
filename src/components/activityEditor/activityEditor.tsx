@@ -285,7 +285,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               }),
             );
           }}
-          aria-label="Toggle variable mode"
+          aria-label="Toggle variable mode for date"
         >
           {selectedActivity.dateIsVariable ? <IconVariable /> : <IconVariableOff />}
         </ActionIcon>
@@ -546,7 +546,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
               }),
             );
           }}
-          aria-label="Toggle variable mode"
+          aria-label="Toggle variable mode for amount"
         >
           {selectedActivity.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
         </ActionIcon>
