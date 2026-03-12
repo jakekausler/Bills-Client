@@ -1,6 +1,7 @@
 node_modules/
 deno.lock
 .env
+tsconfig.tsbuildinfo
 dist/tsconfig.tsbuildinfo
 pnpm-lock.yaml
 dist/
