@@ -1,10 +1,10 @@
 import { Account, Activity, Bill, Interest } from '../../types/types';
 import { api } from '../../utils/api';
-import { formatDateISO } from '../../utils/date';
+import { toDateString } from '../../utils/date';
 
 export const fetchActivities = async (account: Account, startDate: Date, endDate: Date): Promise<Activity[]> => {
   return await api.get<Activity[]>(
-    `/api/accounts/${encodeURIComponent(account.id)}/consolidated_activity?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
+    `/api/accounts/${encodeURIComponent(account.id)}/consolidated_activity?startDate=${toDateString(startDate)}&endDate=${toDateString(endDate)}`,
   );
 };
 
@@ -46,7 +46,7 @@ export const fetchBillActivity = async (
   endDate: Date,
 ): Promise<Activity> => {
   return await api.get<Activity>(
-    `/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}?isTransfer=${isTransfer}&asActivity=true&startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}`,
+    `/api/accounts/${encodeURIComponent(accountId)}/bills/${encodeURIComponent(billId)}?isTransfer=${isTransfer}&asActivity=true&startDate=${toDateString(startDate)}&endDate=${toDateString(endDate)}`,
   );
 };
 
@@ -95,7 +95,7 @@ export const fetchSaveInterests = async (accountId: string, interests: Interest[
 
 export const fetchInterestActivity = async (accountId: string, interestId: string, startDate: Date, endDate: Date): Promise<Activity> => {
   return await api.get<Activity>(
-    `/api/accounts/${encodeURIComponent(accountId)}/interests/${encodeURIComponent(interestId)}?startDate=${formatDateISO(startDate)}&endDate=${formatDateISO(endDate)}&asActivity=true`,
+    `/api/accounts/${encodeURIComponent(accountId)}/interests/${encodeURIComponent(interestId)}?startDate=${toDateString(startDate)}&endDate=${toDateString(endDate)}&asActivity=true`,
   );
 };
 

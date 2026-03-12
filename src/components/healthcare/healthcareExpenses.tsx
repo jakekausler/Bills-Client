@@ -17,7 +17,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getHealthcareExpenses } from '../../features/healthcare/api';
 import { HealthcareExpense } from '../../types/types';
-import { formatDateISO } from '../../utils/date';
+import { toDateString } from '../../utils/date';
 
 interface HealthcareExpensesProps {
   startDate: Date | null;
@@ -38,8 +38,8 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
     try {
       setLoading(true);
       setError(null);
-      const startDateStr = startDate ? formatDateISO(startDate) : undefined;
-      const endDateStr = endDate ? formatDateISO(endDate) : undefined;
+      const startDateStr = startDate ? toDateString(startDate) : undefined;
+      const endDateStr = endDate ? toDateString(endDate) : undefined;
       const data = await getHealthcareExpenses(selectedSimulation, startDateStr, endDateStr);
       setExpenses(data);
     } catch (err) {

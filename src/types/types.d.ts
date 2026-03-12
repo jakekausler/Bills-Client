@@ -117,8 +117,8 @@ export type Account = {
   pullPriority: number;
   interestTaxRate: number;
   withdrawalTaxRate: number;
-  earlyWithdrawlPenalty: number;
-  earlyWithdrawlDate: string | null;
+  earlyWithdrawalPenalty: number;
+  earlyWithdrawalDate: string | null;
   interestPayAccount: string | null;
   interestAppliesToPositiveBalance: boolean;
   usesRMD: boolean;

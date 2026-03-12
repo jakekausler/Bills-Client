@@ -14,7 +14,7 @@ import {
   selectFlowSelectedAccounts,
   selectFlowStartDate,
   selectFlowEndDate,
-} from './selector';
+} from './select';
 import { Flow } from '../../types/types';
 import { RootState } from '../../store';
 

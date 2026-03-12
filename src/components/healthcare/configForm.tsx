@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { createHealthcareConfig, updateHealthcareConfig } from '../../features/healthcare/actions';
 import { HealthcareConfig } from '../../types/types';
-import { formatDateISO } from '../../utils/date';
+import { toDateString } from '../../utils/date';
 
 type ConfigFormProps = {
   opened: boolean;
@@ -137,8 +137,8 @@ export default function ConfigForm({ opened, onClose, config }: ConfigFormProps)
     const configData: Omit<HealthcareConfig, 'id'> = {
       name,
       coveredPersons,
-      startDate: formatDateISO(startDate),
-      endDate: endDate ? formatDateISO(endDate) : null,
+      startDate: toDateString(startDate),
+      endDate: endDate ? toDateString(endDate) : null,
       individualDeductible: Number(individualDeductible),
       individualOutOfPocketMax: Number(individualOutOfPocketMax),
       familyDeductible: Number(familyDeductible),

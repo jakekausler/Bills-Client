@@ -1,5 +1,5 @@
-import React from 'react';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBills, selectBillsLoaded, selectStartDate } from '../../features/calendar/select';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';

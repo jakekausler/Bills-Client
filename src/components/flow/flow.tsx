@@ -1,5 +1,5 @@
 import React from 'react';
-import { selectFlow } from '../../features/flow/selector';
+import { selectFlow } from '../../features/flow/select';
 import { useSelector } from 'react-redux';
 import { Box, VisuallyHidden, useMantineTheme } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';

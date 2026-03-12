@@ -1,6 +1,6 @@
 import { AppThunk } from '../../store';
 import { fetchFlow } from './api';
-import { selectFlowEndDate, selectFlowStartDate, selectFlowSelectedAccounts } from './selector';
+import { selectFlowEndDate, selectFlowStartDate, selectFlowSelectedAccounts } from './select';
 import { setFlow, setFlowError, setFlowLoaded } from './slice';
 
 let loadSequence = 0;

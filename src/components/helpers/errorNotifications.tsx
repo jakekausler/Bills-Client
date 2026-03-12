@@ -9,7 +9,7 @@ import { selectAccountsError } from '../../features/accounts/select';
 import { selectActivitiesError } from '../../features/activities/select';
 import { selectBillsError } from '../../features/calendar/select';
 import { selectCategoriesError } from '../../features/categories/select';
-import { selectFlowError } from '../../features/flow/selector';
+import { selectFlowError } from '../../features/flow/select';
 import { selectGraphError } from '../../features/graph/select';
 import { selectGraphViewError } from '../../features/graphView/select';
 import { selectHealthcareError } from '../../features/healthcare/select';

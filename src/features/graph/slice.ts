@@ -51,9 +51,6 @@ const graphSlice = createSlice({
     setGraphEndDate: (state, action: PayloadAction<string>) => {
       state.endDate = action.payload;
     },
-    setShowGraph: (state, action: PayloadAction<boolean>) => {
-      state.show = action.payload;
-    },
     toggleGraph: (state) => {
       state.show = !state.show;
     },

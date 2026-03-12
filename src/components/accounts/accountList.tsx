@@ -103,8 +103,8 @@ const EditAccountRow = React.memo(({ account, allAccounts, onUpdateAccount }: Ed
       <Table.Td>
         <NumberInput
           disabled={!(account.type === 'Investment')}
-          value={account.earlyWithdrawlPenalty ?? 0}
-          onChange={(e) => handleUpdate({ earlyWithdrawlPenalty: typeof e === 'number' ? e : Number(e) })}
+          value={account.earlyWithdrawalPenalty ?? 0}
+          onChange={(e) => handleUpdate({ earlyWithdrawalPenalty: typeof e === 'number' ? e : Number(e) })}
           aria-label="Early withdrawal penalty"
         />
       </Table.Td>
@@ -112,11 +112,11 @@ const EditAccountRow = React.memo(({ account, allAccounts, onUpdateAccount }: Ed
         <DateInput
           disabled={!(account.type === 'Investment')}
           value={
-            account.earlyWithdrawlDate
-              ? new Date(`${account.earlyWithdrawlDate}T00:00:00`)
+            account.earlyWithdrawalDate
+              ? new Date(`${account.earlyWithdrawalDate}T00:00:00`)
               : undefined
           }
-          onChange={(e) => handleUpdate({ earlyWithdrawlDate: e ? toDateString(e) : null })}
+          onChange={(e) => handleUpdate({ earlyWithdrawalDate: e ? toDateString(e) : null })}
           valueFormat="MM/DD/YYYY"
           aria-label="Early withdrawal date"
         />
@@ -312,8 +312,8 @@ export default function AccountList({ close }: AccountListProps) {
         pullPriority: account.pullPriority,
         interestTaxRate: account.interestTaxRate,
         withdrawalTaxRate: account.withdrawalTaxRate,
-        earlyWithdrawlPenalty: account.earlyWithdrawlPenalty,
-        earlyWithdrawlDate: account.earlyWithdrawlDate,
+        earlyWithdrawalPenalty: account.earlyWithdrawalPenalty,
+        earlyWithdrawalDate: account.earlyWithdrawalDate,
         interestPayAccount: account.interestPayAccount,
         usesRMD: account.usesRMD,
         accountOwnerDOB: account.accountOwnerDOB,
@@ -417,8 +417,8 @@ export default function AccountList({ close }: AccountListProps) {
                         pullPriority: -1,
                         interestTaxRate: 0,
                         withdrawalTaxRate: 0,
-                        earlyWithdrawlPenalty: 0,
-                        earlyWithdrawlDate: null,
+                        earlyWithdrawalPenalty: 0,
+                        earlyWithdrawalDate: null,
                         interestPayAccount: null,
                         usesRMD: false,
                         accountOwnerDOB: null,
