@@ -1,12 +1,8 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
-  selectEndDate,
-  selectNames,
-  selectNamesLoaded,
   selectSelectedBill,
   selectSelectedBillLoaded,
-  selectStartDate,
 } from '../../features/activities/select';
 import {
   ActionIcon,
@@ -18,22 +14,13 @@ import {
   Stack,
   Text,
   TextInput,
-  useMantineTheme,
 } from '@mantine/core';
-import { selectCategories, selectCategoriesLoaded } from '../../features/categories/select';
-import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
-import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
-import { AppDispatch } from '../../store';
-import { updateBill } from '../../features/activities/slice';
-import { selectSpendingTrackerCategoryOptions } from '../../features/spendingTracker/select';
 import { Account, Bill } from '../../types/types';
+import { updateBill } from '../../features/activities/slice';
 import { removeBill, saveBill } from '../../features/activities/actions';
 import { IconVariable, IconVariableOff } from '@tabler/icons-react';
-import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import CreatableSelect from '../helpers/creatableSelect';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { useGroupedAccounts } from '../../hooks/useGroupedAccounts';
-import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
@@ -66,50 +53,38 @@ import {
   Validator,
   ValidatorContext,
 } from './validators';
+import { useEditorState } from './useEditorState';
+import { useActivityBillState } from './useActivityBillState';
 export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const selectedBill = useSelector(selectSelectedBill);
   const billId = selectedBill?.id;
-  const categories = Object.entries(useSelector(selectCategories)).map(([group, items]) => ({
-    group,
-    items: items.map((item) => ({
-      value: `${group}.${item}`,
-      label: item,
-    })),
-  }));
-  const accounts = useSelector(selectAllAccounts);
-  const account = useSelector(selectSelectedAccount);
-  const startDate = new Date(useSelector(selectStartDate));
-  const endDate = new Date(useSelector(selectEndDate));
-  const graphStartDate = new Date(useSelector(selectGraphStartDate));
-  const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const billLoaded = useSelector(selectSelectedBillLoaded);
-  const accountsLoaded = useSelector(selectAccountsLoaded);
-  const categoriesLoaded = useSelector(selectCategoriesLoaded);
-  const namesLoaded = useSelector(selectNamesLoaded);
 
-  const dispatch = useDispatch<AppDispatch>();
+  const {
+    dispatch,
+    account,
+    startDate,
+    endDate,
+    graphStartDate,
+    graphEndDate,
+    accountsLoaded,
+    categoriesLoaded,
+    amountVariables,
+    dateVariables,
+  } = useEditorState();
 
-  const [categoryTouched, setCategoryTouched] = useState(false);
-  const names = useSelector(selectNames);
-
-  const spendingCategoryOptions = useSelector(selectSpendingTrackerCategoryOptions);
-  const simulationVariables = useSelector(selectSelectedSimulationVariables);
-  const amountVariables = simulationVariables
-    ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === 'amount')
-      .map(([name, _]) => name)
-    : [];
-  const dateVariables = simulationVariables
-    ? Object.entries(simulationVariables)
-      .filter(([_, value]) => value.type === 'date')
-      .map(([name, _]) => name)
-    : [];
+  const {
+    theme,
+    categories,
+    accountList,
+    names,
+    namesLoaded,
+    categoryTouched,
+    setCategoryTouched,
+    spendingCategoryOptions,
+  } = useActivityBillState();
 
   const showLoading = useDelayedLoading(!billLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded);
-
-  const accountList = useGroupedAccounts(accounts);
-
-  const theme = useMantineTheme();
 
   const billValidators: Record<string, Validator> = {
     name: validateName,

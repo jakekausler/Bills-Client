@@ -1,14 +1,10 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
-  selectEndDate,
-  selectNames,
-  selectNamesLoaded,
   selectSelectedActivity,
   selectSelectedActivityBillId,
   selectSelectedActivityInterestId,
   selectSelectedActivityLoaded,
-  selectStartDate,
 } from '../../features/activities/select';
 import {
   ActionIcon,
@@ -18,22 +14,13 @@ import {
   Select,
   Stack,
   Text,
-  useMantineTheme,
 } from '@mantine/core';
-import { AppDispatch } from '../../store';
 import { updateActivity } from '../../features/activities/slice';
-import { selectCategories, selectCategoriesLoaded } from '../../features/categories/select';
-import { selectAccountsLoaded, selectAllAccounts, selectSelectedAccount } from '../../features/accounts/select';
 import { removeActivity, saveActivity } from '../../features/activities/actions';
 import { Activity } from '../../types/types';
-import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import { IconVariable, IconVariableOff } from '@tabler/icons-react';
-import { selectSelectedSimulationVariables } from '../../features/simulations/select';
-import { selectSpendingTrackerCategoryOptions } from '../../features/spendingTracker/select';
 import CreatableSelect from '../helpers/creatableSelect';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { useGroupedAccounts } from '../../hooks/useGroupedAccounts';
-import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
@@ -61,53 +48,41 @@ import {
   Validator,
   ValidatorContext,
 } from './validators';
+import { useEditorState } from './useEditorState';
+import { useActivityBillState } from './useActivityBillState';
 
 export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const selectedActivity = useSelector(selectSelectedActivity);
   const activityId = selectedActivity?.id;
-  const categories = Object.entries(useSelector(selectCategories)).map(([group, items]) => ({
-    group,
-    items: items.map((item) => ({
-      value: `${group}.${item}`,
-      label: item,
-    })),
-  }));
-  const accounts = useSelector(selectAllAccounts);
-
-  const accountList = useGroupedAccounts(accounts);
-
-  const account = useSelector(selectSelectedAccount);
-  const startDate = new Date(useSelector(selectStartDate));
-  const endDate = new Date(useSelector(selectEndDate));
-  const graphStartDate = new Date(useSelector(selectGraphStartDate));
-  const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const selectedBillId = useSelector(selectSelectedActivityBillId);
   const selectedInterestId = useSelector(selectSelectedActivityInterestId);
-  const dispatch = useDispatch<AppDispatch>();
-  const names = useSelector(selectNames);
-
-  const accountsLoaded = useSelector(selectAccountsLoaded);
   const activityLoaded = useSelector(selectSelectedActivityLoaded);
-  const categoriesLoaded = useSelector(selectCategoriesLoaded);
-  const namesLoaded = useSelector(selectNamesLoaded);
 
-  const [categoryTouched, setCategoryTouched] = useState(false);
+  const {
+    dispatch,
+    account,
+    startDate,
+    endDate,
+    graphStartDate,
+    graphEndDate,
+    accountsLoaded,
+    categoriesLoaded,
+    amountVariables,
+    dateVariables,
+  } = useEditorState();
 
-  const spendingCategoryOptions = useSelector(selectSpendingTrackerCategoryOptions);
-  const simulationVariables = useSelector(selectSelectedSimulationVariables);
-  const amountVariables = simulationVariables
-    ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === 'amount')
-        .map(([name, _]) => name)
-    : [];
-  const dateVariables = simulationVariables
-    ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === 'date')
-        .map(([name, _]) => name)
-    : [];
+  const {
+    theme,
+    categories,
+    accountList,
+    names,
+    namesLoaded,
+    categoryTouched,
+    setCategoryTouched,
+    spendingCategoryOptions,
+  } = useActivityBillState();
 
   const showLoading = useDelayedLoading(!activityLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded);
-  const theme = useMantineTheme();
 
   if (!account) {
     return <Text>No account selected</Text>;

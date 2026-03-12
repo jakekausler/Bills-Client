@@ -1,11 +1,9 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
-  selectEndDate,
   selectInterests,
   selectInterestsLoaded,
   selectNamesLoaded,
-  selectStartDate,
 } from '../../features/activities/select';
 import { ActionIcon, FocusTrap, Group, LoadingOverlay, Select, Stack, Table, VisuallyHidden } from '@mantine/core';
 import {
@@ -17,21 +15,16 @@ import {
   IconVariableOff,
   IconX,
 } from '@tabler/icons-react';
-import { AppDispatch } from '../../store';
 import { updateInterests } from '../../features/activities/slice';
 import { saveInterests } from '../../features/activities/actions';
-import { selectAccountsLoaded, selectSelectedAccount } from '../../features/accounts/select';
-import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { v4 as uuidv4 } from 'uuid';
 import { toDateString } from '../../utils/date';
-import { selectCategoriesLoaded } from '../../features/categories/select';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { Interest } from '../../types/types';
-import { selectSelectedSimulationVariables } from '../../features/simulations/select';
 import {
   runValidate,
   validateDate,
@@ -42,29 +35,26 @@ import {
   Validator,
   ValidatorContext,
 } from './validators';
+import { useEditorState } from './useEditorState';
 
 dayjs.extend(utc);
 
 export const InterestEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const interests = useSelector(selectInterests) || [];
-  const account = useSelector(selectSelectedAccount);
-  const startDate = new Date(useSelector(selectStartDate));
-  const endDate = new Date(useSelector(selectEndDate));
-  const graphStartDate = new Date(useSelector(selectGraphStartDate));
-  const graphEndDate = new Date(useSelector(selectGraphEndDate));
   const interestsLoaded = useSelector(selectInterestsLoaded);
-  const accountsLoaded = useSelector(selectAccountsLoaded);
-  const categoriesLoaded = useSelector(selectCategoriesLoaded);
   const namesLoaded = useSelector(selectNamesLoaded);
 
-  const simulationVariables = useSelector(selectSelectedSimulationVariables);
-  const amountVariables = simulationVariables
-    ? Object.entries(simulationVariables)
-        .filter(([_, value]) => value.type === 'amount')
-        .map(([name, _]) => name)
-    : [];
-
-  const dispatch = useDispatch<AppDispatch>();
+  const {
+    dispatch,
+    account,
+    startDate,
+    endDate,
+    graphStartDate,
+    graphEndDate,
+    accountsLoaded,
+    categoriesLoaded,
+    amountVariables,
+  } = useEditorState();
 
   const showLoading = useDelayedLoading(
     !interestsLoaded || !accountsLoaded || !categoriesLoaded || !namesLoaded,
