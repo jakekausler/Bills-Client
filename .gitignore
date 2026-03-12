@@ -5,3 +5,4 @@ tsconfig.tsbuildinfo
 dist/tsconfig.tsbuildinfo
 pnpm-lock.yaml
 dist/
+coverage/
