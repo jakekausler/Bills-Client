@@ -17,7 +17,7 @@ export const FlagSelect = ({
 }: {
   flagColor: string | null;
   onChange: (v: { flagColor: string | null; flag: boolean }) => void;
-  dropdownProps?: any;
+  dropdownProps?: Record<string, unknown>;
 }) => {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),

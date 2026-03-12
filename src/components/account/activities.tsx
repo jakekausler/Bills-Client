@@ -405,7 +405,7 @@ export default function Activities({ style }: ActivitiesProps) {
                       {new Date(`${activity.date}T00:00:00`).toLocaleDateString()}
                     </Table.Td>
                     <Table.Td fz="xs">{activity.name}</Table.Td>
-                    <Table.Td fz="xs">{activity.category.split('.')[1]}</Table.Td>
+                    <Table.Td fz="xs">{activity.category.split('.')[1] ?? activity.category}</Table.Td>
                     <Table.Td
                       fz="xs"
                       style={{ whiteSpace: 'nowrap' }}

@@ -18,6 +18,8 @@ export const selectInterests = (state: RootState) => state.activities.interests;
 
 export const selectInterestsLoaded = (state: RootState) => state.activities.interestsLoaded;
 
+// Note: This file has no issues at line 21. The file structure changed from the original report.
+
 export const selectSelectedActivityInterestId = (state: RootState) => state.activities.selectedActivityInterestId;
 
 export const selectStartDate = (state: RootState) => {

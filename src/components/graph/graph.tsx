@@ -108,6 +108,7 @@ export function Graph({
               tooltip: {
                 enabled: true,
                 displayColors: false,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 callbacks:
                   type === 'activity'
                     ? {

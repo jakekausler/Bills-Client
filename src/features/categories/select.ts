@@ -18,6 +18,6 @@ export const selectSelectedCategoryBreakdownLoaded = (state: RootState) =>
 export const selectSelectedCategoryActivity = (state: RootState) => state.categories.selectedCategoryActivity;
 export const selectSortedSelectedCategoryActivity = createSelector(selectSelectedCategoryActivity, (activity) =>
   sort(activity, (a, b) =>
-    a.category === b.category ? (a.amount as number) - (b.amount as number) : a.category.localeCompare(b.category),
+    a.category === b.category ? Number(a.amount) - Number(b.amount) : a.category.localeCompare(b.category),
   ),
 );
