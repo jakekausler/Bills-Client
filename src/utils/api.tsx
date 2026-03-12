@@ -37,7 +37,7 @@ export const getHeaders = (token?: string | null, hasBody?: boolean) => {
 };
 
 // Generic fetch wrapper that adds auth headers
-export const fetchWithAuth = async (endpoint: string, options: RequestInit = {}): Promise<any> => {
+export const fetchWithAuth = async <T = any>(endpoint: string, options: RequestInit = {}): Promise<T> => {
   const token = getAuthToken();
 
   const response = await fetch(`${endpoint}`, {
@@ -61,23 +61,23 @@ export const fetchWithAuth = async (endpoint: string, options: RequestInit = {})
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  if (response.status === 204) return null;
-  return response.json();
+  if (response.status === 204) return null as T;
+  return response.json() as Promise<T>;
 };
 
 // Example usage for different HTTP methods
 export const api = {
-  get: (endpoint: string) => {
+  get: <T = any>(endpoint: string) => {
     const simulation = getSimulation();
-    return fetchWithAuth(
+    return fetchWithAuth<T>(
       endpoint +
         (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
     );
   },
 
-  post: (endpoint: string, data?: unknown) => {
+  post: <T = any>(endpoint: string, data?: unknown) => {
     const simulation = getSimulation();
-    return fetchWithAuth(
+    return fetchWithAuth<T>(
       endpoint +
         (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
       {
@@ -87,9 +87,9 @@ export const api = {
     );
   },
 
-  put: (endpoint: string, data?: unknown) => {
+  put: <T = any>(endpoint: string, data?: unknown) => {
     const simulation = getSimulation();
-    return fetchWithAuth(
+    return fetchWithAuth<T>(
       endpoint +
         (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
       {
@@ -99,9 +99,9 @@ export const api = {
     );
   },
 
-  delete: (endpoint: string, data?: unknown) => {
+  delete: <T = any>(endpoint: string, data?: unknown) => {
     const simulation = getSimulation();
-    return fetchWithAuth(
+    return fetchWithAuth<T>(
       endpoint +
         (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
       {

@@ -1,3 +1,4 @@
+import { GraphData } from '../../types/types';
 import { api } from '../../utils/api';
 
 export const fetchGraphViewData = async (
@@ -6,7 +7,7 @@ export const fetchGraphViewData = async (
   startDate: string,
   endDate: string,
   combineAccounts: boolean,
-) => {
+): Promise<GraphData> => {
   let selectedAccountString = '';
   if (accountIds.length > 0) {
     selectedAccountString = `&selectedAccounts=${encodeURIComponent(accountIds.join(','))}`;
@@ -15,7 +16,7 @@ export const fetchGraphViewData = async (
   if (selectedSimulations.length > 0) {
     selectedSimulationString = `&selectedSimulations=${encodeURIComponent(selectedSimulations.join(','))}`;
   }
-  return await api.get(
+  return await api.get<GraphData>(
     `/api/accounts/graph?startDate=${startDate}&endDate=${endDate}${selectedAccountString}${selectedSimulationString}&combineGraphAccounts=${combineAccounts}`,
   );
 };

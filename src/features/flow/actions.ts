@@ -3,7 +3,10 @@ import { fetchFlow } from './api';
 import { selectFlowEndDate, selectFlowStartDate, selectFlowSelectedAccounts } from './selector';
 import { setFlow, setFlowError, setFlowLoaded } from './slice';
 
+let loadSequence = 0;
+
 export const loadFlow = (): AppThunk => async (dispatch, getState) => {
+  const thisSequence = ++loadSequence;
   try {
     dispatch(setFlowLoaded(false));
     const state = getState();
@@ -12,6 +15,7 @@ export const loadFlow = (): AppThunk => async (dispatch, getState) => {
     const endDate = selectFlowEndDate(state);
 
     const flow = await fetchFlow(selectedAccounts, startDate, endDate);
+    if (thisSequence !== loadSequence) return; // stale, skip
     dispatch(setFlow(flow));
   } catch (error) {
     console.error('Failed to load flow:', error);

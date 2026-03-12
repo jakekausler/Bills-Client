@@ -1,14 +1,14 @@
 import { Account } from '../../types/types';
 import { api } from '../../utils/api';
 
-export const fetchAccounts = async () => {
-  return await api.get('/api/accounts');
+export const fetchAccounts = async (): Promise<Account[]> => {
+  return await api.get<Account[]>('/api/accounts');
 };
 
-export const fetchAddAccount = async (account: Account) => {
-  return await api.post('/api/accounts', account);
+export const fetchAddAccount = async (account: Account): Promise<string> => {
+  return await api.post<string>('/api/accounts', account);
 };
 
-export const fetchEditAccounts = async (accounts: Account[]) => {
-  return await api.put('/api/accounts', accounts);
+export const fetchEditAccounts = async (accounts: Account[]): Promise<void> => {
+  return await api.put<void>('/api/accounts', accounts);
 };

@@ -42,6 +42,8 @@ import { loadCategories } from '../categories/actions';
 import { loadCalendar } from '../calendar/actions';
 import { loadFlow } from '../flow/actions';
 
+let loadSequence = 0;
+
 const reloadAllData = (
   dispatch: any,
   account: Account,
@@ -62,10 +64,12 @@ const reloadAllData = (
 export const loadActivities =
   (account: Account, startDate: Date, endDate: Date): AppThunk =>
   async (dispatch) => {
+    const thisSequence = ++loadSequence;
     try {
       dispatch(setActivitiesLoaded(false));
       const activities = await fetchActivities(account, startDate, endDate);
 
+      if (thisSequence !== loadSequence) return; // stale, skip
       dispatch(setActivities(activities));
     } catch (error) {
       console.error('Failed to load activities', error);

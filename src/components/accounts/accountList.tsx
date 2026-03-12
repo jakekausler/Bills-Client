@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectAccountsLoaded, selectSortedAccounts, selectSelectedAccount } from '../../features/accounts/select';
 import { loadActivities } from '../../features/activities/actions';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { AppDispatch } from '../../store';
 import {
   ActionIcon,
@@ -43,6 +43,212 @@ const types = ['Checking', 'Savings', 'Credit', 'Loan', 'Investment', 'HSA', 'Ot
 const compareTypes = (a: string, b: string) => {
   return types.indexOf(a) - types.indexOf(b);
 };
+
+interface EditAccountRowProps {
+  account: Account;
+  allAccounts: Account[];
+  onUpdateAccount: (updatedAccount: Account) => void;
+}
+
+const EditAccountRow = React.memo(({ account, allAccounts, onUpdateAccount }: EditAccountRowProps) => {
+  const handleUpdate = useCallback(
+    (updates: Partial<Account>) => {
+      onUpdateAccount({ ...account, ...updates });
+    },
+    [account, onUpdateAccount]
+  );
+
+  return (
+    <Table.Tr key={account.id}>
+      <Table.Td>
+        <CheckboxIcon
+          checked={account.hidden}
+          onChange={(checked) => handleUpdate({ hidden: checked })}
+          checkedIcon={<IconEyeOff />}
+          uncheckedIcon={<IconEye />}
+          ariaLabel={`Toggle visibility for ${account.name}`}
+        />
+      </Table.Td>
+      <Table.Td>
+        <TextInput
+          value={account.name}
+          onChange={(e) => handleUpdate({ name: e.target.value })}
+          aria-label="Account name"
+        />
+      </Table.Td>
+      <Table.Td>
+        <Select
+          data={types.map((type) => ({ value: type, label: type }))}
+          value={account.type}
+          onChange={(e) => e && handleUpdate({ type: e })}
+          aria-label="Account type"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Savings' || account.type === 'Investment')}
+          value={account.pullPriority ?? -1}
+          onChange={(e) => handleUpdate({ pullPriority: typeof e === 'number' ? e : Number(e) })}
+          aria-label="Pull priority"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Investment')}
+          value={account.withdrawalTaxRate ?? 0}
+          onChange={(e) => handleUpdate({ withdrawalTaxRate: typeof e === 'number' ? e : Number(e) })}
+          aria-label="Withdrawal tax rate"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Investment')}
+          value={account.earlyWithdrawlPenalty ?? 0}
+          onChange={(e) => handleUpdate({ earlyWithdrawlPenalty: typeof e === 'number' ? e : Number(e) })}
+          aria-label="Early withdrawal penalty"
+        />
+      </Table.Td>
+      <Table.Td>
+        <DateInput
+          disabled={!(account.type === 'Investment')}
+          value={
+            account.earlyWithdrawlDate
+              ? new Date(`${account.earlyWithdrawlDate}T00:00:00`)
+              : undefined
+          }
+          onChange={(e) => handleUpdate({ earlyWithdrawlDate: e ? toDateString(e) : null })}
+          valueFormat="MM/DD/YYYY"
+          aria-label="Early withdrawal date"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Savings')}
+          value={account.interestTaxRate ?? 0}
+          onChange={(e) => handleUpdate({ interestTaxRate: typeof e === 'number' ? e : Number(e) })}
+          aria-label="Interest tax rate"
+        />
+      </Table.Td>
+      <Table.Td>
+        <Center>
+          <Switch
+            checked={account.interestAppliesToPositiveBalance}
+            onChange={(e) => handleUpdate({ interestAppliesToPositiveBalance: e.target.checked })}
+            aria-label="Interest on positive balance"
+          />
+        </Center>
+      </Table.Td>
+      <Table.Td>
+        <Select
+          disabled={!(account.type === 'Savings')}
+          data={allAccounts.map((a) => ({ value: a.name, label: a.name }))}
+          value={account.interestPayAccount || ''}
+          onChange={(e) => handleUpdate({ interestPayAccount: e })}
+          aria-label="Interest pay account"
+        />
+      </Table.Td>
+      <Table.Td>
+        <Switch
+          disabled={!(account.type === 'Investment')}
+          checked={account.usesRMD}
+          onChange={(e) => handleUpdate({ usesRMD: e.target.checked })}
+          aria-label="Uses RMD"
+        />
+      </Table.Td>
+      <Table.Td>
+        <Select
+          disabled={!(account.type === 'Investment')}
+          data={allAccounts.map((a) => ({ value: a.name, label: a.name }))}
+          value={account.rmdAccount || ''}
+          onChange={(e) => handleUpdate({ rmdAccount: e })}
+          aria-label="RMD account"
+        />
+      </Table.Td>
+      <Table.Td>
+        <DateInput
+          disabled={!(account.type === 'Investment')}
+          value={
+            account.accountOwnerDOB ? new Date(`${account.accountOwnerDOB}T00:00:00`) : undefined
+          }
+          onChange={(e) => handleUpdate({ accountOwnerDOB: e ? toDateString(e) : null })}
+          valueFormat="MM/DD/YYYY"
+          aria-label="Account owner date of birth"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+          value={account.minimumBalance ?? 0}
+          onChange={(e) => handleUpdate({ minimumBalance: typeof e === 'number' ? e : Number(e) })}
+          aria-label="Minimum balance"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+          value={account.maximumBalance ?? 0}
+          onChange={(e) => handleUpdate({ maximumBalance: typeof e === 'number' ? e : Number(e) })}
+          aria-label="Maximum balance"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+          value={account.minimumPullAmount ?? 0}
+          onChange={(e) => handleUpdate({ minimumPullAmount: typeof e === 'number' ? e : Number(e) })}
+          aria-label="Minimum pull amount"
+        />
+      </Table.Td>
+      <Table.Td>
+        <Center>
+          <Switch
+            disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+            checked={account.performsPulls}
+            onChange={(e) => handleUpdate({ performsPulls: e.target.checked })}
+            aria-label="Perform pulls"
+          />
+        </Center>
+      </Table.Td>
+      <Table.Td>
+        <Center>
+          <Switch
+            disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+            checked={account.performsPushes}
+            onChange={(e) => handleUpdate({ performsPushes: e.target.checked })}
+            aria-label="Perform pushes"
+          />
+        </Center>
+      </Table.Td>
+      <Table.Td>
+        <DateInput
+          disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+          value={account.pushStart ? new Date(`${account.pushStart}T00:00:00`) : undefined}
+          onChange={(e) => handleUpdate({ pushStart: e ? toDateString(e) : null })}
+          valueFormat="MM/DD/YYYY"
+          aria-label="Push start date"
+        />
+      </Table.Td>
+      <Table.Td>
+        <DateInput
+          disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+          value={account.pushEnd ? new Date(`${account.pushEnd}T00:00:00`) : undefined}
+          onChange={(e) => handleUpdate({ pushEnd: e ? toDateString(e) : null })}
+          valueFormat="MM/DD/YYYY"
+          aria-label="Push end date"
+        />
+      </Table.Td>
+      <Table.Td>
+        <Select
+          disabled={!(account.type === 'Checking' || account.type === 'Savings')}
+          data={allAccounts.map((a) => ({ value: a.name, label: a.name }))}
+          value={account.pushAccount || ''}
+          onChange={(e) => handleUpdate({ pushAccount: e })}
+          aria-label="Push account"
+        />
+      </Table.Td>
+    </Table.Tr>
+  );
+});
 
 export default function AccountList({ close }: AccountListProps) {
   const [addingAccount, { open: openAddingAccount, close: closeAddingAccount }] = useDisclosure(false);
@@ -313,331 +519,16 @@ export default function AccountList({ close }: AccountListProps) {
                 <Table.Tbody>
                   {[...editingAccountsList]
                     .sort((a, b) => compareTypes(a.type, b.type) || a.name.localeCompare(b.name))
-                    .map((account) => {
-                      return (
-                        <Table.Tr key={account.id}>
-                          <Table.Td>
-                            <CheckboxIcon
-                              checked={account.hidden}
-                              onChange={(checked) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) => (a.id === account.id ? { ...a, hidden: checked } : a)),
-                                )
-                              }
-                              checkedIcon={<IconEyeOff />}
-                              uncheckedIcon={<IconEye />}
-                              ariaLabel={`Toggle visibility for ${account.name}`}
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <TextInput
-                              value={account.name}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id ? { ...a, name: e.target.value } : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Account name"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <Select
-                              data={types.map((type) => ({ value: type, label: type }))}
-                              value={account.type}
-                              onChange={(e) =>
-                                e &&
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) => (a.id === account.id ? { ...a, type: e } : a)),
-                                )
-                              }
-                              aria-label="Account type"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <NumberInput
-                              disabled={!(account.type === 'Savings' || account.type === 'Investment')}
-                              value={account.pullPriority ?? -1}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id
-                                      ? { ...a, pullPriority: typeof e === 'number' ? e : Number(e) }
-                                      : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Pull priority"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <NumberInput
-                              disabled={!(account.type === 'Investment')}
-                              value={account.withdrawalTaxRate ?? 0}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id
-                                      ? { ...a, withdrawalTaxRate: typeof e === 'number' ? e : Number(e) }
-                                      : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Withdrawal tax rate"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <NumberInput
-                              disabled={!(account.type === 'Investment')}
-                              value={account.earlyWithdrawlPenalty ?? 0}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id
-                                      ? { ...a, earlyWithdrawlPenalty: typeof e === 'number' ? e : Number(e) }
-                                      : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Early withdrawal penalty"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <DateInput
-                              disabled={!(account.type === 'Investment')}
-                              value={
-                                account.earlyWithdrawlDate
-                                  ? new Date(`${account.earlyWithdrawlDate}T00:00:00`)
-                                  : undefined
-                              }
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id ? { ...a, earlyWithdrawlDate: e ? toDateString(e) : null } : a,
-                                  ),
-                                )
-                              }
-                              valueFormat="MM/DD/YYYY"
-                              aria-label="Early withdrawal date"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <NumberInput
-                              disabled={!(account.type === 'Savings')}
-                              value={account.interestTaxRate ?? 0}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id
-                                      ? { ...a, interestTaxRate: typeof e === 'number' ? e : Number(e) }
-                                      : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Interest tax rate"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <Center>
-                              <Switch
-                                checked={account.interestAppliesToPositiveBalance}
-                                onChange={(e) =>
-                                  setEditingAccountsList(
-                                    editingAccountsList.map((a) =>
-                                      a.id === account.id ? { ...a, interestAppliesToPositiveBalance: e.target.checked } : a,
-                                    ),
-                                  )
-                                }
-                                aria-label="Interest on positive balance"
-                              />
-                            </Center>
-                          </Table.Td>
-                          <Table.Td>
-                            <Select
-                              disabled={!(account.type === 'Savings')}
-                              data={accounts.map((a) => ({ value: a.name, label: a.name }))}
-                              value={account.interestPayAccount || ''}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id ? { ...a, interestPayAccount: e } : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Interest pay account"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <Switch
-                              disabled={!(account.type === 'Investment')}
-                              checked={account.usesRMD}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id ? { ...a, usesRMD: e.target.checked } : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Uses RMD"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <Select
-                              disabled={!(account.type === 'Investment')}
-                              data={accounts.map((a) => ({ value: a.name, label: a.name }))}
-                              value={account.rmdAccount || ''}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) => (a.id === account.id ? { ...a, rmdAccount: e } : a)),
-                                )
-                              }
-                              aria-label="RMD account"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <DateInput
-                              disabled={!(account.type === 'Investment')}
-                              value={
-                                account.accountOwnerDOB ? new Date(`${account.accountOwnerDOB}T00:00:00`) : undefined
-                              }
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id ? { ...a, accountOwnerDOB: e ? toDateString(e) : null } : a,
-                                  ),
-                                )
-                              }
-                              valueFormat="MM/DD/YYYY"
-                              aria-label="Account owner date of birth"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <NumberInput
-                              disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.minimumBalance ?? 0}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id
-                                      ? { ...a, minimumBalance: typeof e === 'number' ? e : Number(e) }
-                                      : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Minimum balance"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <NumberInput
-                              disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.maximumBalance ?? 0}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id
-                                      ? { ...a, maximumBalance: typeof e === 'number' ? e : Number(e) }
-                                      : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Maximum balance"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <NumberInput
-                              disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.minimumPullAmount ?? 0}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id
-                                      ? { ...a, minimumPullAmount: typeof e === 'number' ? e : Number(e) }
-                                      : a,
-                                  ),
-                                )
-                              }
-                              aria-label="Minimum pull amount"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <Center>
-                              <Switch
-                                disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                                checked={account.performsPulls}
-                                onChange={(e) =>
-                                  setEditingAccountsList(
-                                    editingAccountsList.map((a) =>
-                                      a.id === account.id ? { ...a, performsPulls: e.target.checked } : a,
-                                    ),
-                                  )
-                                }
-                                aria-label="Perform pulls"
-                              />
-                            </Center>
-                          </Table.Td>
-                          <Table.Td>
-                            <Center>
-                              <Switch
-                                disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                                checked={account.performsPushes}
-                                onChange={(e) =>
-                                  setEditingAccountsList(
-                                    editingAccountsList.map((a) =>
-                                      a.id === account.id ? { ...a, performsPushes: e.target.checked } : a,
-                                    ),
-                                  )
-                                }
-                                aria-label="Perform pushes"
-                              />
-                            </Center>
-                          </Table.Td>
-                          <Table.Td>
-                            <DateInput
-                              disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.pushStart ? new Date(`${account.pushStart}T00:00:00`) : undefined}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id ? { ...a, pushStart: e ? toDateString(e) : null } : a,
-                                  ),
-                                )
-                              }
-                              valueFormat="MM/DD/YYYY"
-                              aria-label="Push start date"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <DateInput
-                              disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              value={account.pushEnd ? new Date(`${account.pushEnd}T00:00:00`) : undefined}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) =>
-                                    a.id === account.id ? { ...a, pushEnd: e ? toDateString(e) : null } : a,
-                                  ),
-                                )
-                              }
-                              valueFormat="MM/DD/YYYY"
-                              aria-label="Push end date"
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <Select
-                              disabled={!(account.type === 'Checking' || account.type === 'Savings')}
-                              data={accounts.map((a) => ({ value: a.name, label: a.name }))}
-                              value={account.pushAccount || ''}
-                              onChange={(e) =>
-                                setEditingAccountsList(
-                                  editingAccountsList.map((a) => (a.id === account.id ? { ...a, pushAccount: e } : a)),
-                                )
-                              }
-                              aria-label="Push account"
-                            />
-                          </Table.Td>
-                        </Table.Tr>
-                      );
-                    })}
+                    .map((account) => (
+                      <EditAccountRow
+                        key={account.id}
+                        account={account}
+                        allAccounts={editingAccountsList}
+                        onUpdateAccount={useCallback((updatedAccount: Account) => {
+                          setEditingAccountsList((prev) => prev.map((a) => (a.id === updatedAccount.id ? updatedAccount : a)));
+                        }, [])}
+                      />
+                    ))}
                 </Table.Tbody>
               </Table>
             </Box>

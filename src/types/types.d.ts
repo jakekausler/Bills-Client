@@ -148,7 +148,7 @@ export type Dataset = {
   borderColor: string;
   borderDash: number[];
   backgroundColor: string;
-  activity: GraphActivity;
+  activity: GraphActivity | GraphActivity[];
 };
 
 export type GraphActivity = {
