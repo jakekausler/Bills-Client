@@ -72,6 +72,10 @@ describe('fetchWithAuth', () => {
     });
     // Initialize api with a mock getState
     initializeApi(() => ({}) as any);
+    // Note: isReloading is a module-level flag that cannot be easily reset
+    // between tests since it's not exported. If tests fail due to cross-test
+    // state pollution, consider using vi.resetModules() per test or refactoring
+    // isReloading into a class/singleton that can be reset.
   });
 
   afterEach(() => {
@@ -143,6 +147,27 @@ describe('fetchWithAuth', () => {
   it('throws with the correct status code in the error message', async () => {
     fetchMock.mockResolvedValue(makeMockResponse({}, false, 500));
     await expect(fetchWithAuth('/api/broken')).rejects.toThrow('HTTP error! status: 500');
+  });
+
+  it('returns a never-resolving promise on 401 response', async () => {
+    fetchMock.mockResolvedValue(makeMockResponse({}, false, 401));
+
+    // Mock window.location.reload to prevent actual reload
+    const reloadMock = vi.fn();
+    Object.defineProperty(window, 'location', {
+      value: { ...window.location, reload: reloadMock },
+      writable: true,
+    });
+
+    const promise = fetchWithAuth('/api/protected');
+
+    // Verify the promise never resolves (returns pending promise)
+    let resolved = false;
+    promise.then(() => { resolved = true; }).catch(() => {});
+
+    // Wait a tick to ensure the promise doesn't resolve
+    await new Promise(resolve => setTimeout(resolve, 10));
+    expect(resolved).toBe(false);
   });
 });
 

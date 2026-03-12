@@ -6,6 +6,7 @@ import {
   selectSimulationsLoaded,
   selectUsedVariables,
   selectUsedVariablesLoaded,
+  selectSimulationsError,
 } from './select';
 import { Simulation, UsedVariableMap } from '../../types/types';
 
@@ -153,6 +154,23 @@ describe('simulations selectors', () => {
     it('returns true when used variables are loaded', () => {
       const state = makeRootState({ usedVariablesLoaded: true });
       expect(selectUsedVariablesLoaded(state)).toBe(true);
+    });
+  });
+
+  describe('selectSimulationsError', () => {
+    it('returns empty string when no error', () => {
+      const state = makeRootState({ simulationsError: '' });
+      expect(selectSimulationsError(state)).toBe('');
+    });
+
+    it('returns the error message', () => {
+      const state = makeRootState({ simulationsError: 'Failed to load simulations' });
+      expect(selectSimulationsError(state)).toBe('Failed to load simulations');
+    });
+
+    it('returns error with status code', () => {
+      const state = makeRootState({ simulationsError: 'HTTP error! status: 500' });
+      expect(selectSimulationsError(state)).toBe('HTTP error! status: 500');
     });
   });
 });

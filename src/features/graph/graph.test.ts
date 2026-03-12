@@ -14,6 +14,7 @@ import {
   selectGraphLoaded,
   selectGraphStartDate,
   selectGraphEndDate,
+  selectGraphError,
 } from './select';
 import { Dataset } from '../../types/types';
 import { RootState } from '../../store';
@@ -228,5 +229,15 @@ describe('graph selectors', () => {
   it('selectGraphEndDate returns endDate', () => {
     const rootState = makeRootState({ endDate: '2027-01-01' });
     expect(selectGraphEndDate(rootState)).toBe('2027-01-01');
+  });
+
+  it('selectGraphError returns error', () => {
+    const rootState = makeRootState({ error: '' });
+    expect(selectGraphError(rootState)).toBe('');
+  });
+
+  it('selectGraphError returns error message', () => {
+    const rootState = makeRootState({ error: 'Failed to load graph data' });
+    expect(selectGraphError(rootState)).toBe('Failed to load graph data');
   });
 });

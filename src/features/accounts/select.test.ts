@@ -5,6 +5,7 @@ import {
   selectVisibleAccounts,
   selectAccountsLoaded,
   selectSelectedAccount,
+  selectAccountsError,
 } from './select';
 import { Account } from '../../types/types';
 
@@ -167,6 +168,23 @@ describe('accounts selectors', () => {
       const first = selectVisibleAccounts(state);
       const second = selectVisibleAccounts(state);
       expect(first).toBe(second);
+    });
+  });
+
+  describe('selectAccountsError', () => {
+    it('returns empty string when no error', () => {
+      const state = makeRootState({ accountsError: '' });
+      expect(selectAccountsError(state)).toBe('');
+    });
+
+    it('returns the error message', () => {
+      const state = makeRootState({ accountsError: 'Failed to load accounts' });
+      expect(selectAccountsError(state)).toBe('Failed to load accounts');
+    });
+
+    it('returns error with status code', () => {
+      const state = makeRootState({ accountsError: 'HTTP error! status: 404' });
+      expect(selectAccountsError(state)).toBe('HTTP error! status: 404');
     });
   });
 });
