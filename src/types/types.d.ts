@@ -57,7 +57,7 @@ export type Bill = {
   id?: string;
   name: string;
   category: string;
-  amount: number | string;
+  amount: number | string; // number for fixed values, string for variable expressions (e.g., "VARIABLE_NAME")
   flag: boolean;
   flagColor: string | null;
   amountIsVariable: boolean;
@@ -99,7 +99,7 @@ export type Bill = {
 
 export type Interest = {
   id: string;
-  apr: number | string;
+  apr: number | string; // number for fixed values, string for variable expressions (e.g., "VARIABLE_NAME")
   aprIsVariable: boolean;
   aprVariable: string | null;
   compounded: 'day' | 'week' | 'month' | 'year';

@@ -6,6 +6,10 @@ import { toDateString } from '../../utils/date';
 
 type DatePart = "month" | "day" | "year";
 
+const formatDateForDisplay = (date: Date): string => {
+  return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
+};
+
 export const EditableDateInput = ({
   label,
   value,
@@ -31,7 +35,7 @@ export const EditableDateInput = ({
     if (!value) return "";
     const date = new Date(`${value}T00:00:00`);
     if (isNaN(date.getTime())) return "";
-    return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
+    return formatDateForDisplay(date);
   });
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarDate, setCalendarDate] = useState<Date | undefined>(undefined);
@@ -51,7 +55,7 @@ export const EditableDateInput = ({
   };
 
   const updateDisplayValue = (date: Date) => {
-    setDisplayValue(`${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`);
+    setDisplayValue(formatDateForDisplay(date));
   };
 
   const getCurrentDateFromValue = () => {
@@ -109,7 +113,7 @@ export const EditableDateInput = ({
         }
         setEditedDate(toDateString(upDate));
         updateDisplayValue(upDate);
-        setArrowAnnouncement(`${(upDate.getUTCMonth() + 1).toString().padStart(2, '0')}/${upDate.getUTCDate().toString().padStart(2, '0')}/${upDate.getUTCFullYear()}`);
+        setArrowAnnouncement(formatDateForDisplay(upDate));
         setTimeout(() => {
           const start = currentPart === "month" ? 0 : currentPart === "day" ? 3 : 6;
           const end = currentPart === "month" ? 2 : currentPart === "day" ? 5 : 10;
@@ -131,7 +135,7 @@ export const EditableDateInput = ({
         }
         setEditedDate(toDateString(downDate));
         updateDisplayValue(downDate);
-        setArrowAnnouncement(`${(downDate.getUTCMonth() + 1).toString().padStart(2, '0')}/${downDate.getUTCDate().toString().padStart(2, '0')}/${downDate.getUTCFullYear()}`);
+        setArrowAnnouncement(formatDateForDisplay(downDate));
         setTimeout(() => {
           const start = currentPart === "month" ? 0 : currentPart === "day" ? 3 : 6;
           const end = currentPart === "month" ? 2 : currentPart === "day" ? 5 : 10;
@@ -152,7 +156,7 @@ export const EditableDateInput = ({
           if (!value) return "";
           const date = new Date(`${value}T00:00:00`);
           if (isNaN(date.getTime())) return "";
-          return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
+          return formatDateForDisplay(date);
         });
         break;
       case "Tab":
@@ -192,7 +196,7 @@ export const EditableDateInput = ({
         if (!value) return "";
         const date = new Date(`${value}T00:00:00`);
         if (isNaN(date.getTime())) return "";
-        return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
+        return formatDateForDisplay(date);
       });
     }
   };
@@ -267,7 +271,7 @@ export const EditableDateInput = ({
       if (!value) return "";
       const date = new Date(`${value}T00:00:00`);
       if (isNaN(date.getTime())) return "";
-      return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
+      return formatDateForDisplay(date);
     });
   }, [value]);
 

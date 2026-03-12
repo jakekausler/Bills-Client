@@ -35,7 +35,31 @@ const SankeyDiagram = () => {
     if (data && dimensions.width > 0 && dimensions.height > 0) {
       renderSankey(selectedNode, selectedLink);
     }
-  }, [data, dimensions, selectedNode, selectedLink]);
+  }, [data, dimensions]);
+
+  useEffect(() => {
+    // Update selection state without rebuilding entire SVG
+    if (data && dimensions.width > 0 && dimensions.height > 0) {
+      const container = d3.select(containerRef.current);
+      const svg = container.select('svg');
+      if (!svg.empty()) {
+        // Update link opacities
+        svg
+          .selectAll('path.sankey-link')
+          .attr('stroke-opacity', (d: any) =>
+            selectedLink === d.index ? 1 : selectedNode === d.source.name || selectedNode === d.target.name ? 1 : 0.5,
+          );
+
+        // Update node opacities
+        svg
+          .selectAll('g.sankey-node')
+          .selectAll('rect')
+          .attr('opacity', (d: any) => {
+            return selectedNode === d.name ? 1 : 0.5;
+          });
+      }
+    }
+  }, [selectedNode, selectedLink, data, dimensions.width, dimensions.height]);
 
   const theme = useMantineTheme();
 

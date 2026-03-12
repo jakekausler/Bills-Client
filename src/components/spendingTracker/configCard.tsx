@@ -104,6 +104,12 @@ const ConfigCard = () => {
             placeholder="MM/DD"
             value={category.intervalStart}
             onChange={(e) => updateField({ intervalStart: e.target.value })}
+            onBlur={(e) => {
+              const val = e.target.value;
+              if (val && !/^\d{1,2}\/\d{1,2}$/.test(val)) {
+                updateField({ intervalStart: '' });
+              }
+            }}
           />
         );
       default:
