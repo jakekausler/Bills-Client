@@ -12,16 +12,12 @@ import {
 } from '../../features/activities/select';
 import {
   ActionIcon,
-  Button,
-  Checkbox,
   FocusTrap,
   Group,
   LoadingOverlay,
-  NumberInput,
   Select,
   Stack,
   Text,
-  TextInput,
   useMantineTheme,
 } from '@mantine/core';
 import { AppDispatch } from '../../store';
@@ -41,6 +37,11 @@ import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
+import { HealthcareSection } from './shared/HealthcareSection';
+import { TransferSection } from './shared/TransferSection';
+import { FlagSection } from './shared/FlagSection';
+import { NameCategorySection } from './shared/NameCategorySection';
+import { SaveDeleteButtons } from './shared/SaveDeleteButtons';
 import {
   runValidate,
   validateName,
@@ -261,46 +262,72 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
           {selectedActivity.dateIsVariable ? <IconVariable /> : <IconVariableOff />}
         </ActionIcon>
       </Group>
-      <CreatableSelect
-        label="Name"
-        error={validate('name', selectedActivity.name)}
-        value={selectedActivity.name}
-        onChange={(v: string | null) => {
-          const newActivity = {
-            ...selectedActivity,
-            name: v || '',
-          };
-          if (!categoryTouched && v && v in names) {
-            newActivity.category = names[v];
-          }
-          dispatch(updateActivity(newActivity));
-        }}
-        data={Object.entries(names).map(([key, _value]) => ({
-          label: key,
-          value: key,
-        }))}
-        clearable
-      />
-      <Select
-        label="Category"
-        value={selectedActivity.category}
-        data={categories}
-        onChange={(v) => {
+      <NameCategorySection
+        name={selectedActivity.name}
+        category={selectedActivity.category}
+        names={names}
+        categories={categories}
+        onNameWithCategoryChange={(newName: string, newCategory?: string) => {
           dispatch(
             updateActivity({
               ...selectedActivity,
-              category: v ? v : '',
+              name: newName,
+              category: newCategory !== undefined ? newCategory : selectedActivity.category,
             }),
           );
-          setCategoryTouched(true);
         }}
-        searchable
-        error={validate('category', selectedActivity.category)}
+        validate={validate}
+        categoryTouched={categoryTouched}
+        setCategoryTouched={setCategoryTouched}
       />
-      <Checkbox
-        label="Healthcare Expense"
-        checked={selectedActivity.isHealthcare ?? false}
-        onChange={(event) => {
+      <HealthcareSection
+        isHealthcare={selectedActivity.isHealthcare ?? false}
+        healthcarePerson={selectedActivity.healthcarePerson}
+        copayAmount={selectedActivity.copayAmount}
+        coinsurancePercent={selectedActivity.coinsurancePercent}
+        countsTowardDeductible={selectedActivity.countsTowardDeductible ?? true}
+        countsTowardOutOfPocket={selectedActivity.countsTowardOutOfPocket ?? true}
+        onPersonChange={(value) => {
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              healthcarePerson: value,
+            }),
+          );
+        }}
+        onCopayChange={(value) => {
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              copayAmount: value,
+            }),
+          );
+        }}
+        onCoinsuranceChange={(value) => {
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              coinsurancePercent: value,
+            }),
+          );
+        }}
+        onCountsTowardDeductibleChange={(checked) => {
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              countsTowardDeductible: checked,
+            }),
+          );
+        }}
+        onCountsTowardOutOfPocketChange={(checked) => {
+          dispatch(
+            updateActivity({
+              ...selectedActivity,
+              countsTowardOutOfPocket: checked,
+            }),
+          );
+        }}
+        onIsHealthcareCheckboxChange={(event) => {
           dispatch(
             updateActivity({
               ...selectedActivity,
@@ -308,100 +335,9 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
             }),
           );
         }}
+        validate={validate}
         error={validate('isHealthcare', selectedActivity.isHealthcare)}
       />
-      {selectedActivity.isHealthcare && (
-        <Stack
-          gap="sm"
-          p="md"
-          style={{ backgroundColor: 'var(--mantine-color-body)', borderRadius: 4 }}
-          role="region"
-          aria-label="Healthcare expense details"
-        >
-          <TextInput
-            label="Person Name"
-            value={selectedActivity.healthcarePerson || ''}
-            onChange={(e) => {
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  healthcarePerson: e.target.value || null,
-                }),
-              );
-            }}
-            placeholder="e.g., John, Jane"
-            description="Which family member is this expense for?"
-            required
-            error={validate('healthcarePerson', selectedActivity.healthcarePerson)}
-          />
-
-          <Group grow>
-            <NumberInput
-              label="Copay Amount"
-              value={selectedActivity.copayAmount ?? ''}
-              onChange={(v) => {
-                dispatch(
-                  updateActivity({
-                    ...selectedActivity,
-                    copayAmount: v !== '' && typeof v === 'number' ? v : null,
-                  }),
-                );
-              }}
-              placeholder="25.00"
-              description="Fixed copay (e.g., $25 for doctor visit). Leave empty if using deductible/coinsurance."
-              prefix="$"
-              min={0}
-              decimalScale={2}
-            />
-
-            <NumberInput
-              label="Coinsurance Percent"
-              value={selectedActivity.coinsurancePercent ?? ''}
-              onChange={(v) => {
-                dispatch(
-                  updateActivity({
-                    ...selectedActivity,
-                    coinsurancePercent: v !== '' && typeof v === 'number' ? v : null,
-                  }),
-                );
-              }}
-              placeholder="20"
-              description="Percentage you pay (e.g., 20 for 20%). Used after deductible is met."
-              suffix="%"
-              min={0}
-              error={validate('coinsurancePercent', selectedActivity.coinsurancePercent)}
-            />
-          </Group>
-
-          <Checkbox
-            label="Counts toward deductible"
-            checked={selectedActivity.countsTowardDeductible ?? true}
-            onChange={(e) => {
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  countsTowardDeductible: e.currentTarget.checked,
-                }),
-              );
-            }}
-            description="Usually yes, except for some preventive care or copays"
-          />
-
-          <Checkbox
-            label="Counts toward out-of-pocket maximum"
-            checked={selectedActivity.countsTowardOutOfPocket ?? true}
-            onChange={(e) => {
-              dispatch(
-                updateActivity({
-                  ...selectedActivity,
-                  countsTowardOutOfPocket: e.currentTarget.checked,
-                }),
-              );
-            }}
-            description="Usually yes for all patient costs"
-          />
-        </Stack>
-      )}
       {!selectedActivity.isTransfer && (
         <Select
           label="Spending Category"
@@ -417,10 +353,12 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
           }}
         />
       )}
-      <Checkbox
-        label="Is this a transfer?"
-        checked={selectedActivity.isTransfer}
-        onChange={(event) => {
+      <TransferSection
+        isTransfer={selectedActivity.isTransfer}
+        from={selectedActivity.from}
+        to={selectedActivity.to}
+        accountList={accountList}
+        onIsTransferChange={(event) => {
           const checked = event.currentTarget.checked;
           dispatch(
             updateActivity({
@@ -430,34 +368,15 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
             }),
           );
         }}
+        onFromChange={(v) => {
+          dispatch(updateActivity({ ...selectedActivity, from: v }));
+        }}
+        onToChange={(v) => {
+          dispatch(updateActivity({ ...selectedActivity, to: v }));
+        }}
+        validate={validate}
         error={validate('isTransfer', selectedActivity.isTransfer)}
       />
-      {selectedActivity.isTransfer && (
-        <Stack gap="sm" role="region" aria-label="Transfer details">
-          <Select
-            label="From Account"
-            value={selectedActivity.from}
-            data={accountList}
-            searchable
-            placeholder="Select an account"
-            onChange={(v) => {
-              dispatch(updateActivity({ ...selectedActivity, from: v }));
-            }}
-            error={validate('from', selectedActivity.from)}
-          />
-          <Select
-            label="To Account"
-            value={selectedActivity.to}
-            data={accountList}
-            searchable
-            placeholder="Select an account"
-            onChange={(v) => {
-              dispatch(updateActivity({ ...selectedActivity, to: v }));
-            }}
-            error={validate('to', selectedActivity.to)}
-          />
-        </Stack>
-      )}
       <Group w="100%">
         {(!selectedActivity.amountIsVariable ||
           selectedActivity.amountVariable === '{HALF}' ||
@@ -522,7 +441,7 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
           {selectedActivity.amountIsVariable ? <IconVariable /> : <IconVariableOff />}
         </ActionIcon>
       </Group>
-      <FlagSelect
+      <FlagSection
         flagColor={selectedActivity.flagColor}
         onChange={(v: { flagColor: string | null; flag: boolean }) => {
           dispatch(updateActivity({ ...selectedActivity, flagColor: v.flagColor, flag: v.flag }));
@@ -533,47 +452,29 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
           position: 'bottom',
         }}
       />
-      <Group w="100%" grow>
-        {(() => {
-          const isValid = allValid();
-          return (
-            <Button
-              disabled={!isValid}
-              title={!isValid ? 'Fix validation errors before saving' : undefined}
-              onClick={() => {
-                save();
-              }}
-            >
-              Save
-            </Button>
+      <SaveDeleteButtons
+        allValid={allValid}
+        onSave={() => {
+          save();
+        }}
+        onDelete={async () => {
+          await dispatch(
+            removeActivity(
+              account,
+              activityId as string,
+              selectedActivity.isTransfer,
+              startDate,
+              endDate,
+              graphStartDate,
+              graphEndDate,
+            ),
           );
-        })()}
-
-        <Button
-          disabled={!selectedActivity.id || !!selectedBillId}
-          title={!selectedActivity.id ? 'Activity has not been saved yet' : selectedBillId ? 'Cannot remove an activity linked to a bill' : undefined}
-          onClick={async () => {
-            try {
-              await dispatch(
-                removeActivity(
-                  account,
-                  activityId as string,
-                  selectedActivity.isTransfer,
-                  startDate,
-                  endDate,
-                  graphStartDate,
-                  graphEndDate,
-                ),
-              );
-              resetSelected();
-            } catch {
-              // error already dispatched
-            }
-          }}
-        >
-          Remove
-        </Button>
-      </Group>
+          resetSelected();
+        }}
+        isNew={!selectedActivity.id}
+        itemId={selectedActivity.id}
+        disableDelete={!!selectedBillId}
+      />
     </Stack>
   );
 };

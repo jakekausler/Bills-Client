@@ -10,8 +10,6 @@ import {
 } from '../../features/activities/select';
 import {
   ActionIcon,
-  Button,
-  Checkbox,
   FocusTrap,
   Group,
   LoadingOverlay,
@@ -39,6 +37,11 @@ import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
+import { HealthcareSection } from './shared/HealthcareSection';
+import { TransferSection } from './shared/TransferSection';
+import { FlagSection } from './shared/FlagSection';
+import { NameCategorySection } from './shared/NameCategorySection';
+import { SaveDeleteButtons } from './shared/SaveDeleteButtons';
 import {
   runValidate,
   validateName,
@@ -325,46 +328,72 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               </ActionIcon>
             </Group>
           </Group>
-          <CreatableSelect
-            label="Name"
-            error={validate('name', selectedBill.name)}
-            value={selectedBill.name}
-            onChange={(v: string | null) => {
-              const newBill = {
-                ...selectedBill,
-                name: v || '',
-              };
-              if (!categoryTouched && v && v in names) {
-                newBill.category = names[v];
-              }
-              dispatch(updateBill(newBill));
-            }}
-            data={Object.entries(names).map(([key, _value]) => ({
-              label: key,
-              value: key,
-            }))}
-            clearable
-          />
-          <Select
-            label="Category"
-            value={selectedBill.category}
-            data={categories}
-            onChange={(v) => {
+          <NameCategorySection
+            name={selectedBill.name}
+            category={selectedBill.category}
+            names={names}
+            categories={categories}
+            onNameWithCategoryChange={(newName: string, newCategory?: string) => {
               dispatch(
                 updateBill({
                   ...selectedBill,
-                  category: v ? v : '',
+                  name: newName,
+                  category: newCategory !== undefined ? newCategory : selectedBill.category,
                 }),
               );
-              setCategoryTouched(true);
             }}
-            searchable
-            error={validate('category', selectedBill.category)}
+            validate={validate}
+            categoryTouched={categoryTouched}
+            setCategoryTouched={setCategoryTouched}
           />
-          <Checkbox
-            label="Healthcare Expense"
-            checked={selectedBill.isHealthcare ?? false}
-            onChange={(event) => {
+          <HealthcareSection
+            isHealthcare={selectedBill.isHealthcare ?? false}
+            healthcarePerson={selectedBill.healthcarePerson}
+            copayAmount={selectedBill.copayAmount}
+            coinsurancePercent={selectedBill.coinsurancePercent}
+            countsTowardDeductible={selectedBill.countsTowardDeductible ?? true}
+            countsTowardOutOfPocket={selectedBill.countsTowardOutOfPocket ?? true}
+            onPersonChange={(value) => {
+              dispatch(
+                updateBill({
+                  ...selectedBill,
+                  healthcarePerson: value,
+                }),
+              );
+            }}
+            onCopayChange={(value) => {
+              dispatch(
+                updateBill({
+                  ...selectedBill,
+                  copayAmount: value,
+                }),
+              );
+            }}
+            onCoinsuranceChange={(value) => {
+              dispatch(
+                updateBill({
+                  ...selectedBill,
+                  coinsurancePercent: value,
+                }),
+              );
+            }}
+            onCountsTowardDeductibleChange={(checked) => {
+              dispatch(
+                updateBill({
+                  ...selectedBill,
+                  countsTowardDeductible: checked,
+                }),
+              );
+            }}
+            onCountsTowardOutOfPocketChange={(checked) => {
+              dispatch(
+                updateBill({
+                  ...selectedBill,
+                  countsTowardOutOfPocket: checked,
+                }),
+              );
+            }}
+            onIsHealthcareCheckboxChange={(event) => {
               dispatch(
                 updateBill({
                   ...selectedBill,
@@ -372,100 +401,9 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 }),
               );
             }}
+            validate={validate}
             error={validate('isHealthcare', selectedBill.isHealthcare)}
           />
-          {selectedBill.isHealthcare && (
-            <Stack
-              gap="sm"
-              p="md"
-              style={{ backgroundColor: 'var(--mantine-color-body)', borderRadius: 4 }}
-              role="region"
-              aria-label="Healthcare expense details"
-            >
-              <TextInput
-                label="Person Name"
-                value={selectedBill.healthcarePerson || ''}
-                onChange={(e) => {
-                  dispatch(
-                    updateBill({
-                      ...selectedBill,
-                      healthcarePerson: e.target.value || null,
-                    }),
-                  );
-                }}
-                placeholder="e.g., John, Jane"
-                description="Which family member is this expense for?"
-                required
-                error={validate('healthcarePerson', selectedBill.healthcarePerson)}
-              />
-
-              <Group grow>
-                <NumberInput
-                  label="Copay Amount"
-                  value={selectedBill.copayAmount ?? ''}
-                  onChange={(v) => {
-                    dispatch(
-                      updateBill({
-                        ...selectedBill,
-                        copayAmount: v !== '' && typeof v === 'number' ? v : null,
-                      }),
-                    );
-                  }}
-                  placeholder="25.00"
-                  description="Fixed copay (e.g., $25 for doctor visit). Leave empty if using deductible/coinsurance."
-                  prefix="$"
-                  min={0}
-                  decimalScale={2}
-                />
-
-                <NumberInput
-                  label="Coinsurance Percent"
-                  value={selectedBill.coinsurancePercent ?? ''}
-                  onChange={(v) => {
-                    dispatch(
-                      updateBill({
-                        ...selectedBill,
-                        coinsurancePercent: v !== '' && typeof v === 'number' ? v : null,
-                      }),
-                    );
-                  }}
-                  placeholder="20"
-                  description="Percentage you pay (e.g., 20 for 20%). Used after deductible is met."
-                  suffix="%"
-                  min={0}
-                  error={validate('coinsurancePercent', selectedBill.coinsurancePercent)}
-                />
-              </Group>
-
-              <Checkbox
-                label="Counts toward deductible"
-                checked={selectedBill.countsTowardDeductible ?? true}
-                onChange={(e) => {
-                  dispatch(
-                    updateBill({
-                      ...selectedBill,
-                      countsTowardDeductible: e.currentTarget.checked,
-                    }),
-                  );
-                }}
-                description="Usually yes, except for some preventive care or copays"
-              />
-
-              <Checkbox
-                label="Counts toward out-of-pocket maximum"
-                checked={selectedBill.countsTowardOutOfPocket ?? true}
-                onChange={(e) => {
-                  dispatch(
-                    updateBill({
-                      ...selectedBill,
-                      countsTowardOutOfPocket: e.currentTarget.checked,
-                    }),
-                  );
-                }}
-                description="Usually yes for all patient costs"
-              />
-            </Stack>
-          )}
           {!selectedBill.isTransfer && (
             <Select
               label="Spending Category"
@@ -481,10 +419,12 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               }}
             />
           )}
-          <Checkbox
-            label="Is this a transfer?"
-            checked={selectedBill.isTransfer}
-            onChange={(event) => {
+          <TransferSection
+            isTransfer={selectedBill.isTransfer}
+            from={selectedBill.from}
+            to={selectedBill.to}
+            accountList={accountList}
+            onIsTransferChange={(event) => {
               const checked = event.currentTarget.checked;
               dispatch(
                 updateBill({
@@ -494,34 +434,15 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
                 }),
               );
             }}
+            onFromChange={(v) => {
+              dispatch(updateBill({ ...selectedBill, from: v }));
+            }}
+            onToChange={(v) => {
+              dispatch(updateBill({ ...selectedBill, to: v }));
+            }}
+            validate={validate}
             error={validate('isTransfer', selectedBill.isTransfer)}
           />
-          {selectedBill.isTransfer && (
-            <Stack gap="sm" role="region" aria-label="Transfer details">
-              <Select
-                label="From Account"
-                value={selectedBill.from}
-                data={accountList}
-                searchable
-                placeholder="Select an account"
-                onChange={(v) => {
-                  dispatch(updateBill({ ...selectedBill, from: v }));
-                }}
-                error={validate('from', selectedBill.from)}
-              />
-              <Select
-                label="To Account"
-                value={selectedBill.to}
-                data={accountList}
-                searchable
-                placeholder="Select an account"
-                onChange={(v) => {
-                  dispatch(updateBill({ ...selectedBill, to: v }));
-                }}
-                error={validate('to', selectedBill.to)}
-              />
-            </Stack>
-          )}
           <Group w="100%">
             {!selectedBill.amountIsVariable && (
               <CalculatorEditor
@@ -740,58 +661,37 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
               placeholder="MM/DD"
             />
           </Group>
-          <Group w="100%">
-            <FlagSelect
-              flagColor={selectedBill.flagColor}
-              onChange={(v: { flagColor: string | null; flag: boolean }) => {
-                dispatch(updateBill({ ...selectedBill, flagColor: v.flagColor, flag: v.flag }));
-              }}
-            />
-          </Group>
-          <Group w="100%" grow>
-            {(() => {
-              const isValid = allValid();
-              return (
-                <Button
-                  disabled={!isValid}
-                  title={!isValid ? 'Fix validation errors before saving' : undefined}
-                  onClick={() => {
-                    dispatch(
-                      saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate),
-                    );
-                    resetSelected();
-                  }}
-                >
-                  Save
-                </Button>
+          <FlagSection
+            flagColor={selectedBill.flagColor}
+            onChange={(v: { flagColor: string | null; flag: boolean }) => {
+              dispatch(updateBill({ ...selectedBill, flagColor: v.flagColor, flag: v.flag }));
+            }}
+          />
+          <SaveDeleteButtons
+            allValid={allValid}
+            onSave={() => {
+              dispatch(
+                saveBill(account as Account, selectedBill as Bill, startDate, endDate, graphStartDate, graphEndDate),
               );
-            })()}
-
-            <Button
-              disabled={!selectedBill.id}
-              title={!selectedBill.id ? 'Bill has not been saved yet' : undefined}
-              onClick={async () => {
-                try {
-                  await dispatch(
-                    removeBill(
-                      account as Account,
-                      billId as string,
-                      selectedBill.isTransfer,
-                      startDate,
-                      endDate,
-                      graphStartDate,
-                      graphEndDate,
-                    ),
-                  );
-                  resetSelected();
-                } catch {
-                  // error already dispatched
-                }
-              }}
-            >
-              Remove
-            </Button>
-          </Group>
+              resetSelected();
+            }}
+            onDelete={async () => {
+              await dispatch(
+                removeBill(
+                  account as Account,
+                  billId as string,
+                  selectedBill.isTransfer,
+                  startDate,
+                  endDate,
+                  graphStartDate,
+                  graphEndDate,
+                ),
+              );
+              resetSelected();
+            }}
+            isNew={!selectedBill.id}
+            itemId={selectedBill.id}
+          />
         </>
       ) : (
         <Text>No bill selected</Text>
