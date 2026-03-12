@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Card,
   Title,
@@ -53,8 +53,8 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
     fetchExpenses();
   }, [fetchExpenses]);
 
-  const uniquePeople = [...new Set(expenses.map((e) => e.person))];
-  const peopleOptions = uniquePeople.map((p) => ({ value: p, label: p }));
+  const uniquePeople = useMemo(() => [...new Set(expenses.map((e) => e.person))], [expenses]);
+  const peopleOptions = useMemo(() => uniquePeople.map((p) => ({ value: p, label: p })), [uniquePeople]);
 
   const filteredExpenses = filterPerson
     ? expenses.filter((e) => e.person === filterPerson)

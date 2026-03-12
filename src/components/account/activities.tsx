@@ -75,7 +75,10 @@ export default function Activities({ style }: ActivitiesProps) {
   const [editorChoice, setEditorChoice] = useState<string | null>(null);
   const [changeAccountActivity, setChangeAccountActivity] = useState<Activity | null>(null);
 
-  const lastActivityBeforeToday = [...activities].reverse().find((a) => new Date(a.date) < new Date());
+  const lastActivityBeforeToday = useMemo(
+    () => [...activities].reverse().find((a) => new Date(a.date) < new Date()),
+    [activities]
+  );
 
   const showLoading = useDelayedLoading(!activitiesLoaded);
 
