@@ -41,6 +41,25 @@ import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
+import {
+  runValidate,
+  validateName,
+  validateCategory,
+  validateDate,
+  validateDateVariable,
+  validateAmountVariable,
+  validateNumber,
+  validateIsTransfer,
+  validateFrom,
+  validateTo,
+  validateFlag,
+  validateFlagColor,
+  validateIsHealthcare,
+  validateHealthcarePerson,
+  validateCoinsurancePercent,
+  Validator,
+  ValidatorContext,
+} from './validators';
 
 export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const selectedActivity = useSelector(selectSelectedActivity);
@@ -97,85 +116,37 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
     return <Text>No activity selected</Text>;
   }
 
-  const validate = (name: string, value: string | number | boolean | null | undefined) => {
-    if (name === 'dateVariable') {
-      if (selectedActivity.dateIsVariable) {
-        if (!dateVariables.includes(value as string)) {
-          return 'Invalid date';
-        }
-      }
-    }
-    if (name === 'date') {
-      const date = new Date(value as string);
-      if (date.toString() === 'Invalid Date') {
-        return 'Invalid date';
-      }
-    }
-    if (name === 'amountVariable') {
-      if (selectedActivity.amountIsVariable) {
-        if (!amountVariables.includes(value as string) && value !== '{HALF}' && value !== '{FULL}') {
-          return 'Invalid amount';
-        }
-      }
-    }
-    if (name === 'amount') {
-      if (isNaN(value as number) || typeof value === 'boolean') {
-        return 'Invalid amount';
-      }
-    }
-    if (name === 'isTransfer') {
-      if (typeof value !== 'boolean') {
-        return 'Invalid isTransfer';
-      }
-    }
-    if (name === 'flag') {
-      if (typeof value !== 'boolean') {
-        return 'Invalid flag';
-      }
-    }
-    if (name === 'flagColor') {
-      if (value !== null && !theme.colors[value as string]) {
-        return 'Invalid flagColor';
-      }
-    }
-    if (name === 'from' || name === 'to') {
-      if (selectedActivity && !selectedActivity.isTransfer) {
-        return null;
-      }
-      if (!accountList.find((a) => a.items.find((i) => i.value === value))) {
-        return 'Invalid account';
-      }
-    }
-    if (name === 'category') {
-      if (!categories.find((c) => !!c.items.find((i) => i.value === value))) {
-        return 'Invalid category';
-      }
-    }
-    if (name === 'name') {
-      if (!value || (value as string).trim() === '') {
-        return 'Invalid name';
-      }
-    }
-    if (name === 'healthcarePerson') {
-      if (selectedActivity.isHealthcare && (!value || (value as string).trim() === '')) {
-        return 'Person name is required for healthcare expenses';
-      }
-    }
-    if (name === 'isHealthcare') {
-      // When healthcare is checked, validate that person name is not empty
-      if (value === true && (!selectedActivity.healthcarePerson || selectedActivity.healthcarePerson.trim() === '')) {
-        return 'Person name is required for healthcare expenses';
-      }
-    }
-    if (name === 'coinsurancePercent') {
-      if (value !== null && value !== undefined && value !== '') {
-        const numValue = Number(value);
-        if (!isNaN(numValue) && (numValue < 0 || numValue > 100)) {
-          return 'Coinsurance must be between 0% and 100%';
-        }
-      }
-    }
-    return null;
+  const activityValidators: Record<string, Validator> = {
+    name: validateName,
+    category: validateCategory,
+    date: validateDate,
+    dateVariable: validateDateVariable,
+    amount: validateNumber,
+    amountVariable: validateAmountVariable,
+    isTransfer: validateIsTransfer,
+    from: validateFrom,
+    to: validateTo,
+    flag: validateFlag,
+    flagColor: validateFlagColor,
+    isHealthcare: validateIsHealthcare,
+    healthcarePerson: validateHealthcarePerson,
+    coinsurancePercent: validateCoinsurancePercent,
+  };
+
+  const validate = (name: string, value: string | number | boolean | null | undefined): string | null => {
+    const ctx: ValidatorContext = {
+      categories,
+      accountList,
+      amountVariables,
+      dateVariables,
+      theme,
+      isTransfer: selectedActivity?.isTransfer,
+      isHealthcare: selectedActivity?.isHealthcare,
+      healthcarePerson: selectedActivity?.healthcarePerson,
+      amountIsVariable: selectedActivity?.amountIsVariable,
+      dateIsVariable: selectedActivity?.dateIsVariable,
+    };
+    return runValidate(activityValidators, name, value, ctx);
   };
 
   const allValid = (activity?: Activity) => {

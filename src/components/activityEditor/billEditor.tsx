@@ -39,6 +39,30 @@ import { useState } from 'react';
 import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { FlagSelect } from '../helpers/flagSelect';
+import {
+  runValidate,
+  validateName,
+  validateCategory,
+  validateDate,
+  validateDateVariable,
+  validateBillAmountVariable,
+  validateBillAmount,
+  validateIsTransfer,
+  validateFrom,
+  validateTo,
+  validateFlag,
+  validateFlagColor,
+  validateIsHealthcare,
+  validateHealthcarePerson,
+  validateCoinsurancePercent,
+  validateEveryN,
+  validatePeriods,
+  validateMMDD,
+  validateIncreaseBy,
+  validateIncreaseByVariable,
+  Validator,
+  ValidatorContext,
+} from './validators';
 export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => {
   const selectedBill = useSelector(selectSelectedBill);
   const billId = selectedBill?.id;
@@ -84,205 +108,66 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
 
   const theme = useMantineTheme();
 
-  const validate = (name: string, value: any) => {
+  const billValidators: Record<string, Validator> = {
+    name: validateName,
+    category: validateCategory,
+    startDate: validateDate,
+    startDateVariable: (value, ctx) => {
+      return validateDateVariable(value, { ...ctx, dateIsVariable: ctx.startDateIsVariable });
+    },
+    endDate: (value, ctx) => {
+      // Empty end dates are valid (optional field)
+      if (value === '' || value === undefined || value === null) {
+        return null;
+      }
+      return validateDate(value, ctx);
+    },
+    endDateVariable: (value, ctx) => {
+      // Empty end dates are valid (optional field)
+      if (!value) {
+        return null;
+      }
+      return validateDateVariable(value, { ...ctx, dateIsVariable: ctx.endDateIsVariable });
+    },
+    amount: validateBillAmount,
+    amountVariable: validateBillAmountVariable,
+    isTransfer: validateIsTransfer,
+    from: validateFrom,
+    to: validateTo,
+    flag: validateFlag,
+    flagColor: validateFlagColor,
+    isHealthcare: validateIsHealthcare,
+    healthcarePerson: validateHealthcarePerson,
+    coinsurancePercent: validateCoinsurancePercent,
+    everyN: validateEveryN,
+    periods: validatePeriods,
+    annualStartDate: validateMMDD,
+    annualEndDate: validateMMDD,
+    increaseBy: validateIncreaseBy,
+    increaseByVariable: validateIncreaseByVariable,
+    increaseByDate: validateMMDD,
+  };
+
+  const validate = (name: string, value: any): string | null => {
     if (!selectedBill) {
       return null;
     }
-    if (name === 'startDateVariable') {
-      if (selectedBill.startDateIsVariable) {
-        if (!dateVariables.includes(value)) {
-          return 'Invalid startDate';
-        }
-      }
-    }
-    if (name === 'startDate') {
-      const date = new Date(value);
-      if (date.toString() === 'Invalid Date') {
-        return 'Invalid date';
-      }
-    }
-    if (name === 'endDateVariable') {
-      if (selectedBill.endDateIsVariable) {
-        if (!!value && !dateVariables.includes(value)) {
-          return 'Invalid endDate';
-        }
-      }
-    }
-    if (name === 'endDate') {
-      if (value === '' || value === undefined || value === null) {
-        return null;
-      }
-      const date = new Date(value);
-      if (date.toString() === 'Invalid Date') {
-        return 'Invalid date';
-      }
-    }
-    if (name === 'amountVariable') {
-      if (selectedBill.amountIsVariable) {
-        if (
-          !amountVariables.includes(value) &&
-          value !== '{HALF}' &&
-          value !== '{FULL}' &&
-          value !== '-{HALF}' &&
-          value !== '-{FULL}'
-        ) {
-          return 'Invalid amount';
-        }
-      }
-    }
-    if (name === 'amount') {
-      if (
-        (isNaN(value) || typeof value === 'boolean') &&
-        value !== '{HALF}' &&
-        value !== '{FULL}' &&
-        value !== '-{HALF}' &&
-        value !== '-{FULL}'
-      ) {
-        return 'Invalid amount';
-      }
-      // Healthcare bills must have a non-zero amount
-      if (selectedBill?.isHealthcare && !selectedBill?.amountIsVariable) {
-        const numValue = Number(value);
-        if (numValue === 0) {
-          return 'Healthcare bills require a non-zero amount. Enter the total bill from your provider.';
-        }
-      }
-      return null;
-    }
-    if (name === 'isTransfer') {
-      if (typeof value !== 'boolean') {
-        return 'Invalid isTransfer';
-      }
-    }
-    if (name === 'from' || name === 'to') {
-      if (selectedBill && !selectedBill.isTransfer) {
-        return null;
-      }
-      if (!accountList.find((a) => a.items.find((i) => i.value === value))) {
-        return 'Invalid account';
-      }
-    }
-    if (name === 'category') {
-      if (!categories.find((c) => !!c.items.find((i) => i.value === value))) {
-        return 'Invalid category';
-      }
-    }
-    if (name === 'name') {
-      if (!value || (value as string).trim() === '') {
-        return 'Invalid name';
-      }
-    }
-    if (name === 'everyN') {
-      if (isNaN(value) || typeof value === 'boolean') {
-        return 'Invalid everyN';
-      }
-    }
-    if (name === 'periods') {
-      if (!['day', 'week', 'month', 'year'].includes(value)) {
-        return 'Invalid periods';
-      }
-    }
-    if (name === 'annualStartDate' || name === 'annualEndDate') {
-      if (value === '' || value === undefined || value === null) {
-        return null;
-      }
-      const dateParts = value.split('/');
-      if (dateParts.length !== 2) {
-        return 'Invalid date format - use MM/DD';
-      }
 
-      const month = parseInt(dateParts[0]);
-      const day = parseInt(dateParts[1]);
-
-      if (isNaN(month) || month < 1 || month > 12) {
-        return 'Invalid month';
-      }
-
-      if (month < 10 && dateParts[0].length === 1) {
-        return 'Please use 01, 02, 03, etc.';
-      }
-
-      if (day < 10 && dateParts[1].length === 1) {
-        return 'Please use 01, 02, 03, etc.';
-      }
-
-      const daysInMonth = new Date(2024, month, 0).getDate();
-      if (isNaN(day) || day < 1 || day > daysInMonth) {
-        return 'Invalid day for month';
-      }
-    }
-    if (name === 'increaseBy') {
-      if (isNaN(value) || typeof value === 'boolean') {
-        return 'Invalid increaseBy';
-      }
-    }
-    if (name === 'increaseByVariable') {
-      if (selectedBill.increaseByIsVariable) {
-        if (!amountVariables.includes(value)) {
-          return 'Invalid increaseBy';
-        }
-      }
-    }
-    if (name === 'increaseByDate') {
-      if (value === '' || value === undefined || value === null) {
-        return null;
-      }
-      const dateParts = value.split('/');
-      if (dateParts.length !== 2) {
-        return 'Invalid date format - use MM/DD';
-      }
-
-      const month = parseInt(dateParts[0]);
-      const day = parseInt(dateParts[1]);
-
-      if (isNaN(month) || month < 1 || month > 12) {
-        return 'Invalid month';
-      }
-
-      if (month < 10 && dateParts[0].length === 1) {
-        return 'Please use 01, 02, 03, etc.';
-      }
-
-      if (day < 10 && dateParts[1].length === 1) {
-        return 'Please use 01, 02, 03, etc.';
-      }
-
-      const daysInMonth = new Date(2024, month, 0).getDate();
-      if (isNaN(day) || day < 1 || day > daysInMonth) {
-        return 'Invalid day for month';
-      }
-    }
-    if (name === 'flag') {
-      if (typeof value !== 'boolean') {
-        return 'Invalid flag';
-      }
-    }
-    if (name === 'flagColor') {
-      if (!theme.colors[value] && value !== null) {
-        return 'Invalid flagColor';
-      }
-    }
-    if (name === 'healthcarePerson') {
-      if (selectedBill.isHealthcare && (!value || value.trim() === '')) {
-        return 'Person name is required for healthcare expenses';
-      }
-    }
-    if (name === 'isHealthcare') {
-      // When healthcare is checked, validate that person name is not empty
-      if (value === true && (!selectedBill.healthcarePerson || selectedBill.healthcarePerson.trim() === '')) {
-        return 'Person name is required for healthcare expenses';
-      }
-    }
-    if (name === 'coinsurancePercent') {
-      if (value !== null && value !== undefined && value !== '') {
-        const numValue = Number(value);
-        if (!isNaN(numValue) && (numValue < 0 || numValue > 100)) {
-          return 'Coinsurance must be between 0% and 100%';
-        }
-      }
-    }
-
-    return null;
+    const ctx: ValidatorContext = {
+      categories,
+      accountList,
+      amountVariables,
+      dateVariables,
+      theme,
+      isTransfer: selectedBill?.isTransfer,
+      isHealthcare: selectedBill?.isHealthcare,
+      healthcarePerson: selectedBill?.healthcarePerson,
+      amountIsVariable: selectedBill?.amountIsVariable,
+      startDateIsVariable: selectedBill?.startDateIsVariable,
+      endDateIsVariable: selectedBill?.endDateIsVariable,
+      increaseByIsVariable: selectedBill?.increaseByIsVariable,
+    };
+    return runValidate(billValidators, name, value, ctx);
   };
 
   const allValid = (bill?: Bill | null) => {

@@ -32,6 +32,16 @@ import { EditableDateInput } from '../helpers/editableDateInput';
 import { CalculatorEditor } from '../helpers/calculatorEditor';
 import { Interest } from '../../types/types';
 import { selectSelectedSimulationVariables } from '../../features/simulations/select';
+import {
+  runValidate,
+  validateDate,
+  validateAPR,
+  validateAPRVariable,
+  validateApplicableDateVariable,
+  validateCompounded,
+  Validator,
+  ValidatorContext,
+} from './validators';
 
 dayjs.extend(utc);
 
@@ -88,36 +98,21 @@ export const InterestEditor = ({ resetSelected }: { resetSelected: () => void })
     return lastInterest.compounded;
   };
 
-  const validate = (interest: Interest, name: string, value: any) => {
-    if (name === 'applicableDate') {
-      const date = new Date(value);
-      if (date.toString() === 'Invalid Date') {
-        return 'Invalid date';
-      }
-    }
-    if (name === 'apr') {
-      if (isNaN(value) || typeof value === 'boolean') {
-        return 'Invalid apr';
-      }
-    }
-    if (name === 'aprVariable') {
-      // Only validate if using a variable
-      if (interest.aprIsVariable && !amountVariables.includes(value as string)) {
-        return 'Invalid variable';
-      }
-    }
-    if (name === 'applicableDateVariable') {
-      // Only validate if using a variable (dateVariables not currently implemented)
-      if (interest.applicableDateIsVariable && value !== null) {
-        return 'Invalid variable';
-      }
-    }
-    if (name === 'compounded') {
-      if (!['day', 'week', 'month', 'year'].includes(value)) {
-        return 'Invalid compounded';
-      }
-    }
-    return null;
+  const interestValidators: Record<string, Validator> = {
+    applicableDate: validateDate,
+    apr: validateAPR,
+    aprVariable: validateAPRVariable,
+    applicableDateVariable: validateApplicableDateVariable,
+    compounded: validateCompounded,
+  };
+
+  const validate = (interest: Interest, name: string, value: any): string | null => {
+    const ctx: ValidatorContext = {
+      amountVariables,
+      aprIsVariable: interest.aprIsVariable,
+      applicableDateIsVariable: interest.applicableDateIsVariable,
+    };
+    return runValidate(interestValidators, name, value, ctx);
   };
 
   const allValid = (ints?: Interest[]) => {
