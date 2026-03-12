@@ -7,34 +7,7 @@ import {
   selectSelectedAccount,
   selectAccountsError,
 } from './select';
-import { Account } from '../../types/types';
-
-const makeAccount = (overrides: Partial<Account> = {}): Account => ({
-  id: 'acc-1',
-  name: 'Test Account',
-  balance: 1000,
-  hidden: false,
-  type: 'Checking',
-  pullPriority: 1,
-  interestTaxRate: 0,
-  withdrawalTaxRate: 0,
-  earlyWithdrawalPenalty: 0,
-  earlyWithdrawalDate: null,
-  interestPayAccount: null,
-  interestAppliesToPositiveBalance: false,
-  usesRMD: false,
-  accountOwnerDOB: null,
-  rmdAccount: null,
-  minimumBalance: null,
-  minimumPullAmount: null,
-  maximumBalance: null,
-  performsPulls: false,
-  performsPushes: false,
-  pushStart: null,
-  pushEnd: null,
-  pushAccount: null,
-  ...overrides,
-});
+import { makeAccount } from '../../test/factories';
 
 // Minimal RootState shape needed for accounts selectors
 const makeRootState = (accountsOverrides = {}) =>

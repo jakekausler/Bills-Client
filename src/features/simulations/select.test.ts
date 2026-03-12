@@ -8,15 +8,8 @@ import {
   selectUsedVariablesLoaded,
   selectSimulationsError,
 } from './select';
-import { Simulation, UsedVariableMap } from '../../types/types';
-
-const makeSimulation = (overrides: Partial<Simulation> = {}): Simulation => ({
-  name: 'Base Case',
-  variables: {},
-  enabled: true,
-  selected: false,
-  ...overrides,
-});
+import { UsedVariableMap } from '../../types/types';
+import { makeSimulation } from '../../test/factories';
 
 const makeRootState = (simulationsOverrides = {}) =>
   ({

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { loadAccounts, addAccount } from './actions';
 import { setAccounts, setAccountsError, setAccountsLoaded } from './slice';
-import { Account } from '../../types/types';
+import { makeAccount } from '../../test/factories';
 
 // Mock the API functions
 vi.mock('./api', () => ({
@@ -11,34 +11,6 @@ vi.mock('./api', () => ({
 }));
 
 import { fetchAccounts, fetchAddAccount } from './api';
-
-// Helper to create a mock account
-const makeAccount = (overrides: Partial<Account> = {}): Account => ({
-  id: 'acc-1',
-  name: 'Test Account',
-  balance: 1000,
-  hidden: false,
-  type: 'Checking',
-  pullPriority: 1,
-  interestTaxRate: 0,
-  withdrawalTaxRate: 0,
-  earlyWithdrawalPenalty: 0,
-  earlyWithdrawalDate: null,
-  interestPayAccount: null,
-  interestAppliesToPositiveBalance: false,
-  usesRMD: false,
-  accountOwnerDOB: null,
-  rmdAccount: null,
-  minimumBalance: null,
-  minimumPullAmount: null,
-  maximumBalance: null,
-  performsPulls: false,
-  performsPushes: false,
-  pushStart: null,
-  pushEnd: null,
-  pushAccount: null,
-  ...overrides,
-});
 
 const mockFetchAccounts = fetchAccounts as ReturnType<typeof vi.fn>;
 const mockFetchAddAccount = fetchAddAccount as ReturnType<typeof vi.fn>;

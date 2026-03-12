@@ -114,13 +114,19 @@ const pages: Record<string, Page> = {
 };
 
 function App() {
-  const { token, setToken, validateToken } = useToken();
+  const { token, setToken, validateToken, clearToken } = useToken();
 
   useEffect(() => {
     if (token && token !== 'INVALID') {
       validateToken();
     }
   }, [token, validateToken]);
+
+  useEffect(() => {
+    const handleAuthExpired = () => clearToken();
+    window.addEventListener('auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('auth-expired', handleAuthExpired);
+  }, [clearToken]);
 
   if (!token || token === 'INVALID') {
     return <Login setToken={setToken} invalid={token === 'INVALID'} />;

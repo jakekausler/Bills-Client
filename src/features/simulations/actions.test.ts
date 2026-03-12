@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { loadSimulations, saveSimulations } from './actions';
 import { setSimulations, setSimulationsError, setSimulationsLoaded, setUsedVariables, setUsedVariablesLoaded } from './slice';
-import { Simulation, UsedVariableMap } from '../../types/types';
+import { makeSimulation } from '../../test/factories';
 
 // Mock the API functions
 vi.mock('./api', () => ({
@@ -15,14 +15,6 @@ import { fetchSimulations, fetchSaveSimulations, fetchUsedVariables } from './ap
 const mockFetchSimulations = fetchSimulations as ReturnType<typeof vi.fn>;
 const mockFetchSaveSimulations = fetchSaveSimulations as ReturnType<typeof vi.fn>;
 const mockFetchUsedVariables = fetchUsedVariables as ReturnType<typeof vi.fn>;
-
-const makeSimulation = (overrides: Partial<Simulation> = {}): Simulation => ({
-  name: 'Test Simulation',
-  variables: {},
-  enabled: true,
-  selected: false,
-  ...overrides,
-});
 
 describe('simulations actions', () => {
   beforeEach(() => {

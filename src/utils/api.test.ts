@@ -152,12 +152,8 @@ describe('fetchWithAuth', () => {
   it('returns a never-resolving promise on 401 response', async () => {
     fetchMock.mockResolvedValue(makeMockResponse({}, false, 401));
 
-    // Mock window.location.reload to prevent actual reload
-    const reloadMock = vi.fn();
-    Object.defineProperty(window, 'location', {
-      value: { ...window.location, reload: reloadMock },
-      writable: true,
-    });
+    const eventSpy = vi.fn();
+    window.addEventListener('auth-expired', eventSpy);
 
     const promise = fetchWithAuth('/api/protected');
 
@@ -168,6 +164,10 @@ describe('fetchWithAuth', () => {
     // Wait a tick to ensure the promise doesn't resolve
     await new Promise(resolve => setTimeout(resolve, 10));
     expect(resolved).toBe(false);
+
+    // Verify the custom event was dispatched
+    expect(eventSpy).toHaveBeenCalled();
+    window.removeEventListener('auth-expired', eventSpy);
   });
 });
 

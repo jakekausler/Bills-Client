@@ -5,39 +5,12 @@ import reducer, {
   setSelectedAccount,
   setAccountsLoaded,
 } from './slice';
-import { Account } from '../../types/types';
+import { makeAccount } from '../../test/factories';
 
 // Project test conventions:
 // - Framework: Vitest with globals configured, but imports used for clarity
 // - Assertions: expect() from vitest
 // - Test structure: describe/it blocks
-
-const makeAccount = (overrides: Partial<Account> = {}): Account => ({
-  id: 'acc-1',
-  name: 'Checking Account',
-  balance: 1000,
-  hidden: false,
-  type: 'Checking',
-  pullPriority: 1,
-  interestTaxRate: 0,
-  withdrawalTaxRate: 0,
-  earlyWithdrawalPenalty: 0,
-  earlyWithdrawalDate: null,
-  interestPayAccount: null,
-  interestAppliesToPositiveBalance: false,
-  usesRMD: false,
-  accountOwnerDOB: null,
-  rmdAccount: null,
-  minimumBalance: null,
-  minimumPullAmount: null,
-  maximumBalance: null,
-  performsPulls: false,
-  performsPushes: false,
-  pushStart: null,
-  pushEnd: null,
-  pushAccount: null,
-  ...overrides,
-});
 
 const initialState = {
   accounts: [],
