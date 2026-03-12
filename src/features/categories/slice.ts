@@ -1,6 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { CategoryActivity, CategoryBreakdown } from '../../types/types';

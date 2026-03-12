@@ -22,6 +22,14 @@ function getSimulation(): string {
   return selectedSimulation ? selectedSimulation.name : '';
 }
 
+// Helper function to construct endpoint with simulation parameter
+function withSimulation(endpoint: string): string {
+  const simulation = getSimulation();
+  if (!simulation) return endpoint;
+  const sep = endpoint.includes('?') ? '&' : '?';
+  return `${endpoint}${sep}simulation=${encodeURIComponent(simulation)}`;
+}
+
 // Helper function to get headers with auth token
 export const getHeaders = (token?: string | null, hasBody?: boolean) => {
   const headers: Record<string, string> = {};
@@ -68,46 +76,27 @@ export const fetchWithAuth = async <T = any>(endpoint: string, options: RequestI
 // Example usage for different HTTP methods
 export const api = {
   get: <T = any>(endpoint: string) => {
-    const simulation = getSimulation();
-    return fetchWithAuth<T>(
-      endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
-    );
+    return fetchWithAuth<T>(withSimulation(endpoint));
   },
 
   post: <T = any>(endpoint: string, data?: unknown) => {
-    const simulation = getSimulation();
-    return fetchWithAuth<T>(
-      endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
-      {
-        method: 'POST',
-        body: data ? JSON.stringify(data) : undefined,
-      },
-    );
+    return fetchWithAuth<T>(withSimulation(endpoint), {
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+    });
   },
 
   put: <T = any>(endpoint: string, data?: unknown) => {
-    const simulation = getSimulation();
-    return fetchWithAuth<T>(
-      endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
-      {
-        method: 'PUT',
-        body: data ? JSON.stringify(data) : undefined,
-      },
-    );
+    return fetchWithAuth<T>(withSimulation(endpoint), {
+      method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined,
+    });
   },
 
   delete: <T = any>(endpoint: string, data?: unknown) => {
-    const simulation = getSimulation();
-    return fetchWithAuth<T>(
-      endpoint +
-        (simulation ? `${endpoint.includes('?') ? '&' : '?'}simulation=${encodeURIComponent(simulation)}` : ''),
-      {
-        method: 'DELETE',
-        body: data ? JSON.stringify(data) : undefined,
-      },
-    );
+    return fetchWithAuth<T>(withSimulation(endpoint), {
+      method: 'DELETE',
+      body: data ? JSON.stringify(data) : undefined,
+    });
   },
 };

@@ -1,6 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
-
-import { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Simulation, UsedVariableMap } from '../../types/types';
 
 interface SimulationsState {
