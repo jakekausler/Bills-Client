@@ -493,7 +493,7 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             <Stack
               gap="sm"
               p="md"
-              style={{ backgroundColor: theme.colors.dark[6], borderRadius: 4 }}
+              style={{ backgroundColor: 'var(--mantine-color-body)', borderRadius: 4 }}
               role="region"
               aria-label="Healthcare expense details"
             >

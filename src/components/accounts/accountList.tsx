@@ -449,7 +449,7 @@ export default function AccountList({ close }: AccountListProps) {
           <Stack>
             <Box h="60vh" style={{ overflowY: 'auto', overflowX: 'auto' }}>
               <Table miw={500} style={{ tableLayout: 'fixed' }} aria-label="Account balances">
-                <Table.Thead bg="dark.7" style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <Table.Thead bg="var(--mantine-color-body)" style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                   <Table.Tr>
                     <Table.Th scope="col" ta="center" w={60}>
                       Visible

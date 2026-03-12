@@ -148,7 +148,7 @@ export default function HealthcareExpenses({ startDate, endDate }: HealthcareExp
                   <Table.Tr
                     key={expense.id}
                     style={{
-                      backgroundColor: expense.hsaReimbursed > 0 ? '#e7f5ff' : undefined,
+                      backgroundColor: expense.hsaReimbursed > 0 ? 'var(--mantine-color-blue-light)' : undefined,
                     }}
                   >
                     <Table.Td style={{ whiteSpace: 'nowrap' }}>{expense.date}</Table.Td>
