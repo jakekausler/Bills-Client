@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select } from '@mantine/core';
+import { Select, ComboboxParsedItem } from '@mantine/core';
 import CreatableSelect from '../../helpers/creatableSelect';
 
 interface NameCategorySectionProps {
@@ -39,9 +39,10 @@ export const NameCategorySection: React.FC<NameCategorySectionProps> = ({
             onNameWithCategoryChange(newValue);
           }
         }}
-        data={Object.entries(names).map(([key, _value]) => ({
+        data={Object.entries(names).map(([key, value]) => ({
           label: key,
           value: key,
+          category: value,
         }))}
         clearable
       />
@@ -54,6 +55,22 @@ export const NameCategorySection: React.FC<NameCategorySectionProps> = ({
           setCategoryTouched(true);
         }}
         searchable
+        filter={({ options, search }) => {
+          const query = search.toLowerCase().trim();
+          if (!query) return options;
+          return (options as ComboboxParsedItem[]).flatMap((option) => {
+            if ('items' in option) {
+              const groupName = (option as any).group?.toLowerCase() || '';
+              const filtered = (option as any).items.filter(
+                (item: any) =>
+                  (item.label?.toLowerCase() ?? '').includes(query) ||
+                  groupName.includes(query)
+              );
+              return filtered.length > 0 ? [{ ...(option as any), items: filtered }] : [];
+            }
+            return (option as any).label?.toLowerCase().includes(query) ? [option] : [];
+          }) as ComboboxParsedItem[];
+        }}
         error={validate('category', category)}
       />
     </>

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { CloseButton, Combobox, InputBase, VisuallyHidden, useCombobox } from '@mantine/core';
 
 interface CreatableSelectProps {
-  data: { label: string; value: string }[];
+  data: { label: string; value: string; category?: string }[];
   value: string;
   onChange: (value: string | null) => void;
   label?: string;
@@ -27,7 +27,7 @@ export default function CreatableSelect({ data, value, onChange, label, error, c
 
   const options = filteredOptions.map((item) => (
     <Combobox.Option value={item.value} key={item.value}>
-      {item.label}
+      {item.label} {item.category && <span style={{ color: 'var(--mantine-color-gray-6)' }}>({item.category})</span>}
     </Combobox.Option>
   ));
 
