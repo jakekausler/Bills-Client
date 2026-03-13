@@ -186,7 +186,11 @@ export const EditableDateInput = ({
     }
   };
 
-  const handleBlur = () => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Don't close if focus moved to the calendar dropdown
+    const dropdown = e.relatedTarget?.closest?.('[data-calendar]');
+    if (dropdown) return;
+
     setShowCalendar(false);
     if (validDate(editedDate) === null) {
       onBlur(editedDate);
