@@ -547,18 +547,59 @@ describe('activitiesSlice reducer', () => {
 
   describe('updateNames', () => {
     it('sets names and marks as loaded', () => {
-       
-      const names: Record<string, string> = { 'Grocery Store': 'Groceries', 'Electric Bill': 'Utilities' };
+      const names = {
+        'Grocery Store': {
+          category: 'Groceries',
+          isHealthcare: false,
+          healthcarePerson: null,
+          coinsurancePercent: null,
+          isTransfer: false,
+          from: null,
+          to: null,
+          spendingCategory: null,
+        },
+        'Electric Bill': {
+          category: 'Utilities',
+          isHealthcare: false,
+          healthcarePerson: null,
+          coinsurancePercent: null,
+          isTransfer: false,
+          from: null,
+          to: null,
+          spendingCategory: null,
+        },
+      };
       const newState = reducer(state, updateNames(names));
       expect(newState.names).toEqual(names);
       expect(newState.namesLoaded).toBe(true);
     });
 
     it('replaces existing names', () => {
-       
-      const first = reducer(state, updateNames({ 'Old Name': 'Old Category' }));
-       
-      const newNames: Record<string, string> = { 'New Name': 'New Category' };
+      const first = reducer(state, updateNames({
+        'Old Name': {
+          category: 'Old Category',
+          isHealthcare: false,
+          healthcarePerson: null,
+          coinsurancePercent: null,
+          isTransfer: false,
+          from: null,
+          to: null,
+          spendingCategory: null,
+        },
+      }));
+
+      const newNames = {
+        'New Name': {
+          category: 'New Category',
+          isHealthcare: false,
+          healthcarePerson: null,
+          coinsurancePercent: null,
+          isTransfer: false,
+          from: null,
+          to: null,
+          spendingCategory: null,
+        },
+      };
       const second = reducer(first, updateNames(newNames));
       expect(second.names).toEqual(newNames);
       expect(second.names).not.toHaveProperty('Old Name');

@@ -38,7 +38,7 @@ export const EditableDateInput = ({
     return formatDateForDisplay(date);
   });
   const [showCalendar, setShowCalendar] = useState(false);
-  const [calendarDate, setCalendarDate] = useState<Date | undefined>(undefined);
+  const [calendarDate, setCalendarDate] = useState<Date | null>(null);
   const [arrowAnnouncement, setArrowAnnouncement] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -228,7 +228,8 @@ export const EditableDateInput = ({
 
   const handleFocus = () => {
     setSelectedPart("month");
-    setCalendarDate(getValidDateForCalendar());
+    const validDate = getValidDateForCalendar();
+    setCalendarDate(validDate);
     setShowCalendar(true);
     setTimeout(() => {
       inputRef.current?.setSelectionRange(0, 2);
@@ -338,8 +339,8 @@ export const EditableDateInput = ({
       </Popover.Target>
       <Popover.Dropdown data-calendar>
         <DatePicker
-          value={getValidDateForCalendar()}
-          date={calendarDate}
+          value={calendarDate ?? undefined}
+          date={calendarDate ?? undefined}
           onDateChange={setCalendarDate}
           onChange={handleCalendarChange}
           minDate={minDate}

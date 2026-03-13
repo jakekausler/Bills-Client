@@ -1,13 +1,15 @@
 import React from 'react';
 import { Select, ComboboxParsedItem } from '@mantine/core';
 import CreatableSelect from '../../helpers/creatableSelect';
+import { NameMetadata } from '../../../types/types';
 
 interface NameCategorySectionProps {
   name: string;
   category: string;
-  names: Record<string, string>;
+  names: Record<string, NameMetadata>;
   categories: Array<{ group: string; items: Array<{ value: string; label: string }> }>;
-  onNameWithCategoryChange: (name: string, category?: string) => void;
+  onNameWithMetadataChange: (name: string, metadata?: NameMetadata) => void;
+  onCategoryChange: (category: string) => void;
   validate: (name: string, value: any) => string | null;
   error?: string | null;
   categoryTouched: boolean;
@@ -19,7 +21,8 @@ export const NameCategorySection: React.FC<NameCategorySectionProps> = ({
   category,
   names,
   categories,
-  onNameWithCategoryChange,
+  onNameWithMetadataChange,
+  onCategoryChange,
   validate,
   error,
   categoryTouched,
@@ -34,15 +37,15 @@ export const NameCategorySection: React.FC<NameCategorySectionProps> = ({
         onChange={(v: string | null) => {
           const newValue = v || '';
           if (!categoryTouched && v && v in names) {
-            onNameWithCategoryChange(newValue, names[v]);
+            onNameWithMetadataChange(newValue, names[v]);
           } else {
-            onNameWithCategoryChange(newValue);
+            onNameWithMetadataChange(newValue);
           }
         }}
-        data={Object.entries(names).map(([key, value]) => ({
+        data={Object.entries(names).map(([key, metadata]) => ({
           label: key,
           value: key,
-          category: value,
+          category: metadata.category,
         }))}
         clearable
       />
@@ -51,7 +54,7 @@ export const NameCategorySection: React.FC<NameCategorySectionProps> = ({
         value={category}
         data={categories}
         onChange={(v) => {
-          onNameWithCategoryChange(name, v ? v : '');
+          onCategoryChange(v || '');
           setCategoryTouched(true);
         }}
         searchable

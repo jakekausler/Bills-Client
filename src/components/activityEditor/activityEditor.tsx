@@ -17,7 +17,7 @@ import {
 } from '@mantine/core';
 import { updateActivity } from '../../features/activities/slice';
 import { removeActivity, saveActivity } from '../../features/activities/actions';
-import { Activity } from '../../types/types';
+import { Activity, NameMetadata } from '../../types/types';
 import { IconVariable, IconVariableOff } from '@tabler/icons-react';
 import CreatableSelect from '../helpers/creatableSelect';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
@@ -242,14 +242,39 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
         category={selectedActivity.category}
         names={names}
         categories={categories}
-        onNameWithCategoryChange={(newName: string, newCategory?: string) => {
+        onNameWithMetadataChange={(newName: string, metadata?: NameMetadata) => {
+          if (!categoryTouched && metadata) {
+            dispatch(
+              updateActivity({
+                ...selectedActivity,
+                name: newName,
+                category: metadata.category,
+                isHealthcare: metadata.isHealthcare,
+                healthcarePerson: metadata.healthcarePerson,
+                coinsurancePercent: metadata.coinsurancePercent,
+                isTransfer: metadata.isTransfer,
+                from: metadata.from,
+                to: metadata.to,
+                spendingCategory: metadata.spendingCategory,
+              }),
+            );
+          } else {
+            dispatch(
+              updateActivity({
+                ...selectedActivity,
+                name: newName,
+              }),
+            );
+          }
+        }}
+        onCategoryChange={(category) => {
           dispatch(
             updateActivity({
               ...selectedActivity,
-              name: newName,
-              category: newCategory !== undefined ? newCategory : selectedActivity.category,
+              category,
             }),
           );
+          setCategoryTouched(true);
         }}
         validate={validate}
         categoryTouched={categoryTouched}

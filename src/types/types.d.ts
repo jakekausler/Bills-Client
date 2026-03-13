@@ -2,6 +2,17 @@ import React from 'react';
 export type PageComponentType = React.ComponentType;
 export type SidebarComponentType = React.ComponentType<{ close: () => void }>;
 
+export type NameMetadata = {
+  category: string;
+  isHealthcare: boolean;
+  healthcarePerson: string | null;
+  coinsurancePercent: number | null;
+  isTransfer: boolean;
+  from: string | null;
+  to: string | null;
+  spendingCategory: string | null;
+};
+
 export type BaseActivity = {
   id?: string;
   date: string;

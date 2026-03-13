@@ -15,7 +15,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { Account, Bill } from '../../types/types';
+import { Account, Bill, NameMetadata } from '../../types/types';
 import { updateBill } from '../../features/activities/slice';
 import { removeBill, saveBill } from '../../features/activities/actions';
 import { IconVariable, IconVariableOff } from '@tabler/icons-react';
@@ -308,14 +308,39 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             category={selectedBill.category}
             names={names}
             categories={categories}
-            onNameWithCategoryChange={(newName: string, newCategory?: string) => {
+            onNameWithMetadataChange={(newName: string, metadata?: NameMetadata) => {
+              if (!categoryTouched && metadata) {
+                dispatch(
+                  updateBill({
+                    ...selectedBill,
+                    name: newName,
+                    category: metadata.category,
+                    isHealthcare: metadata.isHealthcare,
+                    healthcarePerson: metadata.healthcarePerson,
+                    coinsurancePercent: metadata.coinsurancePercent,
+                    isTransfer: metadata.isTransfer,
+                    from: metadata.from,
+                    to: metadata.to,
+                    spendingCategory: metadata.spendingCategory,
+                  }),
+                );
+              } else {
+                dispatch(
+                  updateBill({
+                    ...selectedBill,
+                    name: newName,
+                  }),
+                );
+              }
+            }}
+            onCategoryChange={(category) => {
               dispatch(
                 updateBill({
                   ...selectedBill,
-                  name: newName,
-                  category: newCategory !== undefined ? newCategory : selectedBill.category,
+                  category,
                 }),
               );
+              setCategoryTouched(true);
             }}
             validate={validate}
             categoryTouched={categoryTouched}
