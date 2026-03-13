@@ -96,7 +96,6 @@ const pages: Record<string, Page> = {
     component: MonteCarlo,
     sidebar: MonteCarloSimulationSelector,
     icon: IconArrowsSplit2,
-    hidden: true,
   },
   moneyMovement: {
     title: 'Money Movement',
