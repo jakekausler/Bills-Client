@@ -20,6 +20,7 @@ import {
   loadAllSimulations,
   updateSimulationProgress,
   loadSimulationGraph,
+  deleteMonteCarloSimulation,
 } from '../../features/monteCarlo/actions';
 import { IconChartLine, IconRefresh } from '@tabler/icons-react';
 
@@ -77,6 +78,10 @@ export default function MonteCarloSimulationSelector({ close }: MonteCarloSimula
     } catch (err) {
       console.error('Failed to load graph', err);
     }
+  };
+
+  const handleDelete = (id: string) => {
+    dispatch(deleteMonteCarloSimulation(id));
   };
 
   const getStatusColor = (status: string) => {
@@ -251,16 +256,23 @@ export default function MonteCarloSimulationSelector({ close }: MonteCarloSimula
                   </Text>
                 )}
 
-                <Button
-                  size="xs"
-                  variant="light"
-                  fullWidth
-                  leftSection={<IconChartLine size={12} />}
-                  disabled={simulation.status !== 'completed'}
-                  onClick={() => handleViewGraph(simulation.id)}
-                >
-                  View Graph
-                </Button>
+                <Group>
+                  <Button
+                    size="xs"
+                    disabled={simulation.status !== 'completed'}
+                    onClick={() => handleViewGraph(simulation.id)}
+                  >
+                    View Graph
+                  </Button>
+                  <Button
+                    size="xs"
+                    color="red"
+                    variant="light"
+                    onClick={() => handleDelete(simulation.id)}
+                  >
+                    {simulation.status === 'running' || simulation.status === 'pending' ? 'Cancel' : 'Delete'}
+                  </Button>
+                </Group>
               </Stack>
             </Paper>
           ))}
