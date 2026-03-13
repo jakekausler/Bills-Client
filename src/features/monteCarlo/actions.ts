@@ -5,8 +5,9 @@ import {
   setSimulations,
   updateSimulationStatus,
   setSelectedSimulation,
+  removeSimulation,
 } from './slice';
-import { createSimulation, getAllSimulations, getSimulationStatus, getSimulationGraph, SimulationRequest } from './api';
+import { createSimulation, getAllSimulations, getSimulationStatus, getSimulationGraph, deleteSimulation, SimulationRequest } from './api';
 
 export const startNewSimulation =
   (simulationData: SimulationRequest): AppThunk =>
@@ -38,8 +39,13 @@ export const updateSimulationProgress =
     try {
       const status = await getSimulationStatus(id);
       dispatch(updateSimulationStatus(status));
-    } catch (error) {
-      console.error(`Failed to update simulation ${id} progress`, error);
+    } catch (error: any) {
+      // If 404, simulation was deleted — remove from local state
+      if (error?.message?.includes('404')) {
+        dispatch(removeSimulation(id));
+      } else {
+        console.error(`Failed to update simulation ${id} progress`, error);
+      }
     }
   };
 
@@ -56,3 +62,12 @@ export const loadSimulationGraph =
       throw error;
     }
   };
+
+export const deleteMonteCarloSimulation = (id: string): AppThunk => async (dispatch) => {
+  try {
+    await deleteSimulation(id);
+    dispatch(removeSimulation(id));
+  } catch (error) {
+    dispatch(setMonteCarloError(error instanceof Error ? error.message : 'Failed to delete simulation'));
+  }
+};

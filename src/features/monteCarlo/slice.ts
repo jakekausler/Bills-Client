@@ -84,6 +84,16 @@ const monteCarloSlice = createSlice({
         state.simulations[index] = action.payload;
       }
     },
+    removeSimulation: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      state.simulations = state.simulations.filter(s => s.id !== id);
+      if (state.selectedSimulation === id) {
+        state.selectedSimulation = null;
+        state.datasets = [];
+        state.labels = [];
+        state.loaded = false;
+      }
+    },
     clearMonteCarloError: (state) => {
       state.error = '';
     },
@@ -101,6 +111,7 @@ export const {
   setSimulations,
   setSelectedSimulation,
   updateSimulationStatus,
+  removeSimulation,
   clearMonteCarloError,
 } = monteCarloSlice.actions;
 export default monteCarloSlice.reducer;

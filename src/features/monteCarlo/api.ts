@@ -38,3 +38,7 @@ export const getSimulationStatus = async (id: string): Promise<SimulationStatus>
 export const getSimulationGraph = async (id: string) => {
   return await api.get(`/api/monte_carlo/simulations/${id}/graph`);
 };
+
+export const deleteSimulation = async (id: string): Promise<{ success: boolean }> => {
+  return api.delete(`/api/monte_carlo/simulations/${id}`);
+};
