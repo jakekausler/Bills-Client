@@ -2,7 +2,8 @@ import React from 'react';
 export type PageComponentType = React.ComponentType;
 export type SidebarComponentType = React.ComponentType<{ close: () => void }>;
 
-export type NameMetadata = {
+export type NameEntry = {
+  name: string;
   category: string;
   isHealthcare: boolean;
   healthcarePerson: string | null;
@@ -12,6 +13,9 @@ export type NameMetadata = {
   to: string | null;
   spendingCategory: string | null;
 };
+
+// Alias for backwards compatibility
+export type NameMetadata = Omit<NameEntry, 'name'>;
 
 export type BaseActivity = {
   id?: string;

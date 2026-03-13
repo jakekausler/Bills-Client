@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Activity, BaseActivity, Bill, Interest, NameMetadata } from '../../types/types';
+import { Activity, BaseActivity, Bill, Interest, NameEntry } from '../../types/types';
 import { toDateString } from '../../utils/date';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -27,8 +27,8 @@ interface ActivitiesState {
 
   lastDate: string;
 
-  // A dictionary of all activity and bill names mapped to their metadata from most recent usage
-  names: Record<string, NameMetadata>;
+  // Array of all distinct name+category combinations with metadata from most recent usage
+  names: NameEntry[];
   namesLoaded: boolean;
 }
 
@@ -47,7 +47,7 @@ const initialState: ActivitiesState = {
   startDate: dayjs.utc().subtract(1, 'month').format('YYYY-MM-DD'),
   endDate: dayjs.utc().add(3, 'month').format('YYYY-MM-DD'),
   lastDate: toDateString(new Date()),
-  names: {},
+  names: [],
   namesLoaded: false,
 };
 
@@ -182,7 +182,7 @@ export const activitiesSlice = createSlice({
     setInterestsLoaded: (state, action: PayloadAction<boolean>) => {
       state.interestsLoaded = action.payload;
     },
-    updateNames: (state, action: PayloadAction<Record<string, NameMetadata>>) => {
+    updateNames: (state, action: PayloadAction<NameEntry[]>) => {
       state.names = action.payload;
       state.namesLoaded = true;
     },

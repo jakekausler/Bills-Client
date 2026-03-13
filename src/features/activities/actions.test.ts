@@ -366,18 +366,9 @@ describe('activities actions', () => {
 
   describe('loadNames', () => {
     it('fetches names and dispatches updateNames', async () => {
-      const names = {
-        'Grocery Store': {
-          category: 'Groceries',
-          isHealthcare: false,
-          healthcarePerson: null,
-          coinsurancePercent: null,
-          isTransfer: false,
-          from: null,
-          to: null,
-          spendingCategory: null,
-        },
-        'Gas Station': {
+      const names = [
+        {
+          name: 'Gas Station',
           category: 'Transportation',
           isHealthcare: false,
           healthcarePerson: null,
@@ -387,7 +378,18 @@ describe('activities actions', () => {
           to: null,
           spendingCategory: null,
         },
-      };
+        {
+          name: 'Grocery Store',
+          category: 'Groceries',
+          isHealthcare: false,
+          healthcarePerson: null,
+          coinsurancePercent: null,
+          isTransfer: false,
+          from: null,
+          to: null,
+          spendingCategory: null,
+        },
+      ];
       mockFetchNames.mockResolvedValue(names);
 
       const dispatch = vi.fn();

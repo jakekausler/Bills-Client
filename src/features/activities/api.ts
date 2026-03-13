@@ -1,4 +1,4 @@
-import { Account, Activity, Bill, Interest, NameMetadata } from '../../types/types';
+import { Account, Activity, Bill, Interest, NameEntry } from '../../types/types';
 import { api } from '../../utils/api';
 import { toDateString } from '../../utils/date';
 
@@ -103,8 +103,8 @@ export const fetchAddInterestActivity = async (accountId: string, activity: Acti
   return await api.put<void>(`/api/accounts/${encodeURIComponent(accountId)}/interests/${encodeURIComponent(interestId)}?asActivity=true`, activity);
 };
 
-export const fetchNames = async (): Promise<Record<string, NameMetadata>> => {
-  return await api.get<Record<string, NameMetadata>>('/api/names');
+export const fetchNames = async (): Promise<NameEntry[]> => {
+  return await api.get<NameEntry[]>('/api/names');
 };
 
 export const fetchSkipBill = async (accountId: string, billId: string, isTransfer: boolean): Promise<void> => {

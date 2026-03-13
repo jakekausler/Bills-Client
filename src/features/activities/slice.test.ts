@@ -21,7 +21,7 @@ import reducer, {
   updateNames,
   setNamesLoaded,
 } from './slice';
-import { Activity, BaseActivity, Bill, Interest } from '../../types/types';
+import { Activity, BaseActivity, Bill, Interest, NameEntry } from '../../types/types';
 
 const makeActivity = (overrides: Partial<Activity> = {}): Activity => ({
   id: 'act-1',
@@ -168,8 +168,8 @@ describe('activitiesSlice reducer', () => {
       expect(state.interestsLoaded).toBe(false);
     });
 
-    it('initializes names as empty object', () => {
-      expect(state.names).toEqual({});
+    it('initializes names as empty array', () => {
+      expect(state.names).toEqual([]);
     });
 
     it('initializes namesLoaded as false', () => {
@@ -547,18 +547,9 @@ describe('activitiesSlice reducer', () => {
 
   describe('updateNames', () => {
     it('sets names and marks as loaded', () => {
-      const names = {
-        'Grocery Store': {
-          category: 'Groceries',
-          isHealthcare: false,
-          healthcarePerson: null,
-          coinsurancePercent: null,
-          isTransfer: false,
-          from: null,
-          to: null,
-          spendingCategory: null,
-        },
-        'Electric Bill': {
+      const names: NameEntry[] = [
+        {
+          name: 'Electric Bill',
           category: 'Utilities',
           isHealthcare: false,
           healthcarePerson: null,
@@ -568,15 +559,27 @@ describe('activitiesSlice reducer', () => {
           to: null,
           spendingCategory: null,
         },
-      };
+        {
+          name: 'Grocery Store',
+          category: 'Groceries',
+          isHealthcare: false,
+          healthcarePerson: null,
+          coinsurancePercent: null,
+          isTransfer: false,
+          from: null,
+          to: null,
+          spendingCategory: null,
+        },
+      ];
       const newState = reducer(state, updateNames(names));
       expect(newState.names).toEqual(names);
       expect(newState.namesLoaded).toBe(true);
     });
 
     it('replaces existing names', () => {
-      const first = reducer(state, updateNames({
-        'Old Name': {
+      const first = reducer(state, updateNames([
+        {
+          name: 'Old Name',
           category: 'Old Category',
           isHealthcare: false,
           healthcarePerson: null,
@@ -586,10 +589,11 @@ describe('activitiesSlice reducer', () => {
           to: null,
           spendingCategory: null,
         },
-      }));
+      ]));
 
-      const newNames = {
-        'New Name': {
+      const newNames: NameEntry[] = [
+        {
+          name: 'New Name',
           category: 'New Category',
           isHealthcare: false,
           healthcarePerson: null,
@@ -599,10 +603,11 @@ describe('activitiesSlice reducer', () => {
           to: null,
           spendingCategory: null,
         },
-      };
+      ];
       const second = reducer(first, updateNames(newNames));
       expect(second.names).toEqual(newNames);
-      expect(second.names).not.toHaveProperty('Old Name');
+      expect(second.names).toHaveLength(1);
+      expect(second.names[0].name).toBe('New Name');
     });
   });
 
