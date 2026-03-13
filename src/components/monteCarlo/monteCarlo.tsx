@@ -26,7 +26,7 @@ import {
 import {
   startNewSimulation,
 } from '../../features/monteCarlo/actions';
-import { Graph } from '../graph/graph';
+import { MonteCarloChart } from './monteCarloChart';
 import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 
 export default function MonteCarlo() {
@@ -150,12 +150,10 @@ export default function MonteCarlo() {
             </Group>
 
             <div style={{ flex: 1, minHeight: 0 }}>
-              <Graph
+              <MonteCarloChart
                 datasets={datasets}
                 labels={labels}
                 loaded={graphLoaded}
-                type="monteCarlo"
-                hideLegend={true}
               />
             </div>
           </Stack>

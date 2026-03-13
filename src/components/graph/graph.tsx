@@ -19,7 +19,6 @@ export function Graph({
   startDate,
   endDate,
   loaded,
-  hideLegend,
   setGraphStartDate,
   setGraphEndDate,
 }: GraphProps) {
@@ -103,7 +102,7 @@ export function Graph({
             },
             plugins: {
               legend: {
-                display: !hideLegend,
+                display: true,
               },
               tooltip: {
                 enabled: true,
@@ -146,41 +145,23 @@ export function Graph({
                             .join(', ');
                         },
                       }
-                    : type === 'monteCarlo'
-                      ? {
-                          title: function (context: any) {
-                            let datasetLabel = '';
-                            if (datasets.length > 1) {
-                              datasetLabel = datasets[context[0].datasetIndex].label + '\n';
-                            }
-                            if (context.length > 0) {
-                              return (
-                                datasetLabel +
-                                new Date(context[0].label).toLocaleDateString('en-US', { year: 'numeric' })
-                              );
-                            }
-                          },
-                          label: function (context: any) {
-                            return `$ ${context.dataset.data[context.dataIndex].toLocaleString('en-US')}`;
-                          },
-                        }
-                      : {
-                          title: function (context: any) {
-                            let datasetLabel = '';
-                            if (datasets.length > 1) {
-                              datasetLabel = datasets[context[0].datasetIndex].label + '\n';
-                            }
-                            if (context.length > 0) {
-                              return (
-                                datasetLabel +
-                                new Date(context[0].label).toLocaleDateString('en-US', { year: 'numeric' })
-                              );
-                            }
-                          },
-                          label: function (context: any) {
-                            return `$ ${context.dataset.data[context.dataIndex].toLocaleString('en-US')}`;
-                          },
+                    : {
+                        title: function (context: any) {
+                          let datasetLabel = '';
+                          if (datasets.length > 1) {
+                            datasetLabel = datasets[context[0].datasetIndex].label + '\n';
+                          }
+                          if (context.length > 0) {
+                            return (
+                              datasetLabel +
+                              new Date(context[0].label).toLocaleDateString('en-US', { year: 'numeric' })
+                            );
+                          }
                         },
+                        label: function (context: any) {
+                          return `$ ${context.dataset.data[context.dataIndex].toLocaleString('en-US')}`;
+                        },
+                      },
               },
             },
           }}
