@@ -103,6 +103,18 @@ const EditAccountRow = React.memo(({ account, allAccounts, onUpdateAccount }: Ed
       <Table.Td>
         <NumberInput
           disabled={!(account.type === 'Investment')}
+          value={account.expenseRatio ?? 0}
+          onChange={(e) => handleUpdate({ expenseRatio: typeof e === 'number' ? e : Number(e) })}
+          decimalScale={4}
+          step={0.001}
+          min={0}
+          max={0.1}
+          aria-label="Expense ratio"
+        />
+      </Table.Td>
+      <Table.Td>
+        <NumberInput
+          disabled={!(account.type === 'Investment')}
           value={account.earlyWithdrawalPenalty ?? 0}
           onChange={(e) => handleUpdate({ earlyWithdrawalPenalty: typeof e === 'number' ? e : Number(e) })}
           aria-label="Early withdrawal penalty"
@@ -312,6 +324,7 @@ export default function AccountList({ close }: AccountListProps) {
         pullPriority: account.pullPriority,
         interestTaxRate: account.interestTaxRate,
         withdrawalTaxRate: account.withdrawalTaxRate,
+        expenseRatio: account.expenseRatio,
         earlyWithdrawalPenalty: account.earlyWithdrawalPenalty,
         earlyWithdrawalDate: account.earlyWithdrawalDate,
         interestPayAccount: account.interestPayAccount,
@@ -417,6 +430,7 @@ export default function AccountList({ close }: AccountListProps) {
                         pullPriority: -1,
                         interestTaxRate: 0,
                         withdrawalTaxRate: 0,
+                        expenseRatio: 0,
                         earlyWithdrawalPenalty: 0,
                         earlyWithdrawalDate: null,
                         interestPayAccount: null,
@@ -465,6 +479,9 @@ export default function AccountList({ close }: AccountListProps) {
                     </Table.Th>
                     <Table.Th scope="col" ta="center" w={100}>
                       Withdrawal Tax Rate
+                    </Table.Th>
+                    <Table.Th scope="col" ta="center" w={100}>
+                      Expense Ratio
                     </Table.Th>
                     <Table.Th scope="col" ta="center" w={100}>
                       Early Withdrawl Penalty

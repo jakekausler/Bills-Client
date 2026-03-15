@@ -132,6 +132,7 @@ export type Account = {
   pullPriority: number;
   interestTaxRate: number;
   withdrawalTaxRate: number;
+  expenseRatio: number;
   earlyWithdrawalPenalty: number;
   earlyWithdrawalDate: string | null;
   interestPayAccount: string | null;
