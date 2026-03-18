@@ -253,7 +253,7 @@ export default function Activities({ style }: ActivitiesProps) {
                     c={
                       activity.flag
                         ? activity.flagColor
-                          ? theme.colors[activity.flagColor][(activity.billId && activity.firstBill) || (activity.spendingTrackerId && activity.firstSpendingTracker) ? 6 : 4]
+                          ? (theme.colors[activity.flagColor] || theme.colors.gray)[(activity.billId && activity.firstBill) || (activity.spendingTrackerId && activity.firstSpendingTracker) ? 6 : 4]
                           : 'gray'
                         : ''
                     }
@@ -397,7 +397,7 @@ export default function Activities({ style }: ActivitiesProps) {
                       </VisuallyHidden>
                       {activity.flag ? (
                         <>
-                          <IconFlag color={activity.flagColor ? theme.colors[activity.flagColor][4] : 'gray'} size={16} aria-hidden="true" />
+                          <IconFlag color={activity.flagColor ? (theme.colors[activity.flagColor] || theme.colors.gray)[4] : 'gray'} size={16} aria-hidden="true" />
                           <VisuallyHidden>Flagged {activity.flagColor || 'gray'}</VisuallyHidden>
                         </>
                       ) : (
