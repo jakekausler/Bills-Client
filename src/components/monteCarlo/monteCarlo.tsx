@@ -20,14 +20,15 @@ import {
   selectMonteCarloError,
   selectSelectedSimulation,
   selectMonteCarloDatasets,
-  selectMonteCarloLabels,
-  selectMonteCarloLoaded,
   selectAccountNames,
+  selectReportingAccount,
+  selectShowReal,
+  selectShowDeterministic,
 } from '../../features/monteCarlo/select';
 import {
   startNewSimulation,
 } from '../../features/monteCarlo/actions';
-import { MonteCarloChart } from './monteCarloChart';
+import FanChart from './fanChart';
 import { ControlsBar } from './controlsBar';
 import { SummaryCards } from './summaryCards';
 import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
@@ -38,10 +39,11 @@ export default function MonteCarlo() {
   const error = useSelector(selectMonteCarloError);
   const selectedSimulation = useSelector(selectSelectedSimulation);
   const datasets = useSelector(selectMonteCarloDatasets);
-  const labels = useSelector(selectMonteCarloLabels);
-  const graphLoaded = useSelector(selectMonteCarloLoaded);
   const accountNames = useSelector(selectAccountNames);
   const visibleAccounts = useSelector(selectVisibleAccounts);
+  const reportingAccount = useSelector(selectReportingAccount);
+  const showReal = useSelector(selectShowReal);
+  const showDeterministic = useSelector(selectShowDeterministic);
 
   // Filter MC account names to exclude hidden accounts
   const filteredAccountNames = useMemo(() => {
@@ -169,10 +171,12 @@ export default function MonteCarlo() {
             <SummaryCards />
 
             <div style={{ flex: 1, minHeight: 0 }}>
-              <MonteCarloChart
-                datasets={datasets}
-                labels={labels}
-                loaded={graphLoaded}
+              <FanChart
+                simulationId={selectedSimulation}
+                reportingAccount={reportingAccount}
+                showReal={showReal}
+                showDeterministic={showDeterministic}
+                graphData={null}
               />
             </div>
           </Stack>
