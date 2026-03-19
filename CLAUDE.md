@@ -58,6 +58,29 @@ This is a financial planning/budgeting application with the following key featur
 - **Authentication**: Token-based auth stored in localStorage
 - **Simulation Context**: All API calls automatically include selected simulation parameter
 
+### MC Reporting Framework (#33)
+
+The Monte Carlo results page uses an extensible view registry pattern:
+
+**Architecture:**
+- `components/monteCarlo/viewRegistry.ts` — View registration interface (`MCViewProps`, `MCView`)
+- `components/monteCarlo/controlsBar.tsx` — Global controls (account selector, real/nominal, deterministic toggle)
+- `components/monteCarlo/summaryCards.tsx` — 4 summary stat cards
+- `components/monteCarlo/fanChart.tsx` — Fan chart with 4 percentile bands
+- `components/monteCarlo/utils.ts` — Shared formatting utilities
+
+**Adding a new view:**
+1. Create a component implementing `MCViewProps` interface
+2. Call `registerView({ id, title, component, columns: 1|2|3 })` at module scope
+3. Import the file (side-effect) in `monteCarlo.tsx`
+
+**Global controls** (in Redux state):
+- `reportingAccount` — filters all views to a specific account (null = combined)
+- `showReal` — toggles nominal vs inflation-adjusted dollars
+- `showDeterministic` — shows/hides deterministic overlay line
+
+**Backend:** Graph endpoint computes percentiles on-demand from raw results. Supports `?account={id}` for per-account data. In-memory cache by simulationId+accountId.
+
 ### Key Patterns
 
 #### Page Registration
