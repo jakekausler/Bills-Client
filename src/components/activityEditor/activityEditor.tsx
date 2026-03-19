@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectSelectedActivity,
@@ -130,6 +130,24 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
       return validate(key, value) === null;
     });
   };
+
+  // DEBUG: Log validation errors when activity editor opens with existing data
+  useEffect(() => {
+    if (!selectedActivity) return;
+    const errors: Record<string, string> = {};
+    Object.entries(selectedActivity).forEach(([key, value]) => {
+      const error = validate(key, value);
+      if (error !== null) {
+        errors[key] = error;
+      }
+    });
+    if (Object.keys(errors).length > 0) {
+      console.log('[ActivityEditor] Opened with validation errors:', errors);
+      console.log('[ActivityEditor] Activity data:', JSON.stringify(selectedActivity, null, 2));
+    } else {
+      console.log('[ActivityEditor] Opened with no validation errors');
+    }
+  }, [activityId]); // Re-run when a different activity is selected
 
   const getAmount = (activity: Activity) => {
     if (activity.isTransfer) {

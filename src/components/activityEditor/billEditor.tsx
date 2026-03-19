@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectSelectedBill,
@@ -158,6 +158,24 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
       })
       : false;
   };
+
+  // DEBUG: Log validation errors when bill editor opens with existing data
+  useEffect(() => {
+    if (!selectedBill) return;
+    const errors: Record<string, string> = {};
+    Object.entries(selectedBill).forEach(([key, value]) => {
+      const error = validate(key, value);
+      if (error !== null) {
+        errors[key] = error;
+      }
+    });
+    if (Object.keys(errors).length > 0) {
+      console.log('[BillEditor] Opened with validation errors:', errors);
+      console.log('[BillEditor] Bill data:', JSON.stringify(selectedBill, null, 2));
+    } else {
+      console.log('[BillEditor] Opened with no validation errors');
+    }
+  }, [billId]); // Re-run when a different bill is selected
 
   const handleEnter = (amount?: number) => {
     if (amount !== undefined && isNaN(amount as number)) {
