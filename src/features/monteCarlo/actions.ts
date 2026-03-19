@@ -50,10 +50,10 @@ export const updateSimulationProgress =
   };
 
 export const loadSimulationGraph =
-  (id: string): AppThunk =>
+  (id: string, accountId?: string | null): AppThunk =>
   async (dispatch) => {
     try {
-      const graphData = await getSimulationGraph(id);
+      const graphData = await getSimulationGraph(id, accountId);
       dispatch(setMonteCarloData(graphData));
       dispatch(setSelectedSimulation(id));
     } catch (error) {

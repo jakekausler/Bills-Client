@@ -22,11 +22,13 @@ import {
   selectMonteCarloDatasets,
   selectMonteCarloLabels,
   selectMonteCarloLoaded,
+  selectAccountNames,
 } from '../../features/monteCarlo/select';
 import {
   startNewSimulation,
 } from '../../features/monteCarlo/actions';
 import { MonteCarloChart } from './monteCarloChart';
+import { ControlsBar } from './controlsBar';
 import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 
 export default function MonteCarlo() {
@@ -36,6 +38,7 @@ export default function MonteCarlo() {
   const datasets = useSelector(selectMonteCarloDatasets);
   const labels = useSelector(selectMonteCarloLabels);
   const graphLoaded = useSelector(selectMonteCarloLoaded);
+  const accountNames = useSelector(selectAccountNames);
 
   const [totalSimulations, setTotalSimulations] = useState(100);
   const [batchSize, setBatchSize] = useState(5);
@@ -148,6 +151,11 @@ export default function MonteCarlo() {
               <Text size="lg" fw={700}>Simulation Results</Text>
               <Badge color="blue">{selectedSimulation.substring(0, 8)}...</Badge>
             </Group>
+
+            <ControlsBar
+              simulationId={selectedSimulation}
+              accountNames={accountNames}
+            />
 
             <div style={{ flex: 1, minHeight: 0 }}>
               <MonteCarloChart

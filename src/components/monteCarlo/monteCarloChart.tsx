@@ -2,13 +2,13 @@ import React from 'react';
 import { Stack, LoadingOverlay, VisuallyHidden } from '@mantine/core';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-import { Dataset } from '../../types/types';
+import { PercentileDataset } from '../../types/types';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 
 Chart.register(...registerables);
 
 interface MonteCarloChartProps {
-  datasets: Dataset[];
+  datasets: PercentileDataset[];
   labels: string[];
   loaded: boolean;
   style?: React.CSSProperties;

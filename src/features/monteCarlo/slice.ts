@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { Dataset, GraphData } from '../../types/types';
+import { PercentileDataset, PercentileGraphData } from '../../types/types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { SimulationStatus } from './api';
@@ -8,7 +8,7 @@ import { SimulationStatus } from './api';
 dayjs.extend(utc);
 
 interface MonteCarloState {
-  datasets: Dataset[];
+  datasets: PercentileDataset[];
   labels: string[];
   loaded: boolean;
   error: string;
@@ -22,6 +22,34 @@ interface MonteCarloState {
   simulations: SimulationStatus[];
   selectedSimulation: string | null;
   simulationsLoaded: boolean;
+
+  // MC reporting controls
+  reportingAccount: string | null; // null = combined, account ID for per-account
+  showReal: boolean;
+  showDeterministic: boolean;
+
+  // Graph metadata
+  accountNames: Array<{ id: string; name: string }>;
+  graphMetadata: {
+    totalSimulations?: number;
+    seed?: number;
+    fundedRatio?: number;
+    failedSimulations?: number;
+    medianFailureYear?: number | null;
+    worstYear?: { year: number; medianMinBalance: number; realMedianMinBalance: number };
+    finalYear?: {
+      median: number;
+      p5: number;
+      p25: number;
+      p75: number;
+      p95: number;
+      realMedian: number;
+      realP5: number;
+      realP25: number;
+      realP75: number;
+      realP95: number;
+    };
+  };
 }
 
 const initialState: MonteCarloState = {
@@ -36,21 +64,38 @@ const initialState: MonteCarloState = {
   simulations: [],
   selectedSimulation: null,
   simulationsLoaded: false,
+  reportingAccount: null,
+  showReal: false,
+  showDeterministic: true,
+  accountNames: [],
+  graphMetadata: {},
 };
 
 const monteCarloSlice = createSlice({
   name: 'monteCarlo',
   initialState,
   reducers: {
-    setMonteCarloData: (state, action: PayloadAction<GraphData>) => {
-      state.datasets = (action.payload.datasets as unknown as Dataset[]).map((dataset) => ({
+    setMonteCarloData: (state, action: PayloadAction<PercentileGraphData>) => {
+      state.datasets = action.payload.datasets.map((dataset) => ({
         ...dataset,
-        borderColor: dataset.label === 'Deterministic' ? '#00FA9A' : '#FAEBD7',
-        backgroundColor: `${dataset.label === 'Deterministic' ? '#00FA9A' : '#FAEBD7'}80`,
+        borderColor: dataset.isDeterministic ? '#00FA9A' : '#FAEBD7',
+        backgroundColor: `${dataset.isDeterministic ? '#00FA9A' : '#FAEBD7'}80`,
       }));
-      state.labels = action.payload.labels as unknown as string[];
+      state.labels = action.payload.labels;
       state.loaded = true;
       state.error = ''; // Clear error when data loads successfully
+      if (action.payload.accountNames) {
+        state.accountNames = action.payload.accountNames;
+      }
+      state.graphMetadata = {
+        totalSimulations: action.payload.totalSimulations,
+        seed: action.payload.seed,
+        fundedRatio: action.payload.fundedRatio,
+        failedSimulations: action.payload.failedSimulations,
+        medianFailureYear: action.payload.medianFailureYear,
+        worstYear: action.payload.worstYear,
+        finalYear: action.payload.finalYear,
+      };
     },
     setMonteCarloError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -97,6 +142,15 @@ const monteCarloSlice = createSlice({
     clearMonteCarloError: (state) => {
       state.error = '';
     },
+    setReportingAccount: (state, action: PayloadAction<string | null>) => {
+      state.reportingAccount = action.payload;
+    },
+    setShowReal: (state, action: PayloadAction<boolean>) => {
+      state.showReal = action.payload;
+    },
+    setShowDeterministic: (state, action: PayloadAction<boolean>) => {
+      state.showDeterministic = action.payload;
+    },
   },
 });
 
@@ -113,5 +167,8 @@ export const {
   updateSimulationStatus,
   removeSimulation,
   clearMonteCarloError,
+  setReportingAccount,
+  setShowReal,
+  setShowDeterministic,
 } = monteCarloSlice.actions;
 export default monteCarloSlice.reducer;

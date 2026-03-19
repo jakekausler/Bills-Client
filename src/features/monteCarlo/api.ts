@@ -35,8 +35,9 @@ export const getSimulationStatus = async (id: string): Promise<SimulationStatus>
   return await api.get(`/api/monte_carlo/simulations/${id}/status`);
 };
 
-export const getSimulationGraph = async (id: string) => {
-  return await api.get(`/api/monte_carlo/simulations/${id}/graph`);
+export const getSimulationGraph = async (id: string, accountId?: string | null) => {
+  const params = accountId ? `?account=${encodeURIComponent(accountId)}` : '';
+  return await api.get(`/api/monte_carlo/simulations/${id}/graph${params}`);
 };
 
 export const deleteSimulation = async (id: string): Promise<{ success: boolean }> => {

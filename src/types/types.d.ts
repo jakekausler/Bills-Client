@@ -167,6 +167,43 @@ export type Dataset = {
   activity: GraphActivity | GraphActivity[];
 };
 
+export type PercentileDataset = {
+  label: string;
+  data: number[];
+  percentile?: number;
+  isDeterministic?: boolean;
+  accountId?: string;
+  accountName?: string;
+  realValues?: number[];
+  borderColor?: string;
+  backgroundColor?: string;
+};
+
+export type PercentileGraphData = {
+  type: 'percentile';
+  labels: string[];
+  datasets: PercentileDataset[];
+  fundedRatio?: number;
+  failedSimulations?: number;
+  totalSimulations?: number;
+  medianFailureYear?: number | null;
+  worstYear?: { year: number; medianMinBalance: number; realMedianMinBalance: number };
+  finalYear?: {
+    median: number;
+    p5: number;
+    p25: number;
+    p75: number;
+    p95: number;
+    realMedian: number;
+    realP5: number;
+    realP25: number;
+    realP75: number;
+    realP95: number;
+  };
+  seed?: number;
+  accountNames?: Array<{ id: string; name: string }>;
+};
+
 export type GraphActivity = {
   amount: number;
   name: string;

@@ -21,3 +21,13 @@ export const selectSimulations = (state: RootState) => state.monteCarlo.simulati
 export const selectSelectedSimulation = (state: RootState) => state.monteCarlo.selectedSimulation;
 
 export const selectSimulationsLoaded = (state: RootState) => state.monteCarlo.simulationsLoaded;
+
+export const selectReportingAccount = (state: RootState) => state.monteCarlo.reportingAccount;
+
+export const selectShowReal = (state: RootState) => state.monteCarlo.showReal;
+
+export const selectShowDeterministic = (state: RootState) => state.monteCarlo.showDeterministic;
+
+export const selectAccountNames = (state: RootState) => state.monteCarlo.accountNames;
+
+export const selectGraphMetadata = (state: RootState) => state.monteCarlo.graphMetadata;
