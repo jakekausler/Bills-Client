@@ -49,10 +49,15 @@ export default function MonteCarlo() {
   const showDeterministic = useSelector(selectShowDeterministic);
   const loaded = useSelector(selectMonteCarloLoaded);
 
-  // Filter MC account names to exclude hidden accounts
+  // Filter MC account names to exclude accounts hidden *after* the simulation ran.
+  // If the accounts store hasn't loaded yet, show all MC account names unfiltered
+  // (the MC worker already excludes accounts that were hidden at simulation time).
   const filteredAccountNames = useMemo(() => {
+    if (visibleAccounts.length === 0) return accountNames;
     const visibleIds = new Set(visibleAccounts.map((a) => a.id));
-    return accountNames.filter((acct) => visibleIds.has(acct.id));
+    const filtered = accountNames.filter((acct) => visibleIds.has(acct.id));
+    // If filtering removed everything (IDs changed, etc.), fall back to unfiltered
+    return filtered.length > 0 ? filtered : accountNames;
   }, [accountNames, visibleAccounts]);
 
   const [totalSimulations, setTotalSimulations] = useState(100);
@@ -84,7 +89,7 @@ export default function MonteCarlo() {
   };
 
   return (
-    <Stack gap="lg" h="100%" style={{ display: 'flex', flexDirection: 'column' }}>
+    <Stack gap="lg" style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 80px)' }}>
       <VisuallyHidden component="h2">Monte Carlo Simulation</VisuallyHidden>
       {error && (
         <Alert color="red" title="Error">
@@ -181,6 +186,8 @@ export default function MonteCarlo() {
             <div
               className="mc-view-grid"
               style={{
+                flex: 1,
+                minHeight: 400,
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
                 gap: '16px',
