@@ -344,6 +344,10 @@ export default function AccountList({ close }: AccountListProps) {
     );
   };
 
+  const handleUpdateAccount = useCallback((updatedAccount: Account) => {
+    setEditingAccountsList((prev) => prev.map((a) => (a.id === updatedAccount.id ? updatedAccount : a)));
+  }, []);
+
   return (
     <>
       <Stack h="100%" pos="relative" gap={8} aria-busy={showLoading}>
@@ -541,9 +545,7 @@ export default function AccountList({ close }: AccountListProps) {
                         key={account.id}
                         account={account}
                         allAccounts={editingAccountsList}
-                        onUpdateAccount={useCallback((updatedAccount: Account) => {
-                          setEditingAccountsList((prev) => prev.map((a) => (a.id === updatedAccount.id ? updatedAccount : a)));
-                        }, [])}
+                        onUpdateAccount={handleUpdateAccount}
                       />
                     ))}
                 </Table.Tbody>
