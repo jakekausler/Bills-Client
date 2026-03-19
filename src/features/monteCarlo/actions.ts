@@ -2,6 +2,8 @@ import { AppThunk } from '../../store';
 import {
   setMonteCarloData,
   setMonteCarloError,
+  setMonteCarloLoaded,
+  clearMonteCarloError,
   setSimulations,
   updateSimulationStatus,
   setSelectedSimulation,
@@ -52,6 +54,8 @@ export const updateSimulationProgress =
 export const loadSimulationGraph =
   (id: string, accountId?: string | null): AppThunk =>
   async (dispatch) => {
+    dispatch(setMonteCarloLoaded(false));
+    dispatch(clearMonteCarloError());
     try {
       const graphData = await getSimulationGraph(id, accountId);
       dispatch(setMonteCarloData(graphData));
