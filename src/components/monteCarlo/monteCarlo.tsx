@@ -29,6 +29,7 @@ import {
 } from '../../features/monteCarlo/actions';
 import { MonteCarloChart } from './monteCarloChart';
 import { ControlsBar } from './controlsBar';
+import { SummaryCards } from './summaryCards';
 import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { selectVisibleAccounts } from '../../features/accounts/select';
 
@@ -164,6 +165,8 @@ export default function MonteCarlo() {
               simulationId={selectedSimulation}
               accountNames={filteredAccountNames}
             />
+
+            <SummaryCards />
 
             <div style={{ flex: 1, minHeight: 0 }}>
               <MonteCarloChart
