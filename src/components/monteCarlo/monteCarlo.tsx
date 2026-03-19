@@ -24,13 +24,16 @@ import {
   selectReportingAccount,
   selectShowReal,
   selectShowDeterministic,
+  selectMonteCarloLoaded,
 } from '../../features/monteCarlo/select';
 import {
   startNewSimulation,
 } from '../../features/monteCarlo/actions';
-import FanChart from './fanChart';
 import { ControlsBar } from './controlsBar';
 import { SummaryCards } from './summaryCards';
+import { mcViews } from './viewRegistry';
+// Side-effect import: registers FanChart view into the registry
+import './fanChart';
 import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { selectVisibleAccounts } from '../../features/accounts/select';
 
@@ -44,6 +47,7 @@ export default function MonteCarlo() {
   const reportingAccount = useSelector(selectReportingAccount);
   const showReal = useSelector(selectShowReal);
   const showDeterministic = useSelector(selectShowDeterministic);
+  const loaded = useSelector(selectMonteCarloLoaded);
 
   // Filter MC account names to exclude hidden accounts
   const filteredAccountNames = useMemo(() => {
@@ -156,31 +160,49 @@ export default function MonteCarlo() {
       </Card>
 
       {selectedSimulation && datasets.length > 0 && (
-        <Card withBorder style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <Stack style={{ height: '100%' }}>
-            <Group>
-              <Text size="lg" fw={700}>Simulation Results</Text>
-              <Badge color="blue">{selectedSimulation.substring(0, 8)}...</Badge>
-            </Group>
+        <>
+          <Card withBorder>
+            <Stack>
+              <Group>
+                <Text size="lg" fw={700}>Simulation Results</Text>
+                <Badge color="blue">{selectedSimulation.substring(0, 8)}...</Badge>
+              </Group>
 
-            <ControlsBar
-              simulationId={selectedSimulation}
-              accountNames={filteredAccountNames}
-            />
-
-            <SummaryCards />
-
-            <div style={{ flex: 1, minHeight: 0 }}>
-              <FanChart
+              <ControlsBar
                 simulationId={selectedSimulation}
-                reportingAccount={reportingAccount}
-                showReal={showReal}
-                showDeterministic={showDeterministic}
-                graphData={null}
+                accountNames={filteredAccountNames}
               />
+
+              <SummaryCards />
+            </Stack>
+          </Card>
+
+          {loaded && (
+            <div
+              className="mc-view-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '16px',
+              }}
+            >
+              {mcViews.map((view) => (
+                <div
+                  key={view.id}
+                  style={{ gridColumn: `span ${view.columns}`, minHeight: 0 }}
+                >
+                  <view.component
+                    simulationId={selectedSimulation}
+                    reportingAccount={reportingAccount}
+                    showReal={showReal}
+                    showDeterministic={showDeterministic}
+                    graphData={null}
+                  />
+                </div>
+              ))}
             </div>
-          </Stack>
-        </Card>
+          )}
+        </>
       )}
     </Stack>
   );
