@@ -153,13 +153,14 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
   return (
     <Stack pos="relative" h="100%" aria-busy={showLoading}>
       <div
-        style={{ flex: 1, minHeight: 0 }}
+        style={{ position: 'relative', flex: 1, minHeight: 0 }}
         role="img"
         aria-label="Fan chart showing Monte Carlo percentile bands over time."
       >
         <VisuallyHidden>
           Fan chart with percentile bands. Data values are shown in tooltips on hover.
         </VisuallyHidden>
+        <div style={{ position: 'absolute', inset: 0 }}>
         <Line
           aria-label="Monte Carlo fan chart"
           data={{ datasets: chartDatasets, labels }}
@@ -251,6 +252,7 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
             },
           }}
         />
+        </div>
       </div>
     </Stack>
   );

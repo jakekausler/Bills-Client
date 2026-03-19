@@ -190,13 +190,14 @@ export default function MonteCarlo() {
                 minHeight: 400,
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateRows: '1fr',
                 gap: '16px',
               }}
             >
               {mcViews.map((view) => (
                 <div
                   key={view.id}
-                  style={{ gridColumn: `span ${view.columns}`, minHeight: 0 }}
+                  style={{ gridColumn: `span ${view.columns}`, minHeight: 0, overflow: 'hidden' }}
                 >
                   <view.component
                     simulationId={selectedSimulation}
