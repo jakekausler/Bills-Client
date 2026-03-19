@@ -11,6 +11,7 @@ import {
 import { MCViewProps, registerView } from './viewRegistry';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { PercentileDataset } from '../../types/types';
+import { formatDollar } from './utils';
 
 Chart.register(...registerables);
 
@@ -21,26 +22,6 @@ const BANDS: [number, number, number][] = [
   [25, 75, 0.25],
   [40, 60, 0.40],
 ];
-
-function formatDollar(value: number): string {
-  const abs = Math.abs(value);
-  let formatted: string;
-  if (abs >= 1e9) {
-    formatted = `$${(value / 1e9).toFixed(1)}B`;
-  } else if (abs >= 1e6) {
-    formatted = `$${(value / 1e6).toFixed(1)}M`;
-  } else if (abs >= 1e3) {
-    formatted = `$${(value / 1e3).toFixed(0)}K`;
-  } else {
-    formatted = `$${value.toLocaleString('en-US')}`;
-  }
-  if (value < 0) {
-    formatted = `-${formatted.replace('$', '$')}`;
-    // Fix double negative
-    formatted = formatted.replace('$-', '-$');
-  }
-  return formatted;
-}
 
 function formatDollarFull(value: number): string {
   return `$${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
