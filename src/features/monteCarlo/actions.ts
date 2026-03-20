@@ -8,8 +8,23 @@ import {
   updateSimulationStatus,
   setSelectedSimulation,
   removeSimulation,
+  setFailureHistogram,
+  setFailureHistogramLoaded,
+  setFailureHistogramError,
+  setWorstCases,
+  setWorstCasesLoaded,
+  setWorstCasesError,
 } from './slice';
-import { createSimulation, getAllSimulations, getSimulationStatus, getSimulationGraph, deleteSimulation, SimulationRequest } from './api';
+import {
+  createSimulation,
+  getAllSimulations,
+  getSimulationStatus,
+  getSimulationGraph,
+  deleteSimulation,
+  getFailureHistogram,
+  getWorstCases,
+  SimulationRequest,
+} from './api';
 
 export const startNewSimulation =
   (simulationData: SimulationRequest): AppThunk =>
@@ -75,3 +90,35 @@ export const deleteMonteCarloSimulation = (id: string): AppThunk => async (dispa
     dispatch(setMonteCarloError(error instanceof Error ? error.message : 'Failed to delete simulation'));
   }
 };
+
+export const loadFailureHistogram =
+  (simulationId: string): AppThunk =>
+  async (dispatch) => {
+    dispatch(setFailureHistogramLoaded(false));
+    dispatch(setFailureHistogramError(null));
+    try {
+      const data = await getFailureHistogram(simulationId);
+      dispatch(setFailureHistogram(data));
+      dispatch(setFailureHistogramLoaded(true));
+    } catch (error) {
+      console.error(`Failed to load failure histogram for ${simulationId}`, error);
+      dispatch(setFailureHistogramError('Failed to load failure histogram'));
+      dispatch(setFailureHistogramLoaded(true));
+    }
+  };
+
+export const loadWorstCases =
+  (simulationId: string, percentile?: number, accountId?: string): AppThunk =>
+  async (dispatch) => {
+    dispatch(setWorstCasesLoaded(false));
+    dispatch(setWorstCasesError(null));
+    try {
+      const data = await getWorstCases(simulationId, percentile, accountId);
+      dispatch(setWorstCases(data));
+      dispatch(setWorstCasesLoaded(true));
+    } catch (error) {
+      console.error(`Failed to load worst cases for ${simulationId}`, error);
+      dispatch(setWorstCasesError('Failed to load worst cases'));
+      dispatch(setWorstCasesLoaded(true));
+    }
+  };

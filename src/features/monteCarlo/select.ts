@@ -31,3 +31,15 @@ export const selectShowDeterministic = (state: RootState) => state.monteCarlo.sh
 export const selectAccountNames = (state: RootState) => state.monteCarlo.accountNames;
 
 export const selectGraphMetadata = (state: RootState) => state.monteCarlo.graphMetadata;
+
+export const selectFailureHistogram = (state: RootState) => state.monteCarlo.failureHistogram;
+
+export const selectWorstCases = (state: RootState) => state.monteCarlo.worstCases;
+
+export const selectFailureHistogramLoaded = (state: RootState) => state.monteCarlo.failureHistogramLoaded;
+
+export const selectWorstCasesLoaded = (state: RootState) => state.monteCarlo.worstCasesLoaded;
+
+export const selectFailureHistogramError = (state: RootState) => state.monteCarlo.failureHistogramError;
+
+export const selectWorstCasesError = (state: RootState) => state.monteCarlo.worstCasesError;

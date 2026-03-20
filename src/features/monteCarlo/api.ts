@@ -43,3 +43,15 @@ export const getSimulationGraph = async (id: string, accountId?: string | null) 
 export const deleteSimulation = async (id: string): Promise<{ success: boolean }> => {
   return api.delete(`/api/monte_carlo/simulations/${id}`);
 };
+
+export const getFailureHistogram = async (simulationId: string) => {
+  return await api.get(`/api/monte_carlo/simulations/${simulationId}/failure-histogram`);
+};
+
+export const getWorstCases = async (simulationId: string, percentile?: number, accountId?: string) => {
+  const params = new URLSearchParams();
+  if (percentile !== undefined) params.set('percentile', String(percentile));
+  if (accountId) params.set('account', accountId);
+  const qs = params.toString();
+  return await api.get(`/api/monte_carlo/simulations/${simulationId}/worst-cases${qs ? `?${qs}` : ''}`);
+};

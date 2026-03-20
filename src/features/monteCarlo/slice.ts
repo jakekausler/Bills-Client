@@ -50,6 +50,16 @@ interface MonteCarloState {
       realP95: number;
     };
   };
+
+  // Failure histogram + worst cases
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  failureHistogram: any | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  worstCases: any | null;
+  failureHistogramLoaded: boolean;
+  worstCasesLoaded: boolean;
+  failureHistogramError: string | null;
+  worstCasesError: string | null;
 }
 
 const initialState: MonteCarloState = {
@@ -69,6 +79,12 @@ const initialState: MonteCarloState = {
   showDeterministic: true,
   accountNames: [],
   graphMetadata: {},
+  failureHistogram: null,
+  worstCases: null,
+  failureHistogramLoaded: false,
+  worstCasesLoaded: false,
+  failureHistogramError: null,
+  worstCasesError: null,
 };
 
 const monteCarloSlice = createSlice({
@@ -151,6 +167,26 @@ const monteCarloSlice = createSlice({
     setShowDeterministic: (state, action: PayloadAction<boolean>) => {
       state.showDeterministic = action.payload;
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFailureHistogram: (state, action: PayloadAction<any | null>) => {
+      state.failureHistogram = action.payload;
+    },
+    setFailureHistogramLoaded: (state, action: PayloadAction<boolean>) => {
+      state.failureHistogramLoaded = action.payload;
+    },
+    setFailureHistogramError: (state, action: PayloadAction<string | null>) => {
+      state.failureHistogramError = action.payload;
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setWorstCases: (state, action: PayloadAction<any | null>) => {
+      state.worstCases = action.payload;
+    },
+    setWorstCasesLoaded: (state, action: PayloadAction<boolean>) => {
+      state.worstCasesLoaded = action.payload;
+    },
+    setWorstCasesError: (state, action: PayloadAction<string | null>) => {
+      state.worstCasesError = action.payload;
+    },
   },
 });
 
@@ -170,5 +206,11 @@ export const {
   setReportingAccount,
   setShowReal,
   setShowDeterministic,
+  setFailureHistogram,
+  setFailureHistogramLoaded,
+  setFailureHistogramError,
+  setWorstCases,
+  setWorstCasesLoaded,
+  setWorstCasesError,
 } = monteCarloSlice.actions;
 export default monteCarloSlice.reducer;
