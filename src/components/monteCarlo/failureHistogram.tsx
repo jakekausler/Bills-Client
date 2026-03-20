@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Alert, Skeleton, Stack, Text } from '@mantine/core';
 import { Bar } from 'react-chartjs-2';
@@ -16,6 +16,11 @@ import { IconCheck } from '@tabler/icons-react';
 
 Chart.register(...registerables);
 
+const FAILURE_COLOR = '#ff6b6b';
+const AXIS_COLOR = '#aaa';
+
+// reportingAccount, showReal, showDeterministic, graphData are not applicable to this view
+// (failure is a portfolio-level event, not per-account, and uses counts not dollars)
 function FailureHistogram({ simulationId }: MCViewProps) {
   const dispatch = useDispatch<AppDispatch>();
   const data = useSelector(selectFailureHistogram);
@@ -48,45 +53,45 @@ function FailureHistogram({ simulationId }: MCViewProps) {
   const { histogram, summary } = data;
   const totalSimulations = summary.totalSimulations;
 
-  const chartData = {
+  const chartData = useMemo(() => ({
     labels: histogram.map((h) => h.year),
     datasets: [
       {
         label: 'Failures',
         data: histogram.map((h) => h.count),
-        backgroundColor: '#ff6b6b',
-        borderColor: '#ff6b6b',
+        backgroundColor: FAILURE_COLOR,
+        borderColor: FAILURE_COLOR,
         borderWidth: 1,
       },
     ],
-  };
+  }), [histogram]);
 
-  const chartOptions = {
-    maintainAspectRatio: false as const,
-    responsive: true as const,
+  const chartOptions = useMemo(() => ({
+    maintainAspectRatio: false,
+    responsive: true,
     scales: {
       x: {
         grid: { display: false },
         title: {
           display: true,
           text: 'Year',
-          color: '#aaa',
+          color: AXIS_COLOR,
         },
         ticks: {
-          color: '#aaa',
+          color: AXIS_COLOR,
         },
       },
       y: {
         beginAtZero: true,
         ticks: {
           stepSize: 1,
-          color: '#aaa',
+          color: AXIS_COLOR,
           callback: (value: string | number) => Math.floor(Number(value)),
         },
         title: {
           display: true,
           text: 'Failures',
-          color: '#aaa',
+          color: AXIS_COLOR,
         },
       },
     },
@@ -97,20 +102,23 @@ function FailureHistogram({ simulationId }: MCViewProps) {
         callbacks: {
           label(item: TooltipItem<'bar'>) {
             const count = item.raw as number;
-            const pct = ((count / totalSimulations) * 100).toFixed(1);
+            const pct = totalSimulations > 0 ? ((count / totalSimulations) * 100).toFixed(1) : '0.0';
             return `Year ${item.label}: ${count} failures (${pct}%)`;
           },
         },
       },
     },
-  };
+  }), [totalSimulations]);
 
   return (
-    <Stack h="100%" gap="xs">
-      <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+    <Stack h="100%" gap="xs" aria-busy={showLoading}>
+      <div
+        style={{ position: 'relative', flex: 1, minHeight: 0 }}
+        role="img"
+        aria-label="Failure year distribution histogram"
+      >
         <div style={{ position: 'absolute', inset: 0 }}>
           <Bar
-            aria-label="Failure year distribution histogram"
             data={chartData}
             options={chartOptions}
           />
@@ -120,8 +128,8 @@ function FailureHistogram({ simulationId }: MCViewProps) {
         {summary.failedSimulations > 0 ? (
           <Text size="sm" c="dimmed" ta="center">
             Median failure: {summary.medianFailureYear}, Earliest:{' '}
-            {summary.earliestFailureYear}, {summary.failedSimulations} of{' '}
-            {summary.totalSimulations} failed
+            {summary.earliestFailureYear}, Latest: {summary.latestFailureYear},{' '}
+            {summary.failedSimulations} of {summary.totalSimulations} failed
           </Text>
         ) : (
           <Text size="sm" c="green" ta="center" fw={500}>
