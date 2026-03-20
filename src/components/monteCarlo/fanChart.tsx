@@ -11,7 +11,7 @@ import {
 import { MCViewProps, registerView } from './viewRegistry';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { PercentileDataset } from '../../types/types';
-import { formatDollar, formatDollarFull } from './utils';
+import { FanDataset, formatDollar, formatDollarFull } from './utils';
 
 Chart.register(...registerables);
 
@@ -78,8 +78,7 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
 
   // Build Chart.js datasets: bands (lower first, then upper with fill to lower) + median + deterministic
   const chartDatasets = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result: any[] = [];
+    const result: FanDataset[] = [];
     const { map, det } = byPercentile;
 
     // For each band, we add the lower line then the upper line.
@@ -228,8 +227,7 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
                     let medianVal: number | null = null;
 
                     for (const item of items) {
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      const ds = item.dataset as any;
+                      const ds = item.dataset as FanDataset;
                       const v = ds.data[idx];
                       if (ds.isDeterministic) {
                         detVal = v;
@@ -240,8 +238,9 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
                       }
                     }
 
-                    // Band ranges (outer to inner)
+                    // Band ranges (outer to inner), including 0-100
                     const bandPairs: [number, number][] = [
+                      [0, 100],
                       [5, 95],
                       [25, 75],
                       [40, 60],
