@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Skeleton, Stack, VisuallyHidden } from '@mantine/core';
+import { Skeleton, Stack, Text, VisuallyHidden } from '@mantine/core';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables, TooltipItem } from 'chart.js';
 import {
@@ -53,6 +53,28 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
     }
     return { map, det };
   }, [allDatasets]);
+
+  const summaryText = useMemo(() => {
+    const { map, det } = byPercentile;
+    const p5 = map.get(5);
+    const p50 = map.get(50);
+    const p95 = map.get(95);
+    const getValue = (ds: PercentileDataset) => {
+      const arr = showReal && ds.realValues ? ds.realValues : ds.data;
+      return arr[arr.length - 1];
+    };
+    const parts: string[] = [];
+    if (p5 && p95) {
+      parts.push(`Final year spread: ${formatDollarFull(getValue(p5))} to ${formatDollarFull(getValue(p95))}`);
+    }
+    if (p50) {
+      parts[0] = parts[0] ? `${parts[0]} (median: ${formatDollarFull(getValue(p50))})` : `Median: ${formatDollarFull(getValue(p50))}`;
+    }
+    if (showDeterministic && det) {
+      parts.push(`Deterministic: ${formatDollarFull(getValue(det))}`);
+    }
+    return parts.join('. ');
+  }, [byPercentile, showReal, showDeterministic]);
 
   // Build Chart.js datasets: bands (lower first, then upper with fill to lower) + median + deterministic
   const chartDatasets = useMemo(() => {
@@ -250,6 +272,11 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
         />
         </div>
       </div>
+      {summaryText && (
+        <Text size="xs" c="dimmed" ta="center">
+          {summaryText}
+        </Text>
+      )}
     </Stack>
   );
 }

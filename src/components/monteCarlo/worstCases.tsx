@@ -54,6 +54,18 @@ function WorstCases({ simulationId, reportingAccount, showReal, showDeterministi
     }
   }, [dispatch, simulationId, reportingAccount]);
 
+  const summaryText = useMemo(() => {
+    if (!data || data.simulations.length === 0) return '';
+    const n = data.simulations.length;
+    const finalBalances = data.simulations.map((sim) => {
+      const arr = showReal ? sim.realData : sim.data;
+      return arr[arr.length - 1];
+    });
+    const min = Math.min(...finalBalances);
+    const max = Math.max(...finalBalances);
+    return `${n} worst simulations shown (bottom 5%). Final balance spread: ${formatDollarFull(min)} to ${formatDollarFull(max)}`;
+  }, [data, showReal]);
+
   const chartData = useMemo(() => {
     if (!data) return { labels: [], datasets: [] };
 
@@ -175,6 +187,9 @@ function WorstCases({ simulationId, reportingAccount, showReal, showDeterministi
           />
         </div>
       </div>
+      <Text size="xs" c="dimmed" ta="center">
+        {summaryText}
+      </Text>
     </Stack>
   );
 }
