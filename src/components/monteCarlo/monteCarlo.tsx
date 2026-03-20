@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  ActionIcon,
   Button,
   Card,
   Group,
@@ -9,8 +10,7 @@ import {
   Stack,
   Badge,
   Alert,
-  Collapse,
-  UnstyledButton,
+  Tabs,
   VisuallyHidden,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
@@ -29,6 +29,7 @@ import {
 import {
   startNewSimulation,
 } from '../../features/monteCarlo/actions';
+import { setSelectedSimulation } from '../../features/monteCarlo/slice';
 import { ControlsBar } from './controlsBar';
 import { SummaryCards } from './summaryCards';
 import { mcViews } from './viewRegistry';
@@ -36,7 +37,7 @@ import { mcViews } from './viewRegistry';
 import './fanChart';
 import './failureHistogram';
 import './worstCases';
-import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { IconPlayerPlay, IconPlus } from '@tabler/icons-react';
 import { selectVisibleAccounts } from '../../features/accounts/select';
 
 export default function MonteCarlo() {
@@ -68,7 +69,6 @@ export default function MonteCarlo() {
   const [startDate, setStartDate] = useState<Date | null>(new Date(currentYear, 0, 1));
   const [endDate, setEndDate] = useState<Date | null>(new Date(currentYear + 10, 11, 31));
   const [isCreating, setIsCreating] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleCreateSimulation = async () => {
     if (!startDate || !endDate) {
@@ -99,72 +99,65 @@ export default function MonteCarlo() {
         </Alert>
       )}
 
-      <Card withBorder>
-        <Stack>
-          <UnstyledButton onClick={() => setIsCollapsed(!isCollapsed)} style={{ width: '100%' }} aria-expanded={!isCollapsed} aria-controls="monte-carlo-form">
-            <Group justify="space-between" wrap="nowrap">
-              <Text size="lg" fw={700}>Create New Simulation</Text>
-              {isCollapsed ? <IconChevronDown size={20} /> : <IconChevronUp size={20} />}
+      {!selectedSimulation && (
+        <Card withBorder>
+          <Stack>
+            <Text size="lg" fw={700}>Create New Simulation</Text>
+
+            <Group>
+              <DateInput
+                label="Start Date"
+                value={startDate}
+                onChange={setStartDate}
+                placeholder="Select start date"
+                size="sm"
+                style={{ flex: 1 }}
+              />
+              <DateInput
+                label="End Date"
+                value={endDate}
+                onChange={setEndDate}
+                placeholder="Select end date"
+                size="sm"
+                style={{ flex: 1 }}
+              />
             </Group>
-          </UnstyledButton>
 
-          <Collapse in={!isCollapsed} id="monte-carlo-form">
-            <Stack>
-              <Group>
-                <DateInput
-                  label="Start Date"
-                  value={startDate}
-                  onChange={setStartDate}
-                  placeholder="Select start date"
-                  size="sm"
-                  style={{ flex: 1 }}
-                />
-                <DateInput
-                  label="End Date"
-                  value={endDate}
-                  onChange={setEndDate}
-                  placeholder="Select end date"
-                  size="sm"
-                  style={{ flex: 1 }}
-                />
-              </Group>
+            <Group>
+              <NumberInput
+                label="Total Simulations"
+                value={totalSimulations}
+                onChange={(val) => setTotalSimulations(val as number)}
+                min={1}
+                max={10000}
+                step={10}
+                size="sm"
+                style={{ flex: 1 }}
+              />
+              <NumberInput
+                label="Batch Size"
+                value={batchSize}
+                onChange={(val) => setBatchSize(val as number)}
+                min={1}
+                max={20}
+                size="sm"
+                style={{ flex: 1 }}
+              />
+            </Group>
 
-              <Group>
-                <NumberInput
-                  label="Total Simulations"
-                  value={totalSimulations}
-                  onChange={(val) => setTotalSimulations(val as number)}
-                  min={1}
-                  max={10000}
-                  step={10}
-                  size="sm"
-                  style={{ flex: 1 }}
-                />
-                <NumberInput
-                  label="Batch Size"
-                  value={batchSize}
-                  onChange={(val) => setBatchSize(val as number)}
-                  min={1}
-                  max={20}
-                  size="sm"
-                  style={{ flex: 1 }}
-                />
-              </Group>
-
-              <Group>
-                <Button
-                  leftSection={<IconPlayerPlay size={16} />}
-                  onClick={handleCreateSimulation}
-                  loading={isCreating}
-                  size="sm"
-                >
-                  Start Simulation
-                </Button>
-              </Group>
-            </Stack>
-          </Collapse>
-        </Stack>
-      </Card>
+            <Group>
+              <Button
+                leftSection={<IconPlayerPlay size={16} />}
+                onClick={handleCreateSimulation}
+                loading={isCreating}
+                size="sm"
+              >
+                Start Simulation
+              </Button>
+            </Group>
+          </Stack>
+        </Card>
+      )}
 
       {selectedSimulation && datasets.length > 0 && (
         <>
@@ -173,6 +166,15 @@ export default function MonteCarlo() {
               <Group>
                 <Text size="lg" fw={700}>Simulation Results</Text>
                 <Badge color="blue">{selectedSimulation.substring(0, 8)}...</Badge>
+                <ActionIcon
+                  variant="light"
+                  color="blue"
+                  size="sm"
+                  title="New Simulation"
+                  onClick={() => dispatch(setSelectedSimulation(null))}
+                >
+                  <IconPlus size={16} />
+                </ActionIcon>
               </Group>
 
               <ControlsBar
@@ -184,23 +186,15 @@ export default function MonteCarlo() {
             </Stack>
           </Card>
 
-          {loaded && (
-            <div
-              className="mc-view-grid"
-              style={{
-                flex: 1,
-                minHeight: 400,
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gridAutoRows: 'minmax(300px, 1fr)',
-                gap: '16px',
-              }}
-            >
+          {loaded && mcViews.length > 0 && (
+            <Tabs defaultValue={mcViews[0].id} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 400 }}>
+              <Tabs.List>
+                {mcViews.map((view) => (
+                  <Tabs.Tab key={view.id} value={view.id}>{view.title}</Tabs.Tab>
+                ))}
+              </Tabs.List>
               {mcViews.map((view) => (
-                <div
-                  key={view.id}
-                  style={{ gridColumn: `span ${view.columns}`, minHeight: 0, overflow: 'hidden' }}
-                >
+                <Tabs.Panel key={view.id} value={view.id} style={{ flex: 1 }}>
                   <view.component
                     simulationId={selectedSimulation}
                     reportingAccount={reportingAccount}
@@ -208,9 +202,9 @@ export default function MonteCarlo() {
                     showDeterministic={showDeterministic}
                     graphData={null}
                   />
-                </div>
+                </Tabs.Panel>
               ))}
-            </div>
+            </Tabs>
           )}
         </>
       )}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Group, Paper, Stack, Text } from '@mantine/core';
+import { Group, Paper, Stack, Text, Tooltip } from '@mantine/core';
 import {
   selectGraphMetadata,
   selectShowReal,
@@ -50,77 +50,72 @@ export function SummaryCards() {
     : undefined;
 
   return (
-    <Group gap="md" wrap="wrap">
+    <Group gap="xs" wrap="wrap">
       {/* Card 1: Funded Ratio */}
       {fundedRatio != null && (
-        <Paper withBorder p="md" radius="md" style={{ flex: '1 1 180px', minWidth: 180 }}>
-          <Stack align="center" gap={4}>
-            <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
-              Funded Ratio
-            </Text>
-            <Text
-              size="xl"
-              fw={700}
-              style={{ color: fundedRatioColor(fundedRatio) }}
-            >
-              {fundedRatio.toFixed(0)}%
-            </Text>
-            <Text size="xs" c="dimmed">
-              {failedSimulations ?? 0} of {totalSimulations ?? 0} failed
-            </Text>
-          </Stack>
-        </Paper>
+        <Tooltip label={`${failedSimulations ?? 0} of ${totalSimulations ?? 0} failed`}>
+          <Paper withBorder p="xs" radius="md" style={{ flex: '1 1 120px', minWidth: 120 }}>
+            <Stack align="center" gap={2}>
+              <Text style={{ fontSize: 9 }} c="dimmed" tt="uppercase" fw={600}>
+                Funded Ratio
+              </Text>
+              <Text
+                style={{ fontSize: 20, color: fundedRatioColor(fundedRatio) }}
+                fw={700}
+              >
+                {fundedRatio.toFixed(0)}%
+              </Text>
+            </Stack>
+          </Paper>
+        </Tooltip>
       )}
 
       {/* Card 2: Median Final */}
       {median != null && (
-        <Paper withBorder p="md" radius="md" style={{ flex: '1 1 180px', minWidth: 180 }}>
-          <Stack align="center" gap={4}>
-            <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
-              Median Final
-            </Text>
-            <Text size="xl" fw={700}>
-              {formatDollar(median)}
-            </Text>
-            <Text size="xs" c="dimmed">
-              50th percentile, {endYear}
-            </Text>
-          </Stack>
-        </Paper>
+        <Tooltip label={`50th percentile, ${endYear}`}>
+          <Paper withBorder p="xs" radius="md" style={{ flex: '1 1 120px', minWidth: 120 }}>
+            <Stack align="center" gap={2}>
+              <Text style={{ fontSize: 9 }} c="dimmed" tt="uppercase" fw={600}>
+                Median Final
+              </Text>
+              <Text style={{ fontSize: 20 }} fw={700}>
+                {formatDollar(median)}
+              </Text>
+            </Stack>
+          </Paper>
+        </Tooltip>
       )}
 
       {/* Card 3: 5th Percentile Final */}
       {p5 != null && (
-        <Paper withBorder p="md" radius="md" style={{ flex: '1 1 180px', minWidth: 180 }}>
-          <Stack align="center" gap={4}>
-            <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
-              5th Percentile
-            </Text>
-            <Text size="xl" fw={700}>
-              {formatDollar(p5)}
-            </Text>
-            <Text size="xs" c="dimmed">
-              Worst-case final, {endYear}
-            </Text>
-          </Stack>
-        </Paper>
+        <Tooltip label={`Worst-case final, ${endYear}`}>
+          <Paper withBorder p="xs" radius="md" style={{ flex: '1 1 120px', minWidth: 120 }}>
+            <Stack align="center" gap={2}>
+              <Text style={{ fontSize: 9 }} c="dimmed" tt="uppercase" fw={600}>
+                5th Percentile
+              </Text>
+              <Text style={{ fontSize: 20 }} fw={700}>
+                {formatDollar(p5)}
+              </Text>
+            </Stack>
+          </Paper>
+        </Tooltip>
       )}
 
       {/* Card 4: Worst Year */}
       {worstBalance != null && worstYear && (
-        <Paper withBorder p="md" radius="md" style={{ flex: '1 1 180px', minWidth: 180 }}>
-          <Stack align="center" gap={4}>
-            <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
-              Worst Year
-            </Text>
-            <Text size="xl" fw={700}>
-              {formatDollar(worstBalance)}
-            </Text>
-            <Text size="xs" c="dimmed">
-              Median min balance, {worstYear.year}
-            </Text>
-          </Stack>
-        </Paper>
+        <Tooltip label={`Median min balance, ${worstYear.year}`}>
+          <Paper withBorder p="xs" radius="md" style={{ flex: '1 1 120px', minWidth: 120 }}>
+            <Stack align="center" gap={2}>
+              <Text style={{ fontSize: 9 }} c="dimmed" tt="uppercase" fw={600}>
+                Worst Year
+              </Text>
+              <Text style={{ fontSize: 20 }} fw={700}>
+                {formatDollar(worstBalance)}
+              </Text>
+            </Stack>
+          </Paper>
+        </Tooltip>
       )}
     </Group>
   );

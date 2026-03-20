@@ -1,9 +1,0 @@
-/* Monte Carlo view grid: responsive layout */
-@media (max-width: 1024px) {
-  .mc-view-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .mc-view-grid > * {
-    grid-column: span 1 !important;
-  }
-}
