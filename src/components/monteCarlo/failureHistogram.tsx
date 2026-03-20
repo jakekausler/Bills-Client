@@ -34,31 +34,16 @@ function FailureHistogram({ simulationId }: MCViewProps) {
     }
   }, [dispatch, simulationId]);
 
-  if (showLoading) {
-    return <Skeleton height="100%" width="100%" animate />;
-  }
-
-  if (error) {
-    return (
-      <Alert color="red" title="Error">
-        {error}
-      </Alert>
-    );
-  }
-
-  if (!data) {
-    return null;
-  }
-
-  const { histogram, summary } = data;
-  const totalSimulations = summary.totalSimulations;
+  const histogram = data?.histogram;
+  const summary = data?.summary;
+  const totalSimulations = summary?.totalSimulations ?? 0;
 
   const chartData = useMemo(() => ({
-    labels: histogram.map((h) => h.year),
+    labels: (histogram ?? []).map((h) => h.year),
     datasets: [
       {
         label: 'Failures',
-        data: histogram.map((h) => h.count),
+        data: (histogram ?? []).map((h) => h.count),
         backgroundColor: FAILURE_COLOR,
         borderColor: FAILURE_COLOR,
         borderWidth: 1,
@@ -109,6 +94,22 @@ function FailureHistogram({ simulationId }: MCViewProps) {
       },
     },
   }), [totalSimulations]);
+
+  if (showLoading) {
+    return <Skeleton height="100%" width="100%" animate />;
+  }
+
+  if (error) {
+    return (
+      <Alert color="red" title="Error">
+        {error}
+      </Alert>
+    );
+  }
+
+  if (!data || !summary) {
+    return null;
+  }
 
   return (
     <Stack h="100%" gap="xs" aria-busy={showLoading}>
