@@ -383,3 +383,29 @@ export type ChartDataResponse = {
   cumulativeSpent: number;
   cumulativeThreshold: number;
 };
+
+export interface FailureHistogramData {
+  histogram: Array<{ year: string; count: number }>;
+  summary: {
+    totalSimulations: number;
+    failedSimulations: number;
+    medianFailureYear: number | null;
+    earliestFailureYear: number | null;
+    latestFailureYear: number | null;
+  };
+}
+
+export interface WorstCasesData {
+  labels: string[];
+  simulations: Array<{
+    simulationNumber: number;
+    finalBalance: number;
+    data: number[];
+    realData: number[];
+    failureYear: number | null;
+  }>;
+  deterministic: {
+    data: number[];
+    realData: number[];
+  };
+}

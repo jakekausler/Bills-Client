@@ -1,6 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { PercentileDataset, PercentileGraphData } from '../../types/types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { FailureHistogramData, PercentileDataset, PercentileGraphData, WorstCasesData } from '../../types/types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { SimulationStatus } from './api';
@@ -18,7 +17,6 @@ interface MonteCarloState {
   endDate: string;
   nSimulations: number;
 
-  // New simulation state
   simulations: SimulationStatus[];
   selectedSimulation: string | null;
   simulationsLoaded: boolean;
@@ -52,10 +50,8 @@ interface MonteCarloState {
   };
 
   // Failure histogram + worst cases
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  failureHistogram: any | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  worstCases: any | null;
+  failureHistogram: FailureHistogramData | null;
+  worstCases: WorstCasesData | null;
   failureHistogramLoaded: boolean;
   worstCasesLoaded: boolean;
   failureHistogramError: string | null;
@@ -167,8 +163,7 @@ const monteCarloSlice = createSlice({
     setShowDeterministic: (state, action: PayloadAction<boolean>) => {
       state.showDeterministic = action.payload;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setFailureHistogram: (state, action: PayloadAction<any | null>) => {
+    setFailureHistogram: (state, action: PayloadAction<FailureHistogramData | null>) => {
       state.failureHistogram = action.payload;
     },
     setFailureHistogramLoaded: (state, action: PayloadAction<boolean>) => {
@@ -177,8 +172,7 @@ const monteCarloSlice = createSlice({
     setFailureHistogramError: (state, action: PayloadAction<string | null>) => {
       state.failureHistogramError = action.payload;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setWorstCases: (state, action: PayloadAction<any | null>) => {
+    setWorstCases: (state, action: PayloadAction<WorstCasesData | null>) => {
       state.worstCases = action.payload;
     },
     setWorstCasesLoaded: (state, action: PayloadAction<boolean>) => {

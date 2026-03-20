@@ -56,9 +56,9 @@ export const updateSimulationProgress =
     try {
       const status = await getSimulationStatus(id);
       dispatch(updateSimulationStatus(status));
-    } catch (error: any) {
+    } catch (error: unknown) {
       // If 404, simulation was deleted — remove from local state
-      if (error?.message?.includes('404')) {
+      if (error instanceof Error && error.message.includes('404')) {
         dispatch(removeSimulation(id));
       } else {
         console.error(`Failed to update simulation ${id} progress`, error);
@@ -66,6 +66,7 @@ export const updateSimulationProgress =
     }
   };
 
+// TODO: add stale-request guard for rapid account switching
 export const loadSimulationGraph =
   (id: string, accountId?: string | null): AppThunk =>
   async (dispatch) => {
@@ -104,9 +105,11 @@ export const loadFailureHistogram =
       console.error(`Failed to load failure histogram for ${simulationId}`, error);
       dispatch(setFailureHistogramError('Failed to load failure histogram'));
       dispatch(setFailureHistogramLoaded(true));
+      throw error;
     }
   };
 
+// TODO: add stale-request guard for rapid account switching
 export const loadWorstCases =
   (simulationId: string, percentile?: number, accountId?: string): AppThunk =>
   async (dispatch) => {
@@ -120,5 +123,6 @@ export const loadWorstCases =
       console.error(`Failed to load worst cases for ${simulationId}`, error);
       dispatch(setWorstCasesError('Failed to load worst cases'));
       dispatch(setWorstCasesLoaded(true));
+      throw error;
     }
   };
