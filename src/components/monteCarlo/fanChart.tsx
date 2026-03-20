@@ -147,7 +147,7 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
   }
 
   return (
-    <Stack pos="relative" h="100%" aria-busy={showLoading}>
+    <Stack style={{ flex: 1, minHeight: 0 }} aria-busy={showLoading}>
       <div
         style={{ position: 'relative', flex: 1, minHeight: 0 }}
         role="img"
