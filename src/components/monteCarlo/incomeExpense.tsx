@@ -64,11 +64,32 @@ function FanChartPanel({
   color: string;
   ariaLabel: string;
 }) {
+  const fanRecord = data ? (showReal ? data[realFanKey] : data[fanKey]) : null;
+
+  // Build category options for the dropdown
+  const categoryOptions = useMemo(() => {
+    if (!fanRecord) return [];
+    return Object.keys(fanRecord).map((cat) => ({
+      value: cat,
+      label: cat,
+    }));
+  }, [fanRecord]);
+
+  const [selectedCategory, setSelectedCategory] = useState<string>('Total');
+
+  // Reset to Total when data changes (e.g., switching nominal/real)
+  useEffect(() => {
+    if (fanRecord && !fanRecord[selectedCategory]) {
+      setSelectedCategory('Total');
+    }
+  }, [fanRecord, selectedCategory]);
+
   const chartDatasets = useMemo(() => {
-    if (!data) return [];
-    const fan: FanData = showReal ? data[realFanKey] : data[fanKey];
+    if (!fanRecord) return [];
+    const fan: FanData = (fanRecord[selectedCategory] ?? fanRecord['Total']) as FanData;
+    if (!fan) return [];
     return buildFanDatasets(fan, color);
-  }, [data, showReal, fanKey, realFanKey, color]);
+  }, [fanRecord, selectedCategory, color]);
 
   const labels = data?.labels ?? EMPTY_LABELS;
 
@@ -78,15 +99,25 @@ function FanChartPanel({
   );
 
   return (
-    <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
-      <div style={{ position: 'absolute', inset: 0 }}>
-        <Line
-          aria-label={ariaLabel}
-          data={chartData}
-          options={FAN_CHART_OPTIONS}
-        />
+    <Stack style={{ flex: 1, minHeight: 0 }} gap="xs">
+      <Select
+        label="Category"
+        value={selectedCategory}
+        onChange={(val) => val && setSelectedCategory(val)}
+        data={categoryOptions}
+        size="xs"
+        style={{ maxWidth: 250 }}
+      />
+      <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+        <div style={{ position: 'absolute', inset: 0 }}>
+          <Line
+            aria-label={ariaLabel}
+            data={chartData}
+            options={FAN_CHART_OPTIONS}
+          />
+        </div>
       </div>
-    </div>
+    </Stack>
   );
 }
 

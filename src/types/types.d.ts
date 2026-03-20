@@ -413,8 +413,10 @@ export interface IncomeExpenseData {
     income: Record<string, number[]>;
     expenses: Record<string, number[]>;
   };
-  incomeFan: FanData;
-  expenseFan: FanData;
+  /** Keyed by income category (plus "Total"), each value is FanData */
+  incomeFan: Record<string, FanData>;
+  /** Keyed by expense category (plus "Total"), each value is FanData */
+  expenseFan: Record<string, FanData>;
   summary: {
     medianNetCashFlow: number[];
     p5NetCashFlow: number[];
@@ -425,8 +427,8 @@ export interface IncomeExpenseData {
     income: Record<string, number[]>;
     expenses: Record<string, number[]>;
   };
-  realIncomeFan: FanData;
-  realExpenseFan: FanData;
+  realIncomeFan: Record<string, FanData>;
+  realExpenseFan: Record<string, FanData>;
   realSummary: {
     medianNetCashFlow: number[];
     p5NetCashFlow: number[];
