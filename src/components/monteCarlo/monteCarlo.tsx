@@ -32,8 +32,9 @@ import {
 import { ControlsBar } from './controlsBar';
 import { SummaryCards } from './summaryCards';
 import { mcViews } from './viewRegistry';
-// Side-effect import: registers FanChart view into the registry
+// Side-effect imports: register views into the registry
 import './fanChart';
+import './failureHistogram';
 import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { selectVisibleAccounts } from '../../features/accounts/select';
 
