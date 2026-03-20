@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  ActionIcon,
   Button,
   Card,
   Group,
@@ -29,7 +28,6 @@ import {
 import {
   startNewSimulation,
 } from '../../features/monteCarlo/actions';
-import { setSelectedSimulation } from '../../features/monteCarlo/slice';
 import { ControlsBar } from './controlsBar';
 import { SummaryCards } from './summaryCards';
 import { mcViews } from './viewRegistry';
@@ -37,7 +35,7 @@ import { mcViews } from './viewRegistry';
 import './fanChart';
 import './failureHistogram';
 import './worstCases';
-import { IconPlayerPlay, IconPlus } from '@tabler/icons-react';
+import { IconPlayerPlay } from '@tabler/icons-react';
 import { selectVisibleAccounts } from '../../features/accounts/select';
 
 export default function MonteCarlo() {
@@ -166,15 +164,6 @@ export default function MonteCarlo() {
               <Group>
                 <Text size="lg" fw={700}>Simulation Results</Text>
                 <Badge color="blue">{selectedSimulation.substring(0, 8)}...</Badge>
-                <ActionIcon
-                  variant="light"
-                  color="blue"
-                  size="sm"
-                  title="New Simulation"
-                  onClick={() => dispatch(setSelectedSimulation(null))}
-                >
-                  <IconPlus size={16} />
-                </ActionIcon>
               </Group>
 
               <ControlsBar
@@ -194,7 +183,7 @@ export default function MonteCarlo() {
                 ))}
               </Tabs.List>
               {mcViews.map((view) => (
-                <Tabs.Panel key={view.id} value={view.id} style={{ flex: 1 }}>
+                <Tabs.Panel key={view.id} value={view.id} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                   <view.component
                     simulationId={selectedSimulation}
                     reportingAccount={reportingAccount}

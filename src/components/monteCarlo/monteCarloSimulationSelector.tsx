@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  ActionIcon,
   Button,
   Text,
   Stack,
@@ -22,7 +23,8 @@ import {
   loadSimulationGraph,
   deleteMonteCarloSimulation,
 } from '../../features/monteCarlo/actions';
-import { IconChartLine, IconRefresh } from '@tabler/icons-react';
+import { IconPlus, IconRefresh } from '@tabler/icons-react';
+import { setSelectedSimulation } from '../../features/monteCarlo/slice';
 
 interface MonteCarloSimulationSelectorProps {
   close: () => void;
@@ -172,15 +174,26 @@ export default function MonteCarloSimulationSelector({ close }: MonteCarloSimula
     <Stack gap="md" style={{ position: 'relative' }}>
       <Group justify="space-between">
         <Text size="lg" fw={700}>Simulations</Text>
-        <Button
-          size="xs"
-          variant="subtle"
-          leftSection={<IconRefresh size={14} />}
-          onClick={handleRefresh}
-          loading={isRefreshing}
-        >
-          Refresh
-        </Button>
+        <Group gap="xs">
+          <ActionIcon
+            variant="light"
+            color="blue"
+            size="sm"
+            title="New Simulation"
+            onClick={() => dispatch(setSelectedSimulation(null))}
+          >
+            <IconPlus size={16} />
+          </ActionIcon>
+          <Button
+            size="xs"
+            variant="subtle"
+            leftSection={<IconRefresh size={14} />}
+            onClick={handleRefresh}
+            loading={isRefreshing}
+          >
+            Refresh
+          </Button>
+        </Group>
       </Group>
 
       <LoadingOverlay visible={!simulationsLoaded || isRefreshing} />

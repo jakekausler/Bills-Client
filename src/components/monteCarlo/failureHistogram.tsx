@@ -112,7 +112,7 @@ function FailureHistogram({ simulationId }: MCViewProps) {
   }
 
   return (
-    <Stack h="100%" gap="xs" aria-busy={showLoading}>
+    <Stack style={{ flex: 1, minHeight: 0 }} gap="xs" aria-busy={showLoading}>
       <div
         style={{ position: 'relative', flex: 1, minHeight: 0 }}
         role="img"

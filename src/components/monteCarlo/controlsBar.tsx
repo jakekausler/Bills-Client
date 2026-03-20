@@ -105,23 +105,9 @@ export function ControlsBar({ simulationId, accountNames }: ControlsBarProps) {
             {graphMetadata.totalSimulations} sims
           </Badge>
         )}
-        {graphMetadata.seed != null && (
-          <Badge variant="light" color="gray" size="lg">
-            Seed: {graphMetadata.seed}
-          </Badge>
-        )}
         {dateRange && (
           <Badge variant="light" color="teal" size="lg">
             {dateRange}
-          </Badge>
-        )}
-        {graphMetadata.fundedRatio != null && (
-          <Badge
-            variant="light"
-            color={graphMetadata.fundedRatio >= 90 ? 'green' : graphMetadata.fundedRatio >= 70 ? 'yellow' : 'red'}
-            size="lg"
-          >
-            {graphMetadata.fundedRatio.toFixed(1)}% funded
           </Badge>
         )}
       </Group>
