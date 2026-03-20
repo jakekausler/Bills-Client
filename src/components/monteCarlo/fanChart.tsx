@@ -63,17 +63,17 @@ function FanChart({ showReal, showDeterministic }: MCViewProps) {
       const arr = showReal && ds.realValues ? ds.realValues : ds.data;
       return arr[arr.length - 1];
     };
-    const parts: string[] = [];
+    const segments: string[] = [];
     if (p5 && p95) {
-      parts.push(`Final year spread: ${formatDollarFull(getValue(p5))} to ${formatDollarFull(getValue(p95))}`);
+      segments.push(`Final year (5th–95th percentile): ${formatDollarFull(getValue(p5))} to ${formatDollarFull(getValue(p95))}`);
     }
     if (p50) {
-      parts[0] = parts[0] ? `${parts[0]} (median: ${formatDollarFull(getValue(p50))})` : `Median: ${formatDollarFull(getValue(p50))}`;
+      segments.push(`Median: ${formatDollarFull(getValue(p50))}`);
     }
     if (showDeterministic && det) {
-      parts.push(`Deterministic: ${formatDollarFull(getValue(det))}`);
+      segments.push(`Deterministic: ${formatDollarFull(getValue(det))}`);
     }
-    return parts.join('. ');
+    return segments.join(' | ');
   }, [byPercentile, showReal, showDeterministic]);
 
   // Build Chart.js datasets: bands (lower first, then upper with fill to lower) + median + deterministic
