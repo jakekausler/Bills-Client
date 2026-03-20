@@ -12,20 +12,27 @@ import { loadWorstCases } from '../../features/monteCarlo/actions';
 import { MCViewProps, registerView } from './viewRegistry';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { AppDispatch } from '../../store';
-import { formatDollar } from './utils';
+import { formatDollar, formatDollarFull } from './utils';
+import type { ChartDataset } from 'chart.js';
 
 Chart.register(...registerables);
 
-const PERCENTILE = Math.max(1, Math.min(50, 5));
+const PERCENTILE = 5; // Clamped to 1-50 range if changed
 
-function formatDollarFull(value: number): string {
-  return `$${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+/** Custom dataset type extending Chart.js with sim metadata. */
+interface SimDataset extends ChartDataset<'line', number[]> {
+  simNumber?: number;
+  isDeterministic?: boolean;
 }
 
-/** Generate a color with opacity interpolated between 0.9 (index 0) and 0.2 (last index). */
+/** Generate a color interpolated from red (index 0) to orange (last index) with decreasing opacity. */
 function simColor(index: number, total: number): string {
   const opacity = total <= 1 ? 0.9 : 0.9 - (0.7 * index) / (total - 1);
-  return `rgba(255,107,107,${opacity.toFixed(2)})`;
+  // Interpolate RGB from red (255,80,80) to orange (255,180,60)
+  const t = total <= 1 ? 0 : index / (total - 1);
+  const g = Math.round(80 + (180 - 80) * t);
+  const b = Math.round(80 + (60 - 80) * t);
+  return `rgba(255,${g},${b},${opacity.toFixed(2)})`;
 }
 
 function WorstCases({ simulationId, reportingAccount, showReal, showDeterministic }: MCViewProps) {
@@ -52,8 +59,7 @@ function WorstCases({ simulationId, reportingAccount, showReal, showDeterministi
 
     const total = data.simulations.length;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const datasets: any[] = data.simulations.map((sim, i) => ({
+    const datasets: SimDataset[] = data.simulations.map((sim, i) => ({
       label: `Sim #${sim.simulationNumber}`,
       data: showReal ? sim.realData : sim.data,
       borderColor: simColor(i, total),
@@ -70,7 +76,7 @@ function WorstCases({ simulationId, reportingAccount, showReal, showDeterministi
       datasets.push({
         label: 'Deterministic',
         data: showReal ? data.deterministic.realData : data.deterministic.data,
-        borderColor: '#ff6b6b',
+        borderColor: '#4dabf7',
         backgroundColor: 'transparent',
         pointRadius: 0,
         pointHoverRadius: 3,
@@ -117,8 +123,7 @@ function WorstCases({ simulationId, reportingAccount, showReal, showDeterministi
               return items[0].label;
             },
             label(item: TooltipItem<'line'>) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const ds = item.dataset as any;
+              const ds = item.dataset as SimDataset;
               const val = item.raw as number;
               if (ds.isDeterministic) {
                 return `Deterministic: ${formatDollarFull(val)}`;

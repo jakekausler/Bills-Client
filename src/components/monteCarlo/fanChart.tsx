@@ -11,7 +11,7 @@ import {
 import { MCViewProps, registerView } from './viewRegistry';
 import { useDelayedLoading } from '../../hooks/useDelayedLoading';
 import { PercentileDataset } from '../../types/types';
-import { formatDollar } from './utils';
+import { formatDollar, formatDollarFull } from './utils';
 
 Chart.register(...registerables);
 
@@ -22,10 +22,6 @@ const BANDS: [number, number, number][] = [
   [25, 75, 0.25],
   [40, 60, 0.40],
 ];
-
-function formatDollarFull(value: number): string {
-  return `$${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-}
 
 function getValues(ds: PercentileDataset, showReal: boolean): (number | null)[] {
   const raw = showReal && ds.realValues ? ds.realValues : ds.data;

@@ -66,7 +66,7 @@ export const updateSimulationProgress =
     }
   };
 
-// TODO: add stale-request guard for rapid account switching
+// TODO(#33): add stale-request guard for rapid account switching
 export const loadSimulationGraph =
   (id: string, accountId?: string | null): AppThunk =>
   async (dispatch) => {
@@ -109,7 +109,7 @@ export const loadFailureHistogram =
     }
   };
 
-// TODO: add stale-request guard for rapid account switching
+// TODO(#33): add stale-request guard for rapid account switching
 export const loadWorstCases =
   (simulationId: string, percentile?: number, accountId?: string): AppThunk =>
   async (dispatch) => {

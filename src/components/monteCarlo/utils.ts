@@ -1,3 +1,8 @@
+/** Format a dollar value with full precision (e.g. $1,234,567). */
+export function formatDollarFull(value: number): string {
+  return `$${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+}
+
 /** Format a dollar value with K/M/B suffixes. */
 export function formatDollar(value: number): string {
   const neg = value < 0;

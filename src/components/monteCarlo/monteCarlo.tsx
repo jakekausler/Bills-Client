@@ -192,7 +192,7 @@ export default function MonteCarlo() {
                 minHeight: 400,
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
-                gridTemplateRows: '1fr',
+                gridAutoRows: 'minmax(300px, 1fr)',
                 gap: '16px',
               }}
             >

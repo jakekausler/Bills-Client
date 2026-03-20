@@ -404,7 +404,7 @@ export interface WorstCasesData {
     realData: number[];
     failureYear: number | null;
   }>;
-  deterministic: {
+  deterministic?: {
     data: number[];
     realData: number[];
   };
