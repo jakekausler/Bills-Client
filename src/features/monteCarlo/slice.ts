@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FailureHistogramData, PercentileDataset, PercentileGraphData, WorstCasesData } from '../../types/types';
+import { FailureHistogramData, IncomeExpenseData, PercentileDataset, PercentileGraphData, WorstCasesData } from '../../types/types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { SimulationStatus } from './api';
@@ -56,6 +56,11 @@ interface MonteCarloState {
   worstCasesLoaded: boolean;
   failureHistogramError: string | null;
   worstCasesError: string | null;
+
+  // Income/Expense view
+  incomeExpenseData: IncomeExpenseData | null;
+  incomeExpenseLoaded: boolean;
+  incomeExpenseError: string | null;
 }
 
 const initialState: MonteCarloState = {
@@ -81,6 +86,9 @@ const initialState: MonteCarloState = {
   worstCasesLoaded: false,
   failureHistogramError: null,
   worstCasesError: null,
+  incomeExpenseData: null,
+  incomeExpenseLoaded: false,
+  incomeExpenseError: null,
 };
 
 const monteCarloSlice = createSlice({
@@ -181,6 +189,15 @@ const monteCarloSlice = createSlice({
     setWorstCasesError: (state, action: PayloadAction<string | null>) => {
       state.worstCasesError = action.payload;
     },
+    setIncomeExpenseData: (state, action: PayloadAction<IncomeExpenseData | null>) => {
+      state.incomeExpenseData = action.payload;
+    },
+    setIncomeExpenseLoaded: (state, action: PayloadAction<boolean>) => {
+      state.incomeExpenseLoaded = action.payload;
+    },
+    setIncomeExpenseError: (state, action: PayloadAction<string | null>) => {
+      state.incomeExpenseError = action.payload;
+    },
   },
 });
 
@@ -206,5 +223,8 @@ export const {
   setWorstCases,
   setWorstCasesLoaded,
   setWorstCasesError,
+  setIncomeExpenseData,
+  setIncomeExpenseLoaded,
+  setIncomeExpenseError,
 } = monteCarloSlice.actions;
 export default monteCarloSlice.reducer;

@@ -14,6 +14,9 @@ import {
   setWorstCases,
   setWorstCasesLoaded,
   setWorstCasesError,
+  setIncomeExpenseData,
+  setIncomeExpenseLoaded,
+  setIncomeExpenseError,
 } from './slice';
 import {
   createSimulation,
@@ -23,6 +26,7 @@ import {
   deleteSimulation,
   getFailureHistogram,
   getWorstCases,
+  getIncomeExpense,
   SimulationRequest,
 } from './api';
 
@@ -123,6 +127,23 @@ export const loadWorstCases =
       console.error(`Failed to load worst cases for ${simulationId}`, error);
       dispatch(setWorstCasesError('Failed to load worst cases'));
       dispatch(setWorstCasesLoaded(true));
+      throw error;
+    }
+  };
+
+export const loadIncomeExpense =
+  (simulationId: string, percentile?: number): AppThunk =>
+  async (dispatch) => {
+    dispatch(setIncomeExpenseLoaded(false));
+    dispatch(setIncomeExpenseError(null));
+    try {
+      const data = await getIncomeExpense(simulationId, percentile);
+      dispatch(setIncomeExpenseData(data));
+      dispatch(setIncomeExpenseLoaded(true));
+    } catch (error) {
+      console.error(`Failed to load income/expense for ${simulationId}`, error);
+      dispatch(setIncomeExpenseError('Failed to load income/expense data'));
+      dispatch(setIncomeExpenseLoaded(true));
       throw error;
     }
   };

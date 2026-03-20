@@ -43,3 +43,9 @@ export const selectWorstCasesLoaded = (state: RootState) => state.monteCarlo.wor
 export const selectFailureHistogramError = (state: RootState) => state.monteCarlo.failureHistogramError;
 
 export const selectWorstCasesError = (state: RootState) => state.monteCarlo.worstCasesError;
+
+export const selectIncomeExpenseData = (state: RootState) => state.monteCarlo.incomeExpenseData;
+
+export const selectIncomeExpenseLoaded = (state: RootState) => state.monteCarlo.incomeExpenseLoaded;
+
+export const selectIncomeExpenseError = (state: RootState) => state.monteCarlo.incomeExpenseError;

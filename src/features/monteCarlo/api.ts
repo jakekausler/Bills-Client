@@ -1,5 +1,5 @@
 import { api } from '../../utils/api';
-import { FailureHistogramData, PercentileGraphData, WorstCasesData } from '../../types/types';
+import { FailureHistogramData, IncomeExpenseData, PercentileGraphData, WorstCasesData } from '../../types/types';
 
 // New simulation API endpoints
 export interface SimulationStatus {
@@ -64,4 +64,12 @@ export const getWorstCases = async (simulationId: string, percentile?: number, a
   if (accountId) params.set('account', accountId);
   const qs = params.toString();
   return await api.get(`/api/monte_carlo/simulations/${simulationId}/worst-cases${qs ? `?${qs}` : ''}`);
+};
+
+export const getIncomeExpense = async (simulationId: string, percentile?: number): Promise<IncomeExpenseData> => {
+  if (!simulationId) throw new Error('Missing simulation ID');
+  const params = new URLSearchParams();
+  if (percentile !== undefined) params.set('percentile', String(percentile));
+  const qs = params.toString();
+  return await api.get(`/api/monte_carlo/simulations/${simulationId}/income-expense${qs ? `?${qs}` : ''}`);
 };

@@ -395,6 +395,46 @@ export interface FailureHistogramData {
   };
 }
 
+export interface FanData {
+  p0: number[];
+  p5: number[];
+  p25: number[];
+  p40: number[];
+  p50: number[];
+  p60: number[];
+  p75: number[];
+  p95: number[];
+  p100: number[];
+}
+
+export interface IncomeExpenseData {
+  labels: string[];
+  breakdown: {
+    income: Record<string, number[]>;
+    expenses: Record<string, number[]>;
+  };
+  incomeFan: FanData;
+  expenseFan: FanData;
+  summary: {
+    medianNetCashFlow: number[];
+    p5NetCashFlow: number[];
+    p95NetCashFlow: number[];
+    cumulativeNetCashFlow: { median: number; p5: number; p95: number };
+  };
+  realBreakdown: {
+    income: Record<string, number[]>;
+    expenses: Record<string, number[]>;
+  };
+  realIncomeFan: FanData;
+  realExpenseFan: FanData;
+  realSummary: {
+    medianNetCashFlow: number[];
+    p5NetCashFlow: number[];
+    p95NetCashFlow: number[];
+    cumulativeNetCashFlow: { median: number; p5: number; p95: number };
+  };
+}
+
 export interface WorstCasesData {
   labels: string[];
   simulations: Array<{

@@ -35,6 +35,7 @@ import { mcViews } from './viewRegistry';
 import './fanChart';
 import './failureHistogram';
 import './worstCases';
+import './incomeExpense';
 import { IconPlayerPlay } from '@tabler/icons-react';
 import { selectVisibleAccounts } from '../../features/accounts/select';
 
