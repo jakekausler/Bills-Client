@@ -67,6 +67,8 @@ The Monte Carlo results page uses an extensible view registry pattern:
 - `components/monteCarlo/controlsBar.tsx` — Global controls (account selector, real/nominal, deterministic toggle)
 - `components/monteCarlo/summaryCards.tsx` — 4 summary stat cards
 - `components/monteCarlo/fanChart.tsx` — Fan chart with 4 percentile bands
+- `components/monteCarlo/failureHistogram.tsx` — Bar chart of failure year distribution
+- `components/monteCarlo/worstCases.tsx` — Bottom 5% simulation trajectories
 - `components/monteCarlo/utils.ts` — Shared formatting utilities
 
 **Adding a new view:**
