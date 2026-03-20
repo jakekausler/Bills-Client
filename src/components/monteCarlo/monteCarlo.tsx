@@ -35,6 +35,7 @@ import { mcViews } from './viewRegistry';
 // Side-effect imports: register views into the registry
 import './fanChart';
 import './failureHistogram';
+import './worstCases';
 import { IconPlayerPlay, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { selectVisibleAccounts } from '../../features/accounts/select';
 
