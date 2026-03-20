@@ -112,7 +112,7 @@ export type BaseActivity = {
   spendingCategory?: string | null;
 
   // Paycheck fields
-  paycheckDetails?: PaycheckDetails;
+  paycheckDetails?: PaycheckDetails | null;
   isPaycheckActivity?: boolean;
 };
 
@@ -183,9 +183,9 @@ export type Bill = {
   spendingCategory?: string | null;
 
   // Paycheck fields
-  paycheckProfile?: PaycheckProfile;
-  taxDeductible?: boolean;
-  studentLoanInterest?: boolean;
+  paycheckProfile?: PaycheckProfile | null;
+  taxDeductible?: boolean | null;
+  studentLoanInterest?: boolean | null;
 };
 
 export type Interest = {
