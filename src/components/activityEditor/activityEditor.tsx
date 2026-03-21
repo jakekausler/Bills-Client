@@ -29,6 +29,7 @@ import { TransferSection } from './shared/TransferSection';
 import { FlagSection } from './shared/FlagSection';
 import { NameCategorySection } from './shared/NameCategorySection';
 import { SaveDeleteButtons } from './shared/SaveDeleteButtons';
+import { PaycheckBreakdown } from './shared/PaycheckBreakdown';
 import {
   runValidate,
   validateName,
@@ -127,7 +128,11 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
 
   const allValid = (activity?: Activity) => {
     return Object.entries(activity || selectedActivity).every(([key, value]) => {
-      return validate(key, value) === null;
+      // Skip validation for fields that don't need it
+      if (key === 'paycheckDetails' || key === 'isPaycheckActivity') {
+        return true;
+      }
+      return validate(key, value as string | number | boolean | null | undefined) === null;
     });
   };
 
@@ -136,7 +141,11 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
     if (!selectedActivity) return;
     const errors: Record<string, string> = {};
     Object.entries(selectedActivity).forEach(([key, value]) => {
-      const error = validate(key, value);
+      // Skip validation for fields that don't need it
+      if (key === 'paycheckDetails' || key === 'isPaycheckActivity') {
+        return;
+      }
+      const error = validate(key, value as string | number | boolean | null | undefined);
       if (error !== null) {
         errors[key] = error;
       }
@@ -298,6 +307,9 @@ export const ActivityEditor = ({ resetSelected }: { resetSelected: () => void })
         categoryTouched={categoryTouched}
         setCategoryTouched={setCategoryTouched}
       />
+      {selectedActivity.paycheckDetails && (
+        <PaycheckBreakdown details={selectedActivity.paycheckDetails} />
+      )}
       <HealthcareSection
         isHealthcare={selectedActivity.isHealthcare ?? false}
         healthcarePerson={selectedActivity.healthcarePerson}

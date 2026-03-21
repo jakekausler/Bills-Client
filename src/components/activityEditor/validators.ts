@@ -307,6 +307,48 @@ export const validateCompounded: Validator = (value) => {
   return null;
 };
 
+// Paycheck validators
+export const validateGrossPay: Validator = (value, ctx) => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const numValue = Number(value);
+  if (isNaN(numValue)) {
+    return 'Invalid gross pay';
+  }
+  if (numValue <= 0) {
+    return 'Gross pay must be greater than 0';
+  }
+  return null;
+};
+
+export const validateContributionValue: Validator = (value) => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const numValue = Number(value);
+  if (isNaN(numValue)) {
+    return 'Invalid value';
+  }
+  if (numValue < 0) {
+    return 'Value must be greater than or equal to 0';
+  }
+  return null;
+};
+
+export const validateDestinationAccount: Validator = (value, ctx) => {
+  if (!value) {
+    return 'Destination account is required';
+  }
+  if (!ctx.accountList) {
+    return null;
+  }
+  if (!ctx.accountList.find((a) => a.items.find((i) => i.value === value))) {
+    return 'Invalid account';
+  }
+  return null;
+};
+
 // Helper to run a validator map
 export function runValidate(
   validators: Record<string, Validator>,

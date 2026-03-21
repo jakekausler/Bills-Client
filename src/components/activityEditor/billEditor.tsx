@@ -28,6 +28,7 @@ import { HealthcareSection } from './shared/HealthcareSection';
 import { TransferSection } from './shared/TransferSection';
 import { FlagSection } from './shared/FlagSection';
 import { NameCategorySection } from './shared/NameCategorySection';
+import { PaycheckProfileSection } from './shared/PaycheckProfileSection';
 import { SaveDeleteButtons } from './shared/SaveDeleteButtons';
 import {
   runValidate,
@@ -50,6 +51,9 @@ import {
   validateMMDD,
   validateIncreaseBy,
   validateIncreaseByVariable,
+  validateGrossPay,
+  validateContributionValue,
+  validateDestinationAccount,
   Validator,
   ValidatorContext,
 } from './validators';
@@ -124,6 +128,9 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
     increaseBy: validateIncreaseBy,
     increaseByVariable: validateIncreaseByVariable,
     increaseByDate: validateMMDD,
+    'paycheckProfile.grossPay': validateGrossPay,
+    'contribution.destinationAccount': validateDestinationAccount,
+    'match.destinationAccount': validateDestinationAccount,
   };
 
   const validate = (name: string, value: any): string | null => {
@@ -152,11 +159,27 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
     if (!selectedBill && !bill) {
       return true;
     }
-    return bill || selectedBill
-      ? Object.entries(bill || (selectedBill as Bill)).every(([key, value]) => {
-        return validate(key, value) === null;
-      })
-      : false;
+    const billToCheck = bill || selectedBill;
+    if (!billToCheck) {
+      return false;
+    }
+
+    // Check top-level fields
+    const topLevelValid = Object.entries(billToCheck).every(([key, value]) => {
+      return validate(key, value) === null;
+    });
+
+    // Validate paycheck profile nested fields when profile is active
+    if (billToCheck.paycheckProfile) {
+      const pp = billToCheck.paycheckProfile;
+      if (!pp.grossPay || pp.grossPay <= 0) return false;
+      if (pp.traditional401k && !pp.traditional401k.destinationAccount) return false;
+      if (pp.roth401k && !pp.roth401k.destinationAccount) return false;
+      if (pp.employerMatch && !pp.employerMatch.destinationAccount) return false;
+      if (pp.hsa && !pp.hsa.destinationAccount) return false;
+    }
+
+    return topLevelValid;
   };
 
   // DEBUG: Log validation errors when bill editor opens with existing data
@@ -363,6 +386,14 @@ export const BillEditor = ({ resetSelected }: { resetSelected: () => void }) => 
             validate={validate}
             categoryTouched={categoryTouched}
             setCategoryTouched={setCategoryTouched}
+          />
+          <PaycheckProfileSection
+            bill={selectedBill}
+            onUpdate={(updates) => {
+              dispatch(updateBill({ ...selectedBill, ...updates }));
+            }}
+            validate={validate}
+            accountOptions={accountList}
           />
           <HealthcareSection
             isHealthcare={selectedBill.isHealthcare ?? false}

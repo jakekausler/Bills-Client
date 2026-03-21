@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Group, LoadingOverlay, Modal, Select, Stack, Table, Text, VisuallyHidden, useMantineTheme } from '@mantine/core';
+import { Badge, Button, Group, LoadingOverlay, Modal, Select, Stack, Table, Text, VisuallyHidden, useMantineTheme } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActivitiesLoaded,
@@ -50,6 +50,7 @@ import {
   IconSwitch,
   IconTrash,
   IconCopy,
+  IconReceiptOff,
 } from '@tabler/icons-react';
 import { selectGraphEndDate, selectGraphStartDate } from '../../features/graph/select';
 
@@ -407,7 +408,16 @@ export default function Activities({ style }: ActivitiesProps) {
                     <Table.Td style={{ whiteSpace: 'nowrap' }} fz="xs">
                       {new Date(`${activity.date}T00:00:00`).toLocaleDateString()}
                     </Table.Td>
-                    <Table.Td fz="xs">{activity.name}</Table.Td>
+                    <Table.Td fz="xs">
+                      <Group gap="xs" wrap="nowrap">
+                        <Text>{activity.name}</Text>
+                        {activity.isPaycheckActivity && (
+                          <Badge size="xs" variant="dot" color="green">
+                            Paycheck
+                          </Badge>
+                        )}
+                      </Group>
+                    </Table.Td>
                     <Table.Td fz="xs">{activity.category.split('.')[1] ?? activity.category}</Table.Td>
                     <Table.Td
                       fz="xs"
