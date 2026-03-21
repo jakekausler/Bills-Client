@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store';
-import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartAreaFilled, IconChartLine, IconArrowsSplit2, IconHeartbeat, IconTargetArrow } from '@tabler/icons-react';
+import { IconCalendar, IconChartPie, IconTable, IconGraph, IconTransfer, IconChartAreaFilled, IconChartLine, IconArrowsSplit2, IconHeartbeat, IconTargetArrow, IconReceipt } from '@tabler/icons-react';
 import { loadAccounts } from './features/accounts/actions';
 import AccountList from './components/accounts/accountList';
 import Account from './components/account/account';
@@ -37,6 +37,8 @@ import HealthcareSidebar from './components/healthcare/healthcareSidebar';
 import { loadHealthcareConfigs } from './features/healthcare/actions';
 import SpendingTracker from './components/spendingTracker/spendingTracker';
 import { loadSpendingTrackerCategories } from './features/spendingTracker/actions';
+import TaxSummary from './components/taxSummary/taxSummary';
+import TaxSummarySidebar from './components/taxSummary/taxSummarySidebar';
 import { ErrorNotifications } from './components/helpers/errorNotifications';
 
 type Page = {
@@ -109,6 +111,12 @@ const pages: Record<string, Page> = {
     component: SpendingTracker,
     sidebar: () => null,
     icon: IconTargetArrow,
+  },
+  taxSummary: {
+    title: 'Tax Summary',
+    component: TaxSummary,
+    sidebar: TaxSummarySidebar,
+    icon: IconReceipt,
   },
 };
 
