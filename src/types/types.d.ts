@@ -8,6 +8,9 @@ export type ContributionConfig = {
   value: number;
   destinationAccount: string;
   frequency?: DeductionFrequency;
+  increaseBy?: number;
+  increaseByIsVariable?: boolean;
+  increaseByVariable?: string | null;
 };
 
 export type EmployerMatchConfig = {
@@ -16,6 +19,9 @@ export type EmployerMatchConfig = {
   tiers?: { matchPercent: number; upToPercent: number }[];
   fixedAmount?: number;
   destinationAccount: string;
+  increaseBy?: number;
+  increaseByIsVariable?: boolean;
+  increaseByVariable?: string | null;
 };
 
 export type PaycheckDeduction = {
@@ -23,9 +29,12 @@ export type PaycheckDeduction = {
   amount: number;
   type: 'preTax' | 'postTax';
   frequency?: DeductionFrequency;
-  inflationVariable?: string;
+  increaseBy?: number;
+  increaseByIsVariable?: boolean;
+  increaseByVariable?: string | null;
   reducesSSWages?: boolean;
   destinationAccount?: string;
+  imputed?: boolean; // true = amount is added to gross and deducted back (nets to $0 cash, affects taxable wages)
 };
 
 export type BonusConfig = {
